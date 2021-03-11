@@ -1,10 +1,9 @@
 import 'package:flutter/widgets.dart';
+import 'package:components_venver/src/material/icons/font_awesome/icon_data.dart';
+import 'icon_data.dart';
 
-import 'package:components/src/material/icons/font_awesome/fa_icon.dart';
-import 'package:components/src/material/icons/font_awesome/icon_data.dart';
-
-export 'package:components/src/material/icons/font_awesome/fa_icon.dart';
-export 'package:components/src/material/icons/font_awesome/icon_data.dart';
+export 'package:components_venver/src/material/icons/font_awesome/fa_icon.dart';
+export 'package:components_venver/src/material/icons/font_awesome/icon_data.dart';
 
 class FontAwesomeIcons {
   static const IconData fiveHundredPx = const IconDataBrands(0xf26e);
