@@ -4,8 +4,8 @@ import 'validate.dart';
 // dependencies:
 //   flutter_masked_text: ^0.8.0
 
-class Formato {
-  const Formato._();
+class MSFormat {
+  const MSFormat._();
 
   static const int MAX_CHARACTERS = 255;
 
@@ -13,7 +13,7 @@ class Formato {
   /// 
   /// Se não for válido, e [retornoValor] for false, retorna [retornoInvalido]
   static String apenasTrim(String valor, String retornoInvalido, {bool retornoValor = false}) {
-    if (Validar.texto(valor)) {
+    if (MSValidate.texto(valor)) {
       return valor.toString().trim();
     } else {
       if (retornoValor) return valor.toString();

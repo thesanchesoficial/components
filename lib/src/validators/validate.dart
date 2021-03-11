@@ -4,8 +4,8 @@ import 'format.dart';
 // dependencies:
 //   cpfcnpj: ^1.0.3
 
-class Validar {
-  const Validar._();
+class MSValidate {
+  const MSValidate._();
 
   static final int MAX_CHARACTERS = 255;
 
@@ -74,7 +74,7 @@ class Validar {
   static bool telefone(String valor) {
     if (valor == null) return false;
     if (valor.length < 8 || valor.length > 19) return false;
-    valor = Formato.removerCaracteres(valor, "+() -");
+    valor = MSFormat.removerCaracteres(valor, "+() -");
     RegExp regex = RegExp(r'[^0-9]{1}');
     for (int i = 0; i < valor.length; i++) {
       if (regex.hasMatch(valor[i])) return false;
