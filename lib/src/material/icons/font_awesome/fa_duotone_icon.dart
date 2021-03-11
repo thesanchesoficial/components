@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
-import 'package:components/src/fa_icon.dart';
-import 'package:components/src/icon_data.dart';
+import 'package:components/src/material/icons/font_awesome/fa_icon.dart';
+import 'package:components/src/material/icons/font_awesome/icon_data.dart';
 
 /// Special icon style which can have two colors
 class FaDuotoneIcon extends StatelessWidget {

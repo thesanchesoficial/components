@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
-import 'package:components/components.dart';
+import 'package:components/material.dart';
 
 /// Creates an Icon Widget that works for non-material Icons, such as the
 /// Font Awesome Icons.
