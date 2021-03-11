@@ -202,8 +202,8 @@ class MSTextField extends StatelessWidget {
                       )
                     : null,
               )),
-          suggestionsCallback: (pattern) async {
-            return await obterListaDeSugestoes(pattern);
+          suggestionsCallback: (string) async {
+            return await _getSuggestionsList(string);
           },
           noItemsFoundBuilder: (_) {
             return SizedBox();
@@ -301,7 +301,7 @@ class MSTextField extends StatelessWidget {
     }
   }
 
-  obterListaDeSugestoes(pattern) {
+  _getSuggestionsList(string) {
     List listaDeSugestoes = [];
     if(suggestions && listSuggestions.isNotEmpty) {
       listaDeSugestoes = listSuggestions;
@@ -309,6 +309,6 @@ class MSTextField extends StatelessWidget {
     return listaDeSugestoes.where((element) => element
         .toString()
         .toLowerCase()
-        .contains(pattern.toString().toLowerCase()));
+        .contains(string.toString().toLowerCase()));
   }
 }
