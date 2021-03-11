@@ -1,7 +1,7 @@
 name: components
-description: A new Flutter package.
+description: Componentes para desenvolvimento de aplicativos Venver
 version: 0.0.1
-author:
+author: Matheus e Nicollas
 homepage:
 
 environment:
@@ -11,6 +11,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  path: ^1.8.0-nullsafety
+  process: ^4.0.0-nullsafety
 
 dev_dependencies:
   flutter_test:
@@ -21,7 +23,27 @@ dev_dependencies:
 
 # The following section is specific to Flutter.
 flutter:
-
+  fonts:
+    - family: FontAwesomeBrands
+      fonts:
+        - asset: lib/fonts/fa-brands-400.ttf
+          weight: 400
+    - family: FontAwesomeRegular
+      fonts:
+        - asset: lib/fonts/fa-regular-400.ttf
+          weight: 400
+    - family: FontAwesomeSolid
+      fonts:
+        - asset: lib/fonts/fa-solid-900.ttf
+          weight: 900
+    - family: FontAwesomeLight
+      fonts:
+        - asset: lib/fonts/fa-light-300.ttf
+          weight: 300
+    - family: FontAwesomeDuotone
+      fonts:
+        - asset: lib/fonts/fa-duotone-900.ttf
+          weight: 900
   # To add assets to your package, add an assets section, like this:
   # assets:
   #   - images/a_dot_burr.jpeg
