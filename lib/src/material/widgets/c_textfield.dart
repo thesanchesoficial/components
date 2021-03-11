@@ -34,9 +34,10 @@ class MSTextField extends StatelessWidget {
   final List<TextInputFormatter> inputFormatters;
   final String suffixText;
   final String prefixText;
-  final bool sugestoes;
+  final bool suggestions;
+  final List<dynamic> listSuggestions;
 
-  const MSTextField({
+  MSTextField({
     Key key,
     this.labelText,
     this.hintText,
@@ -68,11 +69,46 @@ class MSTextField extends StatelessWidget {
     this.inputFormatters,
     this.prefixText,
     this.suffixText,
-    this.sugestoes = false,
-  })  : icon = null,
+  })  : icon = null, suggestions = false, listSuggestions = [],
         super(key: key);
 
-  const MSTextField.withSuffix({
+  const MSTextField.withSuggestions({
+    Key key,
+    this.labelText,
+    this.hintText,
+    this.helperText,
+    this.errorText,
+    this.keyboardType,
+    this.controller,
+    this.validatorHandler,
+    this.textInputAction = TextInputAction.next,
+    this.textIsObscure = false,
+    this.readOnly = false,
+    this.onFieldSubmitted,
+    this.focusNode,
+    this.onChanged,
+    this.onTap,
+    this.onPressedSuffix,
+    this.onSaved,
+    this.maxLength,
+    this.minLines = 1,
+    this.maxLines = 1,
+    this.margin,
+    this.enabled,
+    this.enableInteractive,
+    this.autofocus = false,
+    this.textCapitalization = TextCapitalization.sentences,
+    this.maxLengthEnforced = true,
+    this.counterText,
+    this.color,
+    this.inputFormatters,
+    this.prefixText,
+    this.suffixText,
+    this.listSuggestions,
+  })  : icon = null, suggestions = true, 
+        super(key: key);
+
+  MSTextField.withSuffix({
     Key key,
     this.labelText,
     this.hintText,
@@ -105,13 +141,12 @@ class MSTextField extends StatelessWidget {
     this.inputFormatters,
     this.prefixText,
     this.suffixText,
-    this.sugestoes = false,
-  })  : assert(icon != null),
+  })  : suggestions = false, listSuggestions = [], assert(icon != null),
         super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    if (sugestoes) {
+    if (suggestions) {
       return Container(
         margin: margin,
         decoration: BoxDecoration(
@@ -119,65 +154,65 @@ class MSTextField extends StatelessWidget {
         ),
         child: TypeAheadField(
           textFieldConfiguration: TextFieldConfiguration(
-            autofocus: false,
-            controller: controller,
-            decoration: InputDecoration(
-              filled: true,
-              fillColor: color ?? Theme.of(context).cardColor,
-              labelText: labelText,
-              hintText: hintText,
-              errorText: errorText,
-              counterText: counterText,
-              alignLabelWithHint: false,
-              border: OutlineInputBorder(
-                borderSide: BorderSide(
-                  color: Theme.of(context).secondaryHeaderColor,
-                  width: 1,
+              autofocus: false,
+              controller: controller,
+              decoration: InputDecoration(
+                filled: true,
+                fillColor: color ?? Theme.of(context).cardColor,
+                labelText: labelText,
+                hintText: hintText,
+                errorText: errorText,
+                counterText: counterText,
+                alignLabelWithHint: false,
+                border: OutlineInputBorder(
+                  borderSide: BorderSide(
+                    color: Theme.of(context).secondaryHeaderColor,
+                    width: 1,
+                  ),
+                  borderRadius: const BorderRadius.all(Radius.circular(10)),
                 ),
-                borderRadius: const BorderRadius.all(Radius.circular(10)),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: const BorderRadius.all(Radius.circular(10)),
-                borderSide:
-                    BorderSide(color: Theme.of(context).secondaryHeaderColor),
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderRadius: const BorderRadius.all(Radius.circular(10.0)),
-                borderSide:
-                    BorderSide(color: Theme.of(context).secondaryHeaderColor),
-              ),
-              contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
-              labelStyle: TextStyle(
-                color: Theme.of(context).primaryTextTheme.bodyText1.color,
-              ),
-              errorBorder: const UnderlineInputBorder(
-                borderRadius: BorderRadius.all(Radius.circular(10)),
-                borderSide: BorderSide(color: Colors.red),
-              ),
-              helperText: helperText,
-              helperMaxLines: 3,
-              errorStyle: const TextStyle(color: Colors.red),
-              suffixText: suffixText,
-              prefixText: prefixText,
-              suffixIcon: (icon != null)
-              ? IconButton(
-                  icon: icon,
-                  onPressed: onPressedSuffix,
-                )
-              : null,
-            )
-          ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: const BorderRadius.all(Radius.circular(10)),
+                  borderSide:
+                      BorderSide(color: Theme.of(context).secondaryHeaderColor),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: const BorderRadius.all(Radius.circular(10.0)),
+                  borderSide:
+                      BorderSide(color: Theme.of(context).secondaryHeaderColor),
+                ),
+                contentPadding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
+                labelStyle: TextStyle(
+                  color: Theme.of(context).primaryTextTheme.bodyText1.color,
+                ),
+                errorBorder: const UnderlineInputBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(10)),
+                  borderSide: BorderSide(color: Colors.red),
+                ),
+                helperText: helperText,
+                helperMaxLines: 3,
+                errorStyle: const TextStyle(color: Colors.red),
+                suffixText: suffixText,
+                prefixText: prefixText,
+                suffixIcon: (icon != null)
+                    ? IconButton(
+                        icon: icon,
+                        onPressed: onPressedSuffix,
+                      )
+                    : null,
+              )),
           suggestionsCallback: (pattern) async {
-            return await teste(pattern);
+            return await obterListaDeSugestoes(pattern);
           },
           noItemsFoundBuilder: (_) {
             return SizedBox();
           },
           itemBuilder: (context, suggestion) {
             return ListTile(
-              title: Text(suggestion.toString(), style: TextStyle(fontWeight: FontWeight.w500)),
-              trailing: Icon(Icons.touch_app_outlined)
-            );
+                title: Text(suggestion.toString(),
+                    style: TextStyle(fontWeight: FontWeight.w500)),
+                trailing: Icon(Icons.touch_app_outlined));
           },
           onSuggestionSelected: (suggestion) {
             controller.text = suggestion;
@@ -259,14 +294,21 @@ class MSTextField extends StatelessWidget {
           keyboardType: keyboardType,
           obscureText: textIsObscure,
           autofocus: autofocus,
-          textCapitalization: textCapitalization ?? TextCapitalization.sentences,
+          textCapitalization:
+              textCapitalization ?? TextCapitalization.sentences,
         ),
       );
     }
   }
 
-  teste(pattern) {
-    List testeList = [];
-    return testeList.where((element) => element.toString().toLowerCase().contains(pattern.toString().toLowerCase()));
+  obterListaDeSugestoes(pattern) {
+    List listaDeSugestoes = [];
+    if(suggestions && listSuggestions.isNotEmpty) {
+      listaDeSugestoes = listSuggestions;
+    }
+    return listaDeSugestoes.where((element) => element
+        .toString()
+        .toLowerCase()
+        .contains(pattern.toString().toLowerCase()));
   }
 }
