@@ -1,8 +1,8 @@
 import 'package:components_venver/material.dart';
 import 'package:flutter/material.dart';
 
-class Router {
-  const Router._();
+class MNRouter {
+  const MNRouter._();
 
   static goRouter(route, context) {
     Navigator.push(context, route);
