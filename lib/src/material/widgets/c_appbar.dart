@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 
 /// [iconeVoltar] = "voltar" (back_ios), "fechar" (close), "" (sem ícone)
-class MSAppBar extends StatelessWidget {
+class MSAppBar extends StatelessWidget implements PreferredSizeWidget {
+
+  @override
+  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
+
   final String titulo;
   final String subtitulo;
   final String iconeVoltar;
