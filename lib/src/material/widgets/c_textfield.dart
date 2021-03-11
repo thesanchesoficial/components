@@ -1,3 +1,4 @@
+import 'package:components_venver/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
@@ -188,11 +189,11 @@ class MSTextField extends StatelessWidget {
                 ),
                 errorBorder: const UnderlineInputBorder(
                   borderRadius: BorderRadius.all(Radius.circular(10)),
-                  borderSide: BorderSide(color: Colors.red),
+                  borderSide: BorderSide(color: AppTheme.errorColor ?? Colors.red),
                 ),
                 helperText: helperText,
                 helperMaxLines: 3,
-                errorStyle: const TextStyle(color: Colors.red),
+                errorStyle: const TextStyle(color: AppTheme.errorColor ?? Colors.red),
                 suffixText: suffixText,
                 prefixText: prefixText,
                 suffixIcon: (icon != null)
@@ -267,11 +268,11 @@ class MSTextField extends StatelessWidget {
             ),
             errorBorder: const UnderlineInputBorder(
               borderRadius: BorderRadius.all(Radius.circular(10)),
-              borderSide: BorderSide(color: Colors.red),
+              borderSide: BorderSide(color: AppTheme.errorColor ?? Colors.red),
             ),
             helperText: helperText,
             helperMaxLines: 3,
-            errorStyle: const TextStyle(color: Colors.red),
+            errorStyle: const TextStyle(color: AppTheme.errorColor ?? Colors.red),
             suffixText: suffixText,
             prefixText: prefixText,
             suffixIcon: (icon != null)

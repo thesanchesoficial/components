@@ -1,3 +1,4 @@
+import 'package:components_venver/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 
 class MSButton extends StatelessWidget {
@@ -41,7 +42,7 @@ class MSButton extends StatelessWidget {
     this.textStyle,
     this.leading,
     this.trailing,
-  }) : outline = false, principal = true, color = Colors.green, super(key: key);
+  }) : outline = false, principal = true, color = AppTheme.verdeVenver ?? Colors.green, super(key: key);
 
   MSButton.secondary({
     Key key,
@@ -111,7 +112,7 @@ class MSButton extends StatelessWidget {
           shape: MaterialStateProperty.all(
             RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(radius),
-              side: BorderSide(color: color ?? Colors.green),
+              side: BorderSide(color: color ?? AppTheme.verdeVenver ?? Colors.green),
             ), 
           ),
           enableFeedback: enableFeedback
