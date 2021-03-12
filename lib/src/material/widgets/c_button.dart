@@ -1,7 +1,7 @@
 import 'package:components_venver/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 
-class MSButton extends StatelessWidget {
+class OwButton extends StatelessWidget {
   final String labelText;
   final bool autoFocus;
   final bool enable;
@@ -23,7 +23,7 @@ class MSButton extends StatelessWidget {
   final IconData leading;
   final IconData trailing;
 
-  MSButton({
+  OwButton({
     Key key,
     this.labelText,
     this.autoFocus = false,
@@ -42,9 +42,12 @@ class MSButton extends StatelessWidget {
     this.textStyle,
     this.leading,
     this.trailing,
-  }) : outline = false, mainButton = true, color = AppTheme.verdeVenver, super(key: key);
+  })  : outline = false,
+        mainButton = true,
+        color = AppTheme.verdeVenver,
+        super(key: key);
 
-  MSButton.secondary({
+  OwButton.secondary({
     Key key,
     this.labelText,
     this.autoFocus = false,
@@ -64,12 +67,11 @@ class MSButton extends StatelessWidget {
     this.textStyle,
     this.leading,
     this.trailing,
-  }) 
-  : outline = false, 
-    mainButton = false, 
-    super(key: key);
+  })  : outline = false,
+        mainButton = false,
+        super(key: key);
 
-  const MSButton.outline({
+  const OwButton.outline({
     Key key,
     this.labelText,
     this.autoFocus = false,
@@ -89,10 +91,9 @@ class MSButton extends StatelessWidget {
     this.textStyle,
     this.leading,
     this.trailing,
-  }) 
-  : outline = true, 
-    mainButton = false, 
-    super(key: key);
+  })  : outline = true,
+        mainButton = false,
+        super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -100,31 +101,32 @@ class MSButton extends StatelessWidget {
       height: height,
       margin: margin,
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.all(Radius.circular(radius)),
-        color: Colors.transparent
-      ),
+          borderRadius: BorderRadius.all(Radius.circular(radius)),
+          color: Colors.transparent),
       child: ElevatedButton(
         autofocus: autoFocus,
         child: labelText != null && labelText.isNotEmpty
-          ? Text(labelText.toUpperCase(), style: TextStyle(fontWeight: FontWeight.bold)) 
-          : child,
+            ? Text(labelText.toUpperCase(),
+                style: TextStyle(fontWeight: FontWeight.bold))
+            : child,
         style: ButtonStyle(
-          foregroundColor: mainButton 
-            ? MaterialStateProperty.all(Colors.white) 
-            : MaterialStateProperty.all(foregroundColor ?? color ?? Colors.green),
-          padding: MaterialStateProperty.all(padding),
-          backgroundColor: MaterialStateProperty.all(outline ? Colors.transparent : color ?? Colors.green),
-          elevation: MaterialStateProperty.all(elevation),
-          minimumSize: MaterialStateProperty.all(minimumSize),
-          textStyle: MaterialStateProperty.all(textStyle),
-          shape: MaterialStateProperty.all(
-            RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(radius),
-              side: BorderSide(color: color ?? AppTheme.verdeVenver),
-            ), 
-          ),
-          enableFeedback: enableFeedback
-        ),
+            foregroundColor: mainButton
+                ? MaterialStateProperty.all(Colors.white)
+                : MaterialStateProperty.all(
+                    foregroundColor ?? color ?? Colors.green),
+            padding: MaterialStateProperty.all(padding),
+            backgroundColor: MaterialStateProperty.all(
+                outline ? Colors.transparent : color ?? Colors.green),
+            elevation: MaterialStateProperty.all(elevation),
+            minimumSize: MaterialStateProperty.all(minimumSize),
+            textStyle: MaterialStateProperty.all(textStyle),
+            shape: MaterialStateProperty.all(
+              RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(radius),
+                side: BorderSide(color: color ?? AppTheme.verdeVenver),
+              ),
+            ),
+            enableFeedback: enableFeedback),
         onPressed: enable ? onPressed : null,
         onLongPress: enable ? onLongPressed : null,
       ),

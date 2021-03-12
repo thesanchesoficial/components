@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class MSDropdown extends StatelessWidget {
+class OwDropdown extends StatelessWidget {
   final String value;
   final bool expanded;
   final String labelText;
@@ -12,7 +12,7 @@ class MSDropdown extends StatelessWidget {
   final List<String> listaOpcoes;
   final Color color;
 
-  const MSDropdown({
+  const OwDropdown({
     Key key,
     this.labelText,
     this.readOnly = false,
@@ -26,7 +26,7 @@ class MSDropdown extends StatelessWidget {
   })  : expanded = false,
         super(key: key);
 
-  const MSDropdown.withExpanded({
+  const OwDropdown.withExpanded({
     Key key,
     this.labelText,
     this.readOnly = false,
@@ -37,8 +37,8 @@ class MSDropdown extends StatelessWidget {
     this.focusNode,
     this.listaOpcoes = const <String>['Conta Corrente', 'Poupança'],
     this.color,
-  }) : expanded = true,
-       super(key: key);
+  })  : expanded = true,
+        super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -53,19 +53,21 @@ class MSDropdown extends StatelessWidget {
           labelText: labelText,
           alignLabelWithHint: false,
           border: OutlineInputBorder(
-            borderSide: BorderSide(color: Theme.of(context).secondaryHeaderColor, width: 1),
-            borderRadius: const BorderRadius.all(Radius.circular(10))
-          ),
+              borderSide: BorderSide(
+                  color: Theme.of(context).secondaryHeaderColor, width: 1),
+              borderRadius: const BorderRadius.all(Radius.circular(10))),
           focusedBorder: OutlineInputBorder(
-            borderRadius: const BorderRadius.all(Radius.circular(10)),
-            borderSide: BorderSide(color: Theme.of(context).secondaryHeaderColor)
-          ),
+              borderRadius: const BorderRadius.all(Radius.circular(10)),
+              borderSide:
+                  BorderSide(color: Theme.of(context).secondaryHeaderColor)),
           enabledBorder: OutlineInputBorder(
-            borderRadius: const BorderRadius.all(Radius.circular(10.0)),
-            borderSide: BorderSide(color: Theme.of(context).secondaryHeaderColor)
-          ),
-          contentPadding: const EdgeInsets.only(left: 20, right: 20, top: 15, bottom: 14),
-          labelStyle: TextStyle(color: Theme.of(context).primaryTextTheme.bodyText1.color),
+              borderRadius: const BorderRadius.all(Radius.circular(10.0)),
+              borderSide:
+                  BorderSide(color: Theme.of(context).secondaryHeaderColor)),
+          contentPadding:
+              const EdgeInsets.only(left: 20, right: 20, top: 15, bottom: 14),
+          labelStyle: TextStyle(
+              color: Theme.of(context).primaryTextTheme.bodyText1.color),
           errorBorder: const UnderlineInputBorder(
             borderRadius: BorderRadius.all(Radius.circular(10)),
             borderSide: BorderSide(color: Colors.red),

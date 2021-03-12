@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class MSAppBar extends StatelessWidget implements PreferredSizeWidget {
+class OwAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
 
@@ -14,7 +14,7 @@ class MSAppBar extends StatelessWidget implements PreferredSizeWidget {
   final PreferredSizeWidget bottom;
   final bool centerTitle;
 
-  const MSAppBar({
+  const OwAppBar({
     Key key,
     this.child,
     this.title,
@@ -32,22 +32,24 @@ class MSAppBar extends StatelessWidget implements PreferredSizeWidget {
     return AppBar(
       leading: leading,
       centerTitle: centerTitle,
-      title: child ?? Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Text(
-            title.toString().toUpperCase(),
-            style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
+      title: child ??
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text(
+                title.toString().toUpperCase(),
+                style:
+                    const TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
+              ),
+              subtitle != null
+                  ? Text(
+                      subtitle.toString().toUpperCase(),
+                      style: const TextStyle(fontSize: 13),
+                    )
+                  : const SizedBox(),
+            ],
           ),
-          subtitle != null
-            ? Text(
-              subtitle.toString().toUpperCase(),
-              style: const TextStyle(fontSize: 13),
-            )
-            : const SizedBox(),
-        ],
-      ),
       elevation: elevation,
       actions: actions,
       backgroundColor: color,

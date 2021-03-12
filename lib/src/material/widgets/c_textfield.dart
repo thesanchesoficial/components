@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 
-class MSTextField extends StatelessWidget {
+class OwTextField extends StatelessWidget {
   final String labelText;
   final String hintText;
   final String errorText;
@@ -38,7 +38,7 @@ class MSTextField extends StatelessWidget {
   final bool suggestions;
   final List<dynamic> listSuggestions;
 
-  MSTextField({
+  OwTextField({
     Key key,
     this.labelText,
     this.hintText,
@@ -70,10 +70,12 @@ class MSTextField extends StatelessWidget {
     this.inputFormatters,
     this.prefixText,
     this.suffixText,
-  })  : icon = null, suggestions = false, listSuggestions = [],
+  })  : icon = null,
+        suggestions = false,
+        listSuggestions = [],
         super(key: key);
 
-  const MSTextField.withSuggestions({
+  const OwTextField.withSuggestions({
     Key key,
     this.labelText,
     this.hintText,
@@ -106,10 +108,11 @@ class MSTextField extends StatelessWidget {
     this.prefixText,
     this.suffixText,
     this.listSuggestions,
-  })  : icon = null, suggestions = true, 
+  })  : icon = null,
+        suggestions = true,
         super(key: key);
 
-  MSTextField.withSuffix({
+  OwTextField.withSuffix({
     Key key,
     this.labelText,
     this.hintText,
@@ -142,7 +145,9 @@ class MSTextField extends StatelessWidget {
     this.inputFormatters,
     this.prefixText,
     this.suffixText,
-  })  : suggestions = false, listSuggestions = [], assert(icon != null),
+  })  : suggestions = false,
+        listSuggestions = [],
+        assert(icon != null),
         super(key: key);
 
   @override
@@ -189,11 +194,13 @@ class MSTextField extends StatelessWidget {
                 ),
                 errorBorder: const UnderlineInputBorder(
                   borderRadius: BorderRadius.all(Radius.circular(10)),
-                  borderSide: BorderSide(color: AppTheme.errorColor ?? Colors.red),
+                  borderSide:
+                      BorderSide(color: AppTheme.errorColor ?? Colors.red),
                 ),
                 helperText: helperText,
                 helperMaxLines: 3,
-                errorStyle: const TextStyle(color: AppTheme.errorColor ?? Colors.red),
+                errorStyle:
+                    const TextStyle(color: AppTheme.errorColor ?? Colors.red),
                 suffixText: suffixText,
                 prefixText: prefixText,
                 suffixIcon: (icon != null)
@@ -272,7 +279,8 @@ class MSTextField extends StatelessWidget {
             ),
             helperText: helperText,
             helperMaxLines: 3,
-            errorStyle: const TextStyle(color: AppTheme.errorColor ?? Colors.red),
+            errorStyle:
+                const TextStyle(color: AppTheme.errorColor ?? Colors.red),
             suffixText: suffixText,
             prefixText: prefixText,
             suffixIcon: (icon != null)
@@ -304,7 +312,7 @@ class MSTextField extends StatelessWidget {
 
   _getSuggestionsList(string) {
     List listaDeSugestoes = [];
-    if(suggestions && listSuggestions.isNotEmpty) {
+    if (suggestions && listSuggestions.isNotEmpty) {
       listaDeSugestoes = listSuggestions;
     }
     return listaDeSugestoes.where((element) => element

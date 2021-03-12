@@ -1,12 +1,12 @@
 import 'package:components_venver/material.dart';
 import 'package:flutter/material.dart';
 
-class MNRouter {
-  const MNRouter._();
+class OwRouter {
+  const OwRouter._();
 
-  static goRouter(route, context) {
+  static _goRouter(route, context) {
     Navigator.push(context, route);
   }
 
-  static PageRouteBuilder rightToLeft(Widget page, BuildContext context) => goRouter(RightToLeft(page: page), context);
+  static PageRouteBuilder rightToLeft(BuildContext context, Widget page) => _goRouter(RightToLeft(page: page), context);
 }
