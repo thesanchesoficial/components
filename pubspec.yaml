@@ -19,6 +19,8 @@ dependencies:
   encrypt: ^4.1.0
   pretty_qr_code: ^1.0.1
   cpfcnpj: ^1.0.3
+  data_connection_checker: ^0.3.4
+  flutter_svg: ^0.19.3
 
 dev_dependencies:
   flutter_test:

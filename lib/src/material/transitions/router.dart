@@ -9,4 +9,6 @@ class OwRouter {
   }
 
   static PageRouteBuilder rightToLeft(BuildContext context, Widget page) => _goRouter(RightToLeft(page: page), context);
+
+  static PageRouteBuilder bottomStack(BuildContext context, Widget page, {bool secondPage = false}) => ScreenTransition.screenBottomSheet(context, page, secondPage: secondPage);
 }

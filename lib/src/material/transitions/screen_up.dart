@@ -1,12 +1,4 @@
-
 import 'package:flutter/material.dart';
-
-class ScreenUp {
-  ScreenUp._();
-
-  static Future screenBottomSheet(BuildContext context, Widget page, {bool secondPage: false}) => ScreenUp.screenBottomSheet(context, page, secondPage: secondPage);
-
-}
 
 class ScreenTransition {
   ScreenTransition._();
