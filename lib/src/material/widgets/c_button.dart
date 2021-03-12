@@ -6,7 +6,7 @@ class MSButton extends StatelessWidget {
   final bool autoFocus;
   final bool enable;
   final bool outline;
-  final bool principal;
+  final bool mainButton;
   final bool enableFeedback;
   final Function onPressed;
   final Function onLongPressed;
@@ -18,7 +18,7 @@ class MSButton extends StatelessWidget {
   final double elevation;
   final double radius;
   final double height;
-  final Size size;
+  final Size minimumSize;
   final TextStyle textStyle;
   final IconData leading;
   final IconData trailing;
@@ -38,11 +38,11 @@ class MSButton extends StatelessWidget {
     this.elevation = 0,
     this.radius = 10,
     this.height = 60,
-    this.size,
+    this.minimumSize,
     this.textStyle,
     this.leading,
     this.trailing,
-  }) : outline = false, principal = true, color = AppTheme.verdeVenver, super(key: key);
+  }) : outline = false, mainButton = true, color = AppTheme.verdeVenver, super(key: key);
 
   MSButton.secondary({
     Key key,
@@ -60,11 +60,14 @@ class MSButton extends StatelessWidget {
     this.elevation = 0,
     this.radius = 10,
     this.height = 60,
-    this.size,
+    this.minimumSize,
     this.textStyle,
     this.leading,
     this.trailing,
-  }) : outline = false, principal = false, super(key: key);
+  }) 
+  : outline = false, 
+    mainButton = false, 
+    super(key: key);
 
   const MSButton.outline({
     Key key,
@@ -82,11 +85,14 @@ class MSButton extends StatelessWidget {
     this.elevation = 0,
     this.radius = 10,
     this.height = 60,
-    this.size,
+    this.minimumSize,
     this.textStyle,
     this.leading,
     this.trailing,
-  }) : outline = true, principal = false, super(key: key);
+  }) 
+  : outline = true, 
+    mainButton = false, 
+    super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -103,11 +109,13 @@ class MSButton extends StatelessWidget {
           ? Text(labelText.toUpperCase(), style: TextStyle(fontWeight: FontWeight.bold)) 
           : child,
         style: ButtonStyle(
-          foregroundColor: principal ? MaterialStateProperty.all(Colors.white) : MaterialStateProperty.all(foregroundColor ?? color ?? Colors.green),
+          foregroundColor: mainButton 
+            ? MaterialStateProperty.all(Colors.white) 
+            : MaterialStateProperty.all(foregroundColor ?? color ?? Colors.green),
           padding: MaterialStateProperty.all(padding),
           backgroundColor: MaterialStateProperty.all(outline ? Colors.transparent : color ?? Colors.green),
           elevation: MaterialStateProperty.all(elevation),
-          minimumSize: MaterialStateProperty.all(size),
+          minimumSize: MaterialStateProperty.all(minimumSize),
           textStyle: MaterialStateProperty.all(textStyle),
           shape: MaterialStateProperty.all(
             RoundedRectangleBorder(
