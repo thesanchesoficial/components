@@ -11,7 +11,7 @@ class OwToast {
     return BotToast.showText(text: message);
   }
 
-  static close(String message) {
+  static close() {
     return BotToast.closeAllLoading();
   }
 
