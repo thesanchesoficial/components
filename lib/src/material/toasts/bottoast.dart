@@ -11,6 +11,10 @@ class OwToast {
     return BotToast.showText(text: message);
   }
 
+  static close(String message) {
+    return BotToast.closeAllLoading();
+  }
+
   static notification(
     {
       String title = "Ops... não conseguimos chegar no servidor",
