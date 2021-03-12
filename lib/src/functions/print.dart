@@ -1,7 +1,8 @@
-void p([dynamic string]) {
-  // if (Environment.current.environmentType != EnvironmentType.PRODUCTION && exibirPrints) {
-  //   final base = Timestamp.now().millisecondsSinceEpoch;
-    // print("[$base]: $string");
-    print("$string");
-  // }
+import 'package:flutter/foundation.dart';
+
+void p([dynamic string, bool hidePrint = false]) {
+  if (kReleaseMode && !hidePrint) {
+    final ms = DateTime.now().millisecondsSinceEpoch;
+    print("[$ms]: $string");
+  }
 }
