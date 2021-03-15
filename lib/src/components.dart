@@ -6,6 +6,6 @@ import 'package:flutter/material.dart';
 
 // ignore: non_constant_identifier_names
 TransitionBuilder ComponentsInit() {
-  Settings().navigatorKey = GlobalKey<NavigatorState>();
+  navigatorKey = GlobalKey<NavigatorState>();
   return BotToastInit();
 }
