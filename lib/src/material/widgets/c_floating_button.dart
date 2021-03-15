@@ -28,9 +28,9 @@ class OwFloatingButton extends StatelessWidget {
     this.tooltip,
     this.splashColor,
     this.foregroundColor,
-    this.isExtended,
+    this.isExtended = false,
     this.shape,
-    this.autofocus,
+    this.autofocus = false,
     this.focusNode,
     this.mouseCursor,
   }) : back = false, next = false, two = false, super(key: key);
@@ -44,9 +44,9 @@ class OwFloatingButton extends StatelessWidget {
     this.tooltip,
     this.splashColor,
     this.foregroundColor,
-    this.isExtended,
+    this.isExtended = false,
     this.shape,
-    this.autofocus,
+    this.autofocus = false,
     this.focusNode,
     this.mouseCursor,
   }) : back = true, next = false, two = false, super(key: key);
@@ -60,9 +60,9 @@ class OwFloatingButton extends StatelessWidget {
     this.tooltip,
     this.splashColor,
     this.foregroundColor,
-    this.isExtended,
+    this.isExtended = false,
     this.shape,
-    this.autofocus,
+    this.autofocus = false,
     this.focusNode,
     this.mouseCursor,
   }) : back = false, next = true, two = false, super(key: key);
@@ -76,12 +76,11 @@ class OwFloatingButton extends StatelessWidget {
     this.tooltip,
     this.splashColor,
     this.foregroundColor,
-    this.isExtended,
     this.shape,
-    this.autofocus,
+    this.autofocus = false,
     this.focusNode,
     this.mouseCursor,
-  }) : back = false, next = false, two = true, super(key: key);
+  }) : back = false, next = false, two = true, isExtended = true, super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -99,19 +98,14 @@ class OwFloatingButton extends StatelessWidget {
               child: Icon(Icons.arrow_back_outlined),
             ),
             SizedBox(width: 40),
-            FloatingActionButton(
+            FloatingActionButton.extended(
               backgroundColor: backgroundColor ?? AppTheme.verdeVenver,
               heroTag: tooltip ?? "Adicionar",
               tooltip: tooltip ?? "Adicionar",
               onPressed: () {},
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text("Avançar"),
-                  SizedBox(width: 10),
-                  Icon(Icons.arrow_forward_outlined),
-                ],
-              ),
+              icon: Icon(Icons.arrow_forward_outlined),
+              isExtended: true,
+              label: Text("Avançar"),
             )
           ],
         ),
