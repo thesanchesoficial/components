@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 class OwRouter {
   const OwRouter._();
 
-  static _goRouter(router, context, removeUntil) {
+  static _goRouter(router, BuildContext context, bool removeUntil) {
     if(removeUntil) {
       navigatorGlobalKey.currentState.pushAndRemoveUntil(router, (route) => false);
     } else {
