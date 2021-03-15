@@ -15,7 +15,7 @@ dependencies:
   process: ^4.0.0-nullsafety
   flutter_typeahead: ^2.0.0
   flutter_masked_text: ^0.8.0
-  bot_toast: ^3.0.5
+  bot_toast: ^4.0.1
   encrypt: ^4.1.0
   pretty_qr_code: ^1.0.1
   cpfcnpj: ^1.0.3
