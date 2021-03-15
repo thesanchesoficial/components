@@ -1,7 +1,5 @@
-import 'package:components_venver/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter/services.dart';
 
 class OwListTile extends StatelessWidget {
   final Widget title;

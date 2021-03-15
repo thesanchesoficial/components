@@ -40,6 +40,7 @@ class AppTheme {
     appBarTheme: AppBarTheme(
       brightness: Brightness.light,
       color: Color(0xffffffff),
+      backgroundColor: verdeVenver,
       elevation: 0.0,
       actionsIconTheme: IconThemeData(
         color: verdeVenver,
