@@ -95,7 +95,7 @@ class OwFloatingButton extends StatelessWidget {
               heroTag: "Voltar",
               tooltip: "Voltar",
               onPressed: () {},
-              child: Icon(Icons.arrow_back_outlined, size: 40),
+              child: Icon(Icons.arrow_back_outlined, size: 25),
             ),
             SizedBox(width: 40),
             FloatingActionButton.extended(
@@ -103,7 +103,7 @@ class OwFloatingButton extends StatelessWidget {
               heroTag: "Avançar",
               tooltip: "Avançar",
               onPressed: () {},
-              icon: Icon(Icons.arrow_forward_outlined, size: 40),
+              icon: Icon(Icons.arrow_forward_outlined, size: 25),
               isExtended: true,
               label: Text("Avançar"),
             )
