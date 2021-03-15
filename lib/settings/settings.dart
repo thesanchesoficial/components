@@ -1,3 +1,4 @@
+library components;
 class Settings {
   
 }
