@@ -86,24 +86,24 @@ class OwFloatingButton extends StatelessWidget {
   Widget build(BuildContext context) {
     if(two) {
       return Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.all(16.0),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
             FloatingActionButton(
               backgroundColor: backgroundColor ?? AppTheme.verdeVenver,
-              heroTag: tooltip ?? "Adicionar",
-              tooltip: tooltip ?? "Adicionar",
+              heroTag: "Voltar",
+              tooltip: "Voltar",
               onPressed: () {},
-              child: Icon(Icons.arrow_back_outlined),
+              child: Icon(Icons.arrow_back_outlined, size: 20),
             ),
             SizedBox(width: 40),
             FloatingActionButton.extended(
               backgroundColor: backgroundColor ?? AppTheme.verdeVenver,
-              heroTag: tooltip ?? "Adicionar",
-              tooltip: tooltip ?? "Adicionar",
+              heroTag: "Avançar",
+              tooltip: "Avançar",
               onPressed: () {},
-              icon: Icon(Icons.arrow_forward_outlined),
+              icon: Icon(Icons.arrow_forward_outlined, size: 20),
               isExtended: true,
               label: Text("Avançar"),
             )
