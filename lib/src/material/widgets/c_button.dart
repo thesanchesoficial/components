@@ -116,7 +116,7 @@ class OwButton extends StatelessWidget {
                     foregroundColor ?? color ?? Theme.of(context).accentColor),
             padding: MaterialStateProperty.all(padding),
             backgroundColor: MaterialStateProperty.all(
-                outline ? Colors.transparent : color ?? Colors.green),
+                outline ? Colors.transparent : color ?? AppTheme.verdeVenver),
             elevation: MaterialStateProperty.all(elevation),
             minimumSize: MaterialStateProperty.all(minimumSize),
             textStyle: MaterialStateProperty.all(textStyle),

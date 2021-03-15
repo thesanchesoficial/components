@@ -1,3 +1,4 @@
+import 'package:components_venver/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 
 class OwAppBar extends StatelessWidget implements PreferredSizeWidget {
@@ -52,7 +53,7 @@ class OwAppBar extends StatelessWidget implements PreferredSizeWidget {
         ),
       elevation: elevation,
       actions: actions,
-      backgroundColor: color ?? Theme.of(context).accentColor,
+      backgroundColor: color ?? AppTheme.verdeVenver,
       bottom: bottom,
     );
   }
