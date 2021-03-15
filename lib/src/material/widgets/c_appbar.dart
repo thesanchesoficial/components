@@ -33,26 +33,26 @@ class OwAppBar extends StatelessWidget implements PreferredSizeWidget {
       leading: leading,
       centerTitle: centerTitle,
       title: child ??
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Text(
-                title.toString().toUpperCase(),
-                style:
-                    const TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
-              ),
-              subtitle != null
-                  ? Text(
-                      subtitle.toString().toUpperCase(),
-                      style: const TextStyle(fontSize: 13),
-                    )
-                  : const SizedBox(),
-            ],
-          ),
+        title == null ? null : Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Text(
+              title.toString().toUpperCase(),
+              style:
+                  const TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
+            ),
+            subtitle != null
+              ? Text(
+                  subtitle.toString().toUpperCase(),
+                  style: const TextStyle(fontSize: 13),
+                )
+              : const SizedBox(),
+          ],
+        ),
       elevation: elevation,
       actions: actions,
-      backgroundColor: color,
+      backgroundColor: color ?? Theme.of(context).accentColor,
       bottom: bottom,
     );
   }
