@@ -6,12 +6,12 @@ class OwRouter {
   const OwRouter._();
 
   static _goRouter(router, context, removeUntil) {
-    navigatorKey.currentState.push(router);
-    // if(removeUntil) {
-    //   Navigator.pushAndRemoveUntil(context, router, (route) => false);
-    // } else {
-    //   Navigator.push(context, router);
-    // }
+    navigatorGlobalKey.currentState.push(router);
+    if(removeUntil) {
+      navigatorGlobalKey.currentState.pushAndRemoveUntil(router, (route) => false);
+    } else {
+      navigatorGlobalKey.currentState.push(router);
+    }
   }
 
   static close(BuildContext context) => Navigator.pop(context);
