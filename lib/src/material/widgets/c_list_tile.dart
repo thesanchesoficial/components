@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
@@ -12,8 +13,10 @@ class OwListTile extends StatelessWidget {
   final bool selected;
   final Function onTap;
   final Function onLongPress;
+  final Function onChanged;
   final bool enabled;
   final bool autofocus;
+  final bool value;
   final FocusNode focusNode;
   final MouseCursor mouseCursor;
 
@@ -26,14 +29,36 @@ class OwListTile extends StatelessWidget {
     this.padding,
     this.margin,
     this.shape,
-    this.selected,
+    this.selected = false,
     this.onTap,
     this.onLongPress,
-    this.enabled,
-    this.autofocus,
+    this.enabled = false,
+    this.autofocus = false,
     this.focusNode,
     this.mouseCursor,
-  })  :  super(key: key);
+  }) : onChanged = null, value = false, super(key: key);
+
+  OwListTile.check({
+    Key key,
+    this.title,
+    this.subtitle,
+    this.leading,
+    this.padding,
+    this.margin,
+    this.shape,
+    this.selected = false,
+    this.onTap,
+    this.onLongPress,
+    this.enabled = false,
+    @required this.value,
+    @required this.onChanged,
+    this.autofocus = false,
+    this.focusNode,
+    this.mouseCursor,
+  }) : trailing = CupertinoSwitch(
+    value: value, 
+    onChanged: onChanged,
+  ), super(key: key);
 
   @override
   Widget build(BuildContext context) {
