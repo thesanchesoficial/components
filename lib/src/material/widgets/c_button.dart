@@ -6,6 +6,7 @@ class OwButton extends StatelessWidget {
   final bool autoFocus;
   final bool enable;
   final bool outline;
+  final bool hideRadius;
   final bool mainButton;
   final bool enableFeedback;
   final Function onPressed;
@@ -27,6 +28,7 @@ class OwButton extends StatelessWidget {
     Key key,
     this.labelText,
     this.autoFocus = false,
+    this.hideRadius = false,
     this.enable = true,
     this.enableFeedback = false,
     this.onPressed,
@@ -51,6 +53,7 @@ class OwButton extends StatelessWidget {
     Key key,
     this.labelText,
     this.autoFocus = false,
+    this.hideRadius = false,
     this.enable = true,
     this.enableFeedback = false,
     this.onPressed,
@@ -75,6 +78,7 @@ class OwButton extends StatelessWidget {
     Key key,
     this.labelText,
     this.autoFocus = false,
+    this.hideRadius = false,
     this.enable = true,
     this.enableFeedback = false,
     this.onPressed,
@@ -101,7 +105,7 @@ class OwButton extends StatelessWidget {
       height: height,
       margin: margin,
       decoration: BoxDecoration(
-          borderRadius: BorderRadius.all(Radius.circular(radius)),
+          borderRadius: BorderRadius.all(Radius.circular(hideRadius ? 0 : radius)),
           color: Colors.transparent),
       child: ElevatedButton(
         autofocus: autoFocus,

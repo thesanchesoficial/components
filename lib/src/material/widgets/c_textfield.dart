@@ -9,6 +9,7 @@ class OwTextField extends StatelessWidget {
   final String errorText;
   final String helperText;
   final bool readOnly;
+  final String obscuringCharacter;
   final Icon icon;
   final TextInputType keyboardType;
   final TextInputAction textInputAction;
@@ -16,7 +17,7 @@ class OwTextField extends StatelessWidget {
   final FormFieldValidator<String> validatorHandler;
   final ValueChanged<String> onFieldSubmitted;
   final FocusNode focusNode;
-  final bool textIsObscure;
+  final bool obscureText;
   final ValueChanged<String> onChanged;
   final Function onTap;
   final FormFieldSetter<String> onSaved;
@@ -44,11 +45,12 @@ class OwTextField extends StatelessWidget {
     this.hintText,
     this.helperText,
     this.errorText,
+    this.obscuringCharacter,
     this.keyboardType,
     this.controller,
     this.validatorHandler,
     this.textInputAction = TextInputAction.next,
-    this.textIsObscure = false,
+    this.obscureText = false,
     this.readOnly = false,
     this.onFieldSubmitted,
     this.focusNode,
@@ -82,10 +84,11 @@ class OwTextField extends StatelessWidget {
     this.helperText,
     this.errorText,
     this.keyboardType,
+    this.obscuringCharacter,
     this.controller,
     this.validatorHandler,
     this.textInputAction = TextInputAction.next,
-    this.textIsObscure = false,
+    this.obscureText = false,
     this.readOnly = false,
     this.onFieldSubmitted,
     this.focusNode,
@@ -118,12 +121,13 @@ class OwTextField extends StatelessWidget {
     this.hintText,
     this.helperText,
     this.errorText,
+    this.obscuringCharacter,
     this.readOnly = false,
     this.keyboardType,
     this.controller,
     this.validatorHandler,
     this.textInputAction = TextInputAction.next,
-    this.textIsObscure = false,
+    this.obscureText = false,
     this.onFieldSubmitted,
     this.focusNode,
     @required this.icon,
@@ -242,6 +246,7 @@ class OwTextField extends StatelessWidget {
           maxLines: maxLines,
           maxLengthEnforced: maxLengthEnforced,
           enabled: enabled ?? true,
+          obscuringCharacter: obscuringCharacter,
           enableInteractiveSelection: enableInteractive ?? true,
           decoration: InputDecoration(
             filled: true,
@@ -301,7 +306,7 @@ class OwTextField extends StatelessWidget {
           onFieldSubmitted: onFieldSubmitted,
           focusNode: focusNode,
           keyboardType: keyboardType,
-          obscureText: textIsObscure,
+          obscureText: obscureText,
           autofocus: autofocus,
           textCapitalization:
               textCapitalization ?? TextCapitalization.sentences,

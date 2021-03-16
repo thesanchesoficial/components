@@ -12,8 +12,10 @@ class OwAppBar extends StatelessWidget implements PreferredSizeWidget {
   final double elevation;
   final List<Widget> actions;
   final Color color;
+  final Color foregroundColor;
   final PreferredSizeWidget bottom;
   final bool centerTitle;
+  final bool showBackAutomatically;
 
   const OwAppBar({
     Key key,
@@ -24,7 +26,9 @@ class OwAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.actions,
     this.bottom,
     this.color,
+    this.foregroundColor,
     this.centerTitle = true,
+    this.showBackAutomatically = true,
     this.elevation = 0,
   }) : super(key: key);
 
@@ -33,6 +37,7 @@ class OwAppBar extends StatelessWidget implements PreferredSizeWidget {
     return AppBar(
       leading: leading,
       centerTitle: centerTitle,
+      automaticallyImplyLeading: showBackAutomatically,
       title: child ??
         title == null ? null : Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -55,6 +60,7 @@ class OwAppBar extends StatelessWidget implements PreferredSizeWidget {
       actions: actions,
       backgroundColor: color ?? AppTheme.verdeVenver,
       bottom: bottom,
+      foregroundColor: foregroundColor ?? Colors.white,
     );
   }
 }

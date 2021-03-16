@@ -20,8 +20,8 @@ class _NenhumItemState extends State<NenhumItem> {
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisSize: MainAxisSize.max,
         children: <Widget>[
-          SvgPicture.asset(widget.imagem, height: 250),
-          SizedBox(height: 20),
+          widget.imagem == null ? SizedBox() : SvgPicture.asset(widget.imagem, height: 250),
+          widget.imagem == null ? SizedBox() : SizedBox(height: 20),
           Text(
             widget.titulo,
             style: TextStyle(fontWeight: FontWeight.w800, fontSize: 20),
