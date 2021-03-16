@@ -46,12 +46,12 @@ class OwAppBar extends StatelessWidget implements PreferredSizeWidget {
             Text(
               title.toString().toUpperCase(),
               style:
-                  const TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
+                  const TextStyle(fontSize: 15, fontWeight: FontWeight.w500, color: Colors.white),
             ),
             subtitle != null
               ? Text(
                   subtitle.toString().toUpperCase(),
-                  style: const TextStyle(fontSize: 13),
+                  style: TextStyle(fontSize: 13, color: Colors.grey[200]),
                 )
               : const SizedBox(),
           ],

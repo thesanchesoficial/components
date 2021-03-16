@@ -246,7 +246,6 @@ class OwTextField extends StatelessWidget {
           maxLines: maxLines,
           maxLengthEnforced: maxLengthEnforced,
           enabled: enabled ?? true,
-          obscuringCharacter: obscuringCharacter,
           enableInteractiveSelection: enableInteractive ?? true,
           decoration: InputDecoration(
             filled: true,

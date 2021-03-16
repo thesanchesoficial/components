@@ -5,7 +5,7 @@ class NenhumItem extends StatefulWidget {
   final String titulo;
   final String subtitulo;
   final String imagem;
-  NenhumItem({@required this.titulo, @required this.subtitulo, this.imagem = 'assets/images/lojas.svg'});
+  NenhumItem({@required this.titulo, @required this.subtitulo, this.imagem});
 
   @override
   _NenhumItemState createState() => _NenhumItemState();
