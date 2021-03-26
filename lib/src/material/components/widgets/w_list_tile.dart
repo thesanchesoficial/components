@@ -62,7 +62,7 @@ class OwListTile extends StatelessWidget {
     this.mouseCursor,
   }) : trailing = CupertinoSwitch(
     value: value, 
-    onChanged: onChanged
+    onChanged: onChanged,
   ), icon = null, super(key: key);
 
   OwListTile.icon({
