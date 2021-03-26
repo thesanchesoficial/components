@@ -1,12 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 
 class OwListTile extends StatelessWidget {
   final Widget title;
   final Widget subtitle;
   final Widget trailing;
   final Widget leading;
+  final Widget icon;
   final EdgeInsetsGeometry padding;
   final EdgeInsets margin;
   final ShapeBorder shape;
@@ -17,6 +19,7 @@ class OwListTile extends StatelessWidget {
   final bool enabled;
   final bool autofocus;
   final bool value;
+  final bool showArrow;
   final FocusNode focusNode;
   final MouseCursor mouseCursor;
 
@@ -30,13 +33,14 @@ class OwListTile extends StatelessWidget {
     this.margin,
     this.shape,
     this.selected = false,
+    this.showArrow = false,
     this.onTap,
     this.onLongPress,
     this.enabled = false,
     this.autofocus = false,
     this.focusNode,
     this.mouseCursor,
-  }) : onChanged = null, value = false, super(key: key);
+  }) : onChanged = null, value = false, icon = null, super(key: key);
 
   OwListTile.check({
     Key key,
@@ -47,6 +51,7 @@ class OwListTile extends StatelessWidget {
     this.margin,
     this.shape,
     this.selected = false,
+    this.showArrow = false,
     this.onTap,
     this.onLongPress,
     this.enabled = false,
@@ -57,8 +62,36 @@ class OwListTile extends StatelessWidget {
     this.mouseCursor,
   }) : trailing = CupertinoSwitch(
     value: value, 
-    onChanged: onChanged,
-  ), super(key: key);
+    onChanged: onChanged
+  ), icon = null, super(key: key);
+
+  OwListTile.icon({
+    Key key,
+    this.title,
+    this.subtitle,
+    this.padding,
+    @required this.icon,
+    this.margin,
+    this.shape,
+    this.selected = false,
+    this.showArrow = false,
+    this.onTap,
+    this.onLongPress,
+    this.enabled = false,
+    this.autofocus = false,
+    this.focusNode,
+    this.trailing,
+    this.mouseCursor,
+  }) : 
+    onChanged = null, 
+    value = null, 
+    leading = Container(
+      width: 40,
+      child: Center(
+        child: icon,
+      ),
+    ),
+    super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -75,7 +108,7 @@ class OwListTile extends StatelessWidget {
         onTap: onTap,
         title: title,
         subtitle: subtitle,
-        trailing: trailing,
+        trailing: trailing ?? showArrow ? Icon(EvaIcons.chevronRightOutline) : null,
         leading: leading,
         shape: shape,
         focusNode: focusNode,

@@ -6,6 +6,7 @@ class OwButton extends StatelessWidget {
   final bool autoFocus;
   final bool enable;
   final bool outline;
+  final bool secondary;
   final bool hideRadius;
   final bool mainButton;
   final bool enableFeedback;
@@ -46,6 +47,7 @@ class OwButton extends StatelessWidget {
     this.trailing,
   })  : outline = false,
         mainButton = true,
+        secondary = false,
         color = AppTheme.verdeVenver,
         super(key: key);
 
@@ -72,6 +74,7 @@ class OwButton extends StatelessWidget {
     this.trailing,
   })  : outline = false,
         mainButton = false,
+        secondary = true,
         super(key: key);
 
   const OwButton.outline({
@@ -97,6 +100,7 @@ class OwButton extends StatelessWidget {
     this.trailing,
   })  : outline = true,
         mainButton = false,
+        secondary = false,
         super(key: key);
 
   @override
@@ -130,7 +134,9 @@ class OwButton extends StatelessWidget {
           backgroundColor: MaterialStateProperty.all(
             outline 
               ? Colors.transparent 
-              : color ?? AppTheme.verdeVenver,
+              : secondary
+                ? Theme.of(context).cardColor.withOpacity(.3)
+                : color ?? AppTheme.verdeVenver,
           ),
           elevation: MaterialStateProperty.all(elevation),
           minimumSize: MaterialStateProperty.all(minimumSize),
