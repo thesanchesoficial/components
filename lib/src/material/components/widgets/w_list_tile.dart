@@ -108,7 +108,7 @@ class OwListTile extends StatelessWidget {
         onTap: onTap,
         title: title,
         subtitle: subtitle,
-        trailing: trailing != null ? trailing : showArrow ? Icon(EvaIcons.chevronRightOutline) : null,
+        trailing: trailing != null ? trailing : showArrow ? Icon(Icons.keyboard_arrow_right_outlined) : null,
         leading: leading,
         shape: shape,
         focusNode: focusNode,

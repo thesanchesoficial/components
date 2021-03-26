@@ -135,7 +135,7 @@ class OwButton extends StatelessWidget {
             outline 
               ? Colors.transparent 
               : secondary
-                ? Theme.of(context).cardColor.withOpacity(.3)
+                ? Theme.of(context).cardColor.withOpacity(.6)
                 : color ?? AppTheme.verdeVenver,
           ),
           elevation: MaterialStateProperty.all(elevation),
