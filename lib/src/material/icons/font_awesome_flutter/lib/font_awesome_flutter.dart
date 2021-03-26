@@ -1,4 +1,4 @@
-library font_awesome_flutter;
+library components;
 
 import 'package:components_venver/src/material/icons/font_awesome_flutter/lib/src/icon_data.dart';
 import 'package:flutter/widgets.dart';

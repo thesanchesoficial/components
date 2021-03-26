@@ -1,4 +1,4 @@
-library font_awesome_flutter;
+library components;
 
 import 'package:flutter/widgets.dart';
 
