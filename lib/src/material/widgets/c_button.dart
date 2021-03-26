@@ -105,32 +105,44 @@ class OwButton extends StatelessWidget {
       height: height,
       margin: margin,
       decoration: BoxDecoration(
-          borderRadius: BorderRadius.all(Radius.circular(hideRadius ? 0 : radius)),
-          color: Colors.transparent),
+        borderRadius: BorderRadius.all(Radius.circular(
+          hideRadius ? 0 : radius,
+        )),
+        color: Colors.transparent,
+      ),
       child: ElevatedButton(
         autofocus: autoFocus,
         child: labelText != null && labelText.isNotEmpty
-            ? Text(labelText.toUpperCase(),
-                style: TextStyle(fontWeight: FontWeight.bold))
-            : child,
-        style: ButtonStyle(
-            foregroundColor: mainButton
-                ? MaterialStateProperty.all(Colors.white)
-                : MaterialStateProperty.all(
-                    foregroundColor ?? color ?? Theme.of(context).accentColor),
-            padding: MaterialStateProperty.all(padding),
-            backgroundColor: MaterialStateProperty.all(
-                outline ? Colors.transparent : color ?? AppTheme.verdeVenver),
-            elevation: MaterialStateProperty.all(elevation),
-            minimumSize: MaterialStateProperty.all(minimumSize),
-            textStyle: MaterialStateProperty.all(textStyle),
-            shape: MaterialStateProperty.all(
-              RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(radius),
-                side: BorderSide(color: color ?? AppTheme.verdeVenver),
-              ),
+          ? Text(
+            labelText.toUpperCase(),
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
             ),
-            enableFeedback: enableFeedback),
+          )
+          : child,
+        style: ButtonStyle(
+          foregroundColor: mainButton
+            ? MaterialStateProperty.all(Colors.white)
+            : MaterialStateProperty.all(
+              foregroundColor ?? color ?? Theme.of(context).accentColor,
+            ),
+          padding: MaterialStateProperty.all(padding),
+          backgroundColor: MaterialStateProperty.all(
+            outline 
+              ? Colors.transparent 
+              : color ?? AppTheme.verdeVenver,
+          ),
+          elevation: MaterialStateProperty.all(elevation),
+          minimumSize: MaterialStateProperty.all(minimumSize),
+          textStyle: MaterialStateProperty.all(textStyle),
+          shape: MaterialStateProperty.all(
+            RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(radius),
+              side: BorderSide(color: color ?? AppTheme.verdeVenver),
+            ),
+          ),
+          enableFeedback: enableFeedback,
+        ),
         onPressed: enable ? onPressed : null,
         onLongPress: enable ? onLongPressed : null,
       ),

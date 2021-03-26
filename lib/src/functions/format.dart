@@ -7,251 +7,394 @@ import '../validators/validate.dart';
 class OwFormat {
   const OwFormat._();
 
+  // ! Separete to a initializer
   static const int MAX_CHARACTERS = 255;
 
-  /// Apenas trim
+  static const String invalidReturnName = "Sem nome";
+  static const String invalidReturnUrl = "Sem url";
+  static const String invalidReturnDescription = "Sem descrição";
+  static const String invalidReturnEmail = "Sem email";
+  static const String invalidReturnPhoneNumber = "Sem número de telefone";
+  static const String invalidReturnCpfCnpj = "Sem CPF / CNPJ";
+  static const String invalidReturnCpf = "Sem CPF";
+  static const String invalidReturnCnpj = "Sem CNPJ";
+  
+  
+
+  static const List<String> phoneNumberMasks = [
+    "0000 0000",
+    "00000 0000", 
+    "(00) 0000 0000",
+    "(00) 00000 0000",
+    "+00 (00) 0000 0000",
+    "+00 (00) 00000 0000",
+  ];
+
+
+
+
+
+  static const String cpfMask = "000.000.000-00";
+  static const String cnpjMask = "00.000.000/0000-00";
+  
+
+
+  /// Only trim
   ///
-  /// Se não for válido, e [retornoValor] for false, retorna [retornoInvalido]
-  static String apenasTrim(String valor, String retornoInvalido,
-      {bool retornoValor = false}) {
-    if (OwValidate.texto(valor)) {
-      return valor.toString().trim();
+  /// If it's not valid, the return can be the same [value] if [returnValue] is true, or [invalidReturn] if [returnValue] is false
+  static String trim(
+    String value, 
+    String invalidReturn,
+    {bool returnValue = false,
+  }) {
+    if (OwValidate.text(value)) {
+      return value.toString().trim();
     } else {
-      if (retornoValor)
-        return valor.toString();
+      if (returnValue)
+        return value.toString();
       else
-        return retornoInvalido;
+        return invalidReturn;
     }
   }
 
-  /// Apenas trim
+  /// Only trim
   ///
-  /// Se não for válido, e [retornoValor] for false, retorna "Sem nome"
-  static String nome(String valor, {bool retornoValor = false}) {
-    return apenasTrim(valor, "Sem nome", retornoValor: retornoValor);
+  /// If it's not valid, the return can be the same [value] if [returnValue] is true, or [invalidReturnName] if [returnValue] is false
+  static String name(
+    String value, 
+    {bool returnValue = false,
+  }) {
+    return trim(
+      value, 
+      invalidReturnName, 
+      returnValue: returnValue,
+    );
   }
 
-  /// Apenas trim
+  /// Only trim
   ///
-  /// Se não for válido, e [retornoValor] for false, retorna "Sem url"
-  static String url(String valor, {bool retornoValor = false}) {
-    return apenasTrim(valor, "Sem url", retornoValor: retornoValor);
+  /// If it's not valid, the return can be the same [value] if [returnValue] is true, or [invalidReturnUrl] if [returnValue] is false
+  static String url(
+    String value, 
+    {bool returnValue = false,
+  }) {
+    return trim(
+      value, 
+      invalidReturnUrl, 
+      returnValue: returnValue,
+    );
   }
 
-  /// Apenas trim
+  /// Only trim
   ///
-  /// Se não for válido, e [retornoValor] for false, retorna "Sem descrição"
-  static String descricao(String valor, {bool retornoValor = false}) {
-    return apenasTrim(valor, "Sem descrição", retornoValor: retornoValor);
+  /// If it's not valid, the return can be the same [value] if [returnValue] is true, or [invalidReturnDescription] if [returnValue] is false
+  static String description(
+    String value, 
+    {bool returnValue = false,
+  }) {
+    return trim(
+      value, 
+      invalidReturnDescription, 
+      returnValue: returnValue,
+    );
   }
 
-  /// Apenas trim
+  /// Only trim
   ///
-  /// Se não for válido, e [retornoValor] for false, retorna "Sem email"
-  static String email(String valor, {bool retornoValor = false}) {
-    return apenasTrim(valor, "Sem email", retornoValor: retornoValor);
+  /// If it's not valid, the return can be the same [value] if [returnValue] is true, or [invalidReturnEmail] if [returnValue] is false
+  static String email(
+    String value, 
+    {bool returnValue = false,
+  }) {
+    return trim(
+      value, 
+      invalidReturnEmail, 
+      returnValue: returnValue,
+    );
   }
 
-  /// Compara o tamanho e usa as seguintes máscaras: "0000 0000"; "00000 0000"; "(00) 0000 0000"; "(00) 00000 0000"; "+00 (00) 0000 0000"; "+00 (00) 00000 0000"
+  /// Verify the quantity of numbers (ignoring others characters) and insert into the mask according to [phoneNumberMasks]
   ///
-  /// Se não for válido, e [retornoValor] for false, retorna "Sem telefone"
-  static String numeroTelefone(String valor, {bool retornoValor = false}) {
-    String result = valor.toString().replaceAll(RegExp(r'[^0-9]'), '');
-    String mask;
-    if (result.length == 8)
-      mask = "0000 0000";
-    else if (result.length == 9)
-      mask = "00000 0000";
-    else if (result.length == 10)
-      mask = "(00) 0000 0000";
-    else if (result.length == 11)
-      mask = "(00) 00000 0000";
-    else if (result.length == 12)
-      mask = "+00 (00) 0000 0000";
-    else if (result.length == 13)
-      mask = "+00 (00) 00000 0000";
-    else {
-      if (retornoValor)
-        return valor.toString();
-      else
-        return "Sem telefone";
-    }
-    final text = MaskedTextController(mask: mask, text: result);
-    return text.text;
-  }
-
-  /// Usa a máscara "000.000.000-00" (cpf) ou "00.000.000/0000-00" (cnpj)
-  ///
-  /// Se não for válido, e [retornoValor] for false, retorna "Sem CPF/CNPJ"
-  static String cpfCnpj(String valor, {bool retornoValor = false}) {
-    String result = valor.toString().replaceAll(RegExp(r'[^0-9]'), '');
-    String mask;
-    if (result.length == 11)
-      mask = "000.000.000-00";
-    else if (result.length == 14)
-      mask = "00.000.000/0000-00";
-    else {
-      if (retornoValor)
-        return valor.toString();
-      else
-        return "Sem CPF/CNPJ";
-    }
-    final text = MaskedTextController(mask: mask, text: result);
-    return text.text;
-  }
-
-  /// Usa a máscara "000.000.000-00"
-  ///
-  /// Se não for válido, e [retornoValor] for false, retorna "Sem CPF"
-  static String cpf(String valor, {bool retornoValor = false}) {
-    String result = valor.toString().replaceAll(RegExp(r'[^0-9]'), '');
-    String mask;
-    if (result.length == 11)
-      mask = "000.000.000-00";
-    else {
-      if (retornoValor)
-        return valor.toString();
-      else
-        return "Sem CPF";
-    }
-    final text = MaskedTextController(mask: mask, text: result);
-    return text.text;
-  }
-
-  /// Usa a máscara "00.000.000/0000-00"
-  ///
-  /// Se não for válido, e [retornoValor] for false, retorna "Sem CNPJ"
-  static String cnpj(String valor, {bool retornoValor = false}) {
-    String result = valor.toString().replaceAll(RegExp(r'[^0-9]'), '');
-    String mask;
-    if (result.length == 11)
-      mask = "00.000.000/0000-00";
-    else {
-      if (retornoValor)
-        return valor.toString();
-      else
-        return "Sem CNPJ";
-    }
-    final text = MaskedTextController(mask: mask, text: result);
-    return text.text;
-  }
-
-  /// UpperCase apenas na primeira letra e o resto lowerCase
-  static String capsPrimeiro(String valor) {
-    String result = valor;
-    if (valor != null && valor.length > 1) {
-      result =
-          "${valor.substring(0, 1).toUpperCase()}${valor.substring(1).toLowerCase()}";
-    }
-    return result;
-  }
-
-  /// UpperCase apenas na primeira letra, o resto continua o mesmo
-  static String upperPrimeiroRestoMesmo(String valor) {
-    String result = valor;
-    if (valor != null && valor.length > 1) {
-      result = "${valor.substring(0, 1).toUpperCase()}${valor.substring(1)}";
-    }
-    return result;
-  }
-
-  /// Apenas upperCase
-  static String upperCase(String valor) {
-    return valor.toUpperCase();
-  }
-
-  /// Apenas lowerCase
-  static String lowerCase(String valor) {
-    return valor.toLowerCase();
-  }
-
-  /// UpperCase para primeira letra de cada palavra
-  static String upperPrimeiraLetra(String value) {
-    String result = value;
-    if (value != null && value.length > 1) {
-      List nomes = value.split(" ");
-      result = "";
-      nomes.forEach((element) {
-        result +=
-            "${element.substring(0, 1).toUpperCase()}${element.substring(1).toLowerCase()} ";
+  /// If it's not valid, the return can be the same [value] if [returnValue] is true, or [invalidReturnPhoneNumber] if [returnValue] is false
+  static String phoneNumber(
+    String value, 
+    {bool returnValue = false,
+  }) {
+    String valueNumbers = value.toString().replaceAll(
+      RegExp(r'[^0-9]'), 
+      '',
+    );
+    if (valueNumbers.length != 0) {
+      phoneNumberMasks?.forEach((element) {
+        String elementNumbers = element.toString().replaceAll(
+          RegExp(r'[^0-9]'), 
+          '',
+        );
+        if (elementNumbers.length == valueNumbers.length) {
+          final result = MaskedTextController(
+            mask: element, 
+            text: valueNumbers,
+          );
+          return result.text;
+        }
       });
     }
-    return result.trim();
+    if (returnValue)
+      return value.toString();
+    else
+      return invalidReturnPhoneNumber;
   }
 
-  /// Converte para double, pode usar separador de milhar (deve ser diferente do separador decimal)
+  /// Use the mask "000.000.000-00" (cpf) or "00.000.000/0000-00" (cnpj)
+  /// 
+  /// Verify the quantity of numbers (ignoring others characters) and insert into according to the mask
   ///
-  /// Use "," ou "." como separador decimal
+  /// If it's not valid, the return can be the same [value] if [returnValue] is true, or [invalidReturnCpfCnpj] if [returnValue] is false
+  static String cpfCnpj(
+    String value, 
+    {bool returnValue = false,
+  }) {
+    String valueNumbers = value.toString().replaceAll(
+      RegExp(r'[^0-9]'), 
+      '',
+    );
+    String mask;
+    if (valueNumbers.length == 11) {
+      mask = cpfMask;
+    } else if (valueNumbers.length == 14) {
+      mask = cnpjMask;
+    } else {
+      if (returnValue)
+        return value.toString();
+      else
+        return invalidReturnCpfCnpj;
+    }
+    final result = MaskedTextController(
+      mask: mask, 
+      text: valueNumbers,
+    );
+    return result.text;
+  }
+
+  /// Use the mask "000.000.000-00"
   ///
-  /// Remove todos os caracteres, exceto números, pontos (.) e vírgulas (,)
+  /// Verify the quantity of numbers (ignoring others characters) and insert into according to the mask
   ///
-  /// Se não puder converter, retorna 0
-  static double deRealParaDouble(String valor) {
-    double result = double.tryParse(valor.toString());
-    String value = valor.toString().replaceAll(RegExp(r'[^0-9,.]'), '');
-    if (value.toString() == null) return 0.0;
-    String decimalSeparator;
-    for (int i = value.length - 1; i >= 0; i--) {
-      if (decimalSeparator == null && (value[i] == "." || value[i] == ",")) {
-        decimalSeparator = value[i];
-        break;
+  /// If it's not valid, the return can be the same [value] if [returnValue] is true, or [invalidReturnCpf] if [returnValue] is false
+  static String cpf(
+    String value, 
+    {bool returnValue = false,
+  }) {
+    String valueNumbers = value.toString().replaceAll(
+      RegExp(r'[^0-9]'), 
+      '',
+    );
+    if (valueNumbers.length == 11) {
+      final result = MaskedTextController(
+        mask: cpfMask, 
+        text: valueNumbers,
+      );
+      return result.text;
+    } else {
+      if (returnValue)
+        return value.toString();
+      else
+        return invalidReturnCpf;
+    }
+  }
+
+  /// Use the mask "00.000.000/0000-00"
+  ///
+  /// Verify the quantity of numbers (ignoring others characters) and insert into according to the mask
+  ///
+  /// If it's not valid, the return can be the same [value] if [returnValue] is true, or [invalidReturnCnpj] if [returnValue] is false
+  static String cnpj(
+    String value, 
+    {bool returnValue = false,
+  }) {
+    String valueNumbers = value.toString().replaceAll(
+      RegExp(r'[^0-9]'), 
+      '',
+    );
+    if (valueNumbers.length == 11) {
+      final result = MaskedTextController(
+        mask: cnpjMask, 
+        text: valueNumbers,
+      );
+      return result.text;
+    } else {
+      if (returnValue)
+        return value.toString();
+      else
+        return invalidReturnCnpj;
+    }
+  }
+
+  /// Upper case on the first letter, and the rest on lower case
+  static String upperFirst(String value) {
+    if (value != null) {
+      if (value.length > 1) {
+        return "${value.substring(0, 1).toUpperCase()}${value.substring(1).toLowerCase()}";
+      } else {
+        return "${value.toUpperCase()}";
+      }
+    } else return value ?? value.toString();
+  }
+
+  // ! Ver oq vai retornar se for null, se vai retornar null ou "null"
+  /// Upper case on the first letter, and the rest keeps the same
+  static String upperFirstKeepRest(String value) {
+    if (value != null) {
+      if (value.length > 1) {
+        return "${value.substring(0, 1).toUpperCase()}${value.substring(1)}";
+      } else {
+        return "${value.toUpperCase()}";
+      }
+    } else return value ?? value.toString();
+  }
+
+  /// Only upper case
+  static String upperCase(String value) {
+    return value?.toUpperCase() ?? value.toString();
+  }
+
+  /// Only lower case
+  static String lowerCase(String value) {
+    return value?.toLowerCase() ?? value.toString();
+  }
+
+  /// Upper case on the first letter of each word
+  static String upperFirstEachWord(String value) {
+    if (value != null) {
+      List<String> words = value?.split(" ");
+      String result = "";
+      words?.forEach((element) {
+        result += "${upperFirst(value)}";
+        if (element != words[words.length - 1])
+          result += " ";
+      });
+      return result;
+    } else return value;
+  }
+
+
+
+  /// TODO: Make comments
+  /// Tastado: 
+  /// ["R\$ 1.111,01", "1.232", "100", "1.000,7", "15", "1,8", "100.022", "R\$ 1.000,70", "R\$ 2.100.300,70", "2,100,300.70", "2,100,300,700", "2.100.300.700"]
+  static double fromCurrencyToDouble(String value) {
+    String decimalSeparator = "";
+    RegExp regex;
+    String numbers;
+
+    if (value.length > 2) {
+      decimalSeparator = value.substring(
+        value.length - 3,
+      ).replaceAll(
+        RegExp(r'[^,.]'), 
+        '',
+      );
+    }
+    regex = RegExp(r'[^0-9.,]');
+    numbers = value.replaceAll(regex, '');
+
+    if (decimalSeparator == ".") {
+      numbers = numbers.replaceAll(",", "");
+    } else if (decimalSeparator == ",") {
+      numbers = numbers.replaceAll(".", "");
+      numbers = numbers.replaceAll(",", ".");
+    } 
+    
+    if (decimalSeparator == "") {
+      regex = RegExp(r'[^0-9]');
+      numbers = value.replaceAll(regex, '');
+    } else {
+      // Deixar apenas o último .
+      for (int i = numbers.length; i > 0; i--) {
+
       }
     }
-    if (decimalSeparator == ",") {
-      value = value.replaceAll(".", "").replaceAll(",", ".");
-    } else {
-      value = value.replaceAll(",", "");
-    }
-    result = double.tryParse(value.toString());
-
+    double result = double.tryParse(numbers); // double? result = double.tryParse(numbers); // Nullsafety
     return result ?? 0.0;
+  }
+
+  /// Remove from [value] the characters passed on [removeCharacters]
+  static String removerCharacters(
+    String value, 
+    String removeCharacters,
+    {bool trim = true,
+  }) {
+    if (trim) value = value.trim();
+
+    if (removeCharacters != null)
+      for (int i = 0; i < removeCharacters.length; i++)
+        value = value.replaceAll(removeCharacters[i], "");
+
+    return value;
   }
 
   /// Remove acentos e pontuações do [termo]
   ///
   /// Para não remover pontuação, passe [pontuacaoRemovida] como *null* ou uma *String* vazia ("")
-  static String removerAcentosEPontuacao(String termo,
-      {String pontuacaoRemovida = ",.!?;:()[]{}}"}) {
-    termo = termo.trim().toLowerCase();
-    List a = ["á", "à", "ã", "â", "ä"];
-    for (var letra in a) termo = termo.replaceAll(letra, "a");
+  /// TODO: Make comments
+  static String removerAccentAndPonctuation(
+    String value,
+    {String removedPonctuation = ",.!?;:()[]{}}",
+    bool removeDoubleSpaces = true,
+    bool useTrim = true,
+  }) {
 
-    List e = ["é", "è", "ê", "ë"];
-    for (var letra in e) termo = termo.replaceAll(letra, "e");
+    value = value.trim().toLowerCase(); // Deixar lowercase mesmo?
+    List<Map<String, String>> values = [
+      {
+        "to": "a",
+        "from": "áàãâä",
+      },
+      {
+        "to": "e",
+        "from": "éèêë",
+      },
+      {
+        "to": "i",
+        "from": "íìîï",
+      },
+      {
+        "to": "o",
+        "from": "óòôõö",
+      },
+      {
+        "to": "u",
+        "from": "úùûü",
+      },
+      {
+        "to": "y",
+        "from": "ýÿ",
+      },
+      {
+        "to": "c",
+        "from": "ç",
+      },
+      {
+        "to": "n",
+        "from": "ñ",
+      },
+    ];
 
-    List i = ["í", "ì", "î", "ï"];
-    for (var letra in i) termo = termo.replaceAll(letra, "i");
-
-    List o = ["ó", "ò", "ô", "õ", "ö"];
-    for (var letra in o) termo = termo.replaceAll(letra, "o");
-
-    List u = ["ú", "ù", "û", "ü"];
-    for (var letra in u) termo = termo.replaceAll(letra, "u");
-
-    List y = ["ý", "ÿ"];
-    for (var letra in y) termo = termo.replaceAll(letra, "y");
-
-    termo = termo.replaceAll("ç", "c");
-    termo = termo.replaceAll("ñ", "n");
-
-    if (pontuacaoRemovida != null && pontuacaoRemovida != "")
-      for (int i = 0; i < pontuacaoRemovida.length; i++)
-        termo = termo.replaceAll(pontuacaoRemovida[i], " ");
-
-    return termo;
-  }
-
-  /// Remove de [valor] os caracteres passados em [caracteres]
-  static String removerCaracteres(dynamic valor, String caracteres,
-      {bool trim = true}) {
-    String msg = valor.toString();
-    if (trim) msg = msg.trim();
-
-    for (int i = 0; i < caracteres.length; i++) {
-      msg = msg.replaceAll(caracteres[i], "");
+    for (Map<String, String> map in values) {
+      for (int i = 0; i < map["from"].length; i++) {
+        value = value.replaceAll(map["from"][i], map["to"]);
+      }
     }
+    
+    if (removedPonctuation != null && removedPonctuation != "")
+      for (int i = 0; i < removedPonctuation.length; i++)
+        value = value.replaceAll(removedPonctuation[i], " ");
 
-    return msg;
+    if (removeDoubleSpaces)
+      while (value.contains("  "))
+        value.replaceAll("  ", " ");
+
+    return value;
   }
 
   /// Transforma um [valor] para Real (BR)
@@ -268,12 +411,12 @@ class OwFormat {
   ///
   /// [ocultarCentavos] (*bool*) para ocultar os centavos caso seja 00
   ///
-  /// [retornoGratis] (*bool*) para retornar "Grátis" se for 0 (se falso, retorna "R$ 0,00")
+  /// [itsFree] (*bool*) para retornar "Grátis" se for 0 (se falso, retorna "R$ 0,00")
   ///
   /// Valores aceitáveis: *1.2312* (R$ 1,23), *"100"* (R$ 100,00), *"1.000,7"* (R$ 1.000,70), *15* (R$ 15,00), *"1,8"* (R$ 1,80)
-  static String paraReal(
-    dynamic valor, {
-    bool cifraoEsquerda = true,
+  static String toRealCurrency( // TODO: Melhorar função
+    dynamic valor, 
+    {bool cifraoEsquerda = true,
     String separadorDecimal = ",",
     String separadorMilhar = ".",
     bool ocultarCentavos = false,

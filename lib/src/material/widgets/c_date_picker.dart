@@ -13,6 +13,8 @@ class OwDatePicker extends StatelessWidget {
   final bool readOnly;
   final Icon icon;
   final VoidCallback onPressedSuffix;
+  
+  final Color errorColor = Colors.red;
 
   const OwDatePicker({
     Key key,
@@ -34,8 +36,9 @@ class OwDatePicker extends StatelessWidget {
     return Container(
       margin: margin,
       decoration: BoxDecoration(
-          color: Theme.of(context).cardColor,
-          borderRadius: BorderRadius.all(Radius.circular(10))),
+        color: Theme.of(context).cardColor,
+        borderRadius: const BorderRadius.all(Radius.circular(10)),
+      ),
       child: InkWell(
         onTap: onPressed,
         child: InputDecorator(
@@ -46,41 +49,54 @@ class OwDatePicker extends StatelessWidget {
             hintText: hintText,
             errorText: errorText,
             border: OutlineInputBorder(
-                borderSide: BorderSide(
-                    color: Theme.of(context).secondaryHeaderColor, width: 1),
-                borderRadius: BorderRadius.all(Radius.circular(10))),
-            focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.all(Radius.circular(10)),
-                borderSide:
-                    BorderSide(color: Theme.of(context).secondaryHeaderColor)),
-            enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                borderSide:
-                    BorderSide(color: Theme.of(context).secondaryHeaderColor)),
-            contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 18),
-            labelStyle: TextStyle(
-                color: Theme.of(context).primaryTextTheme.bodyText1.color),
-            errorBorder: UnderlineInputBorder(
-              borderRadius: BorderRadius.all(Radius.circular(10)),
-              borderSide: BorderSide(color: Colors.red),
+              borderSide: BorderSide(
+                color: Theme.of(context).secondaryHeaderColor, 
+                width: 1,
+              ),
+              borderRadius: const BorderRadius.all(Radius.circular(10)),
             ),
-            errorStyle: TextStyle(color: Colors.red),
-            suffixIcon: (icon != null)
-                ? IconButton(
-                    icon: icon,
-                    onPressed: onPressedSuffix,
-                  )
-                : null,
+            focusedBorder: OutlineInputBorder(
+              borderRadius: const BorderRadius.all(Radius.circular(10)),
+              borderSide: BorderSide(color: Theme.of(context).secondaryHeaderColor),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: const BorderRadius.all(Radius.circular(10.0)),
+              borderSide: BorderSide(
+                color: Theme.of(context).secondaryHeaderColor,
+              ),
+            ),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 20, 
+              vertical: 18,
+            ),
+            labelStyle: TextStyle(
+              color: Theme.of(context).primaryTextTheme.bodyText1.color,
+            ),
+            errorBorder: UnderlineInputBorder(
+              borderRadius: const BorderRadius.all(Radius.circular(10)),
+              borderSide: BorderSide(color: errorColor),
+            ),
+            errorStyle: TextStyle(color: errorColor),
+            suffixIcon: icon != null
+              ? IconButton(
+                icon: icon,
+                onPressed: onPressedSuffix,
+              )
+              : null,
           ),
           baseStyle: valueStyle,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              Text(valueText, style: valueStyle),
+              Text(
+                valueText, 
+                style: valueStyle,
+              ),
               Icon(
                 Icons.arrow_drop_down,
-                color: Theme.of(context).brightness == Brightness.light
+                color: 
+                  Theme.of(context).brightness == Brightness.light
                     ? Colors.grey.shade700
                     : Colors.white70,
               ),

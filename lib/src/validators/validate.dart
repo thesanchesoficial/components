@@ -7,83 +7,90 @@ import '../functions/format.dart';
 class OwValidate {
   const OwValidate._();
 
-  static final int MAX_CHARACTERS = 255;
+  // ! Separete to a initializer
+  static const int MAX_CHARACTERS = 255;
 
-  /// [false] se [valor] é vazio; ou <= a [tamanho]; ou > [maxTamanho]
+  static const int minLengthName = 5;
+
+  /// Returns [false] if the [value] <= [minLength]; or > [maxLength]
   ///
-  /// Se [valor] for uma *String* "null", retornará [false]
-  static bool texto(dynamic valor, {int tamanho = 0, int maxTamanho}) {
-    if (valor.toString() == "null" || valor.length <= tamanho) return false;
-    if (maxTamanho != null && valor.length > maxTamanho)
+  /// If [valor] is "null" (*String*), it returns [false]
+  static bool text(dynamic value, {int minLength = 0, int maxLength}) {
+    if (value.toString() == "null" || 
+        value.length <= minLength ||
+        (maxLength != null && value.length > maxLength)
+    ) return false;
+    return true;
+  }
+
+  /// Returns [false] if the [value] <= [minLength]; or > [maxLength]
+  static bool list(List value, {int minLength = 0, int maxLength}) {
+    if (value.toString() == "null" || value.length <= minLength) return false;
+    if (maxLength != null && value.length > maxLength)
       return false;
     else
       return true;
   }
 
-  /// Verifica se [valor] é vazio; ou <= a [tamanho]; ou > [maxTamanho]
-  static bool lista(List valor, {int tamanho = 0, int maxTamanho}) {
-    if (valor.toString() == "null" || valor.length <= tamanho) return false;
-    if (maxTamanho != null && valor.length > maxTamanho)
-      return false;
-    else
-      return true;
-  }
+  /// Validate the name
+  static bool nome(String value) {
+    bool valid = text(value, minLength: minLengthName, maxLength: MAX_CHARACTERS);
+    if (!valid) return false;
 
-  /// Valida o nome
-  static bool nome(String valor) {
-    if (valor == null) return false;
-    if (valor.length < 6 || valor.length > MAX_CHARACTERS) return false;
-    if (valor.contains("\n") || valor.contains("  ")) return false;
+    if (value.contains("\n") || value.contains("  ")) return false;
     final regex = RegExp(
-        r"^([a-zA-ZáàâãéèêíïóôõöúçñÁÀÂÃÉÈÍÏÓÔÕÖÚÇÑ'\s]{2,}\s[a-zA-ZáàâãéèêíïóôõöúçñÁÀÂÃÉÈÍÏÓÔÕÖÚÇÑ'\s]{1,}'?-?[a-zA-ZáàâãéèêíïóôõöúçñÁÀÂÃÉÈÍÏÓÔÕÖÚÇÑ'\s]{1,}\s?([a-zA-ZáàâãéèêíïóôõöúçñÁÀÂÃÉÈÍÏÓÔÕÖÚÇÑ'\s]{1,})?)$");
-    return regex.hasMatch(valor);
+      r"^([a-zA-ZáàâãéèêíïóôõöúçñÁÀÂÃÉÈÍÏÓÔÕÖÚÇÑ'\s]{2,}\s[a-zA-ZáàâãéèêíïóôõöúçñÁÀÂÃÉÈÍÏÓÔÕÖÚÇÑ'\s]{1,}'?-?[a-zA-ZáàâãéèêíïóôõöúçñÁÀÂÃÉÈÍÏÓÔÕÖÚÇÑ'\s]{1,}\s?([a-zA-ZáàâãéèêíïóôõöúçñÁÀÂÃÉÈÍÏÓÔÕÖÚÇÑ'\s]{1,})?)$",
+    );
+    return regex.hasMatch(value);
   }
 
-  /// Valida o email
-  static bool email(String valor) {
-    if (valor == null) return false;
+  /// Validate the email
+  static bool email(String value) {
+    if (value == null) return false;
     final Pattern pattern =
-        r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
+      r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
     final RegExp regex = RegExp(pattern);
-    return regex.hasMatch(valor);
+    return regex.hasMatch(value);
   }
 
-  /// Valida CPF e CNPJ
-  static bool cpfCnpj(String valor) {
-    if (valor == null) return false;
-    return (CPF.isValid(valor) || CNPJ.isValid(valor));
+  /// Validate CPF and CNPJ (both)
+  static bool cpfCnpj(String value) {
+    if (value == null) return false;
+    return (CPF.isValid(value) || CNPJ.isValid(value));
   }
 
-  /// Valida apenas CPF
-  static bool cpf(String valor) {
-    if (valor == null) return false;
-    return CPF.isValid(valor);
+  /// Validate only the CPF
+  static bool cpf(String value) {
+    if (value == null) return false;
+    return CPF.isValid(value);
   }
 
-  /// Valida apenas CNPJ
-  static bool cnpj(String valor) {
-    if (valor == null) return false;
-    return CNPJ.isValid(valor);
+  /// Validate only the CNPJ
+  static bool cnpj(String value) {
+    if (value == null) return false;
+    return CNPJ.isValid(value);
   }
 
-  /// Valida a senha (tamanho deve ser maior que 5)
-  static bool senha(String valor) {
+  /// Validate the password (length > 5)
+  static bool password(String valor) {
     if (valor == null || valor.length > MAX_CHARACTERS) return false;
-    return texto(valor, tamanho: 5);
+    return text(valor, minLength: 5);
   }
 
-  /// Valida o número de telefone
+  /// Validate the phone number
   ///
-  /// Após remover os caracteres ["+() -"], valida se restou apenas números
+  /// Remove the characters ["+() -"] and verify if the rest is only numbers
   ///
-  /// Deve ser entre 8 e 19 caracteres no total (de "00000000" à "+00 (00) 00000 0000")
-  static bool telefone(String valor) {
-    if (valor == null) return false;
-    if (valor.length < 8 || valor.length > 19) return false;
-    valor = OwFormat.removerCaracteres(valor, "+() -");
+  /// [value] needs to have between 8 and 13 numbers
+  static bool phone(String value) {
+    if (value == null) return false;
+    if (value.length < 8 || value.length > 19) return false;
+    String valueWithoutCharacters = OwFormat.removerCharacters(value, "+() -");
     RegExp regex = RegExp(r'[^0-9]{1}');
-    for (int i = 0; i < valor.length; i++) {
-      if (regex.hasMatch(valor[i])) return false;
+    if (valueWithoutCharacters.length < 8 || valueWithoutCharacters.length > 13)
+      return false;
+    for (int i = 0; i < valueWithoutCharacters.length; i++) {
+      if (regex.hasMatch(valueWithoutCharacters[i])) return false;
     }
     return true;
   }

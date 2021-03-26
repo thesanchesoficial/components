@@ -9,7 +9,7 @@ class OwDropdown extends StatelessWidget {
   final Function onTap;
   final EdgeInsets margin;
   final FocusNode focusNode;
-  final List<String> listaOpcoes;
+  final List<String> optionsList;
   final Color color;
 
   const OwDropdown({
@@ -19,9 +19,9 @@ class OwDropdown extends StatelessWidget {
     this.onChanged,
     this.onTap,
     this.margin,
-    this.value = "Conta Corrente",
+    this.value,
     this.focusNode,
-    this.listaOpcoes = const <String>['Conta Corrente', 'Poupança'],
+    this.optionsList = const <String>["a"],
     this.color,
   })  : expanded = false,
         super(key: key);
@@ -33,9 +33,9 @@ class OwDropdown extends StatelessWidget {
     this.onChanged,
     this.onTap,
     this.margin,
-    this.value = "Conta Corrente",
+    this.value,
     this.focusNode,
-    this.listaOpcoes = const <String>['Conta Corrente', 'Poupança'],
+    this.optionsList = const <String>["a"],
     this.color,
   })  : expanded = true,
         super(key: key);
@@ -53,13 +53,15 @@ class OwDropdown extends StatelessWidget {
           labelText: labelText,
           alignLabelWithHint: false,
           border: OutlineInputBorder(
-              borderSide: BorderSide(
-                  color: Theme.of(context).secondaryHeaderColor, width: 1),
-              borderRadius: const BorderRadius.all(Radius.circular(10))),
+            borderSide: BorderSide(
+              color: Theme.of(context).secondaryHeaderColor, 
+              width: 1,
+            ),
+            borderRadius: const BorderRadius.all(Radius.circular(10)),
+          ),
           focusedBorder: OutlineInputBorder(
-              borderRadius: const BorderRadius.all(Radius.circular(10)),
-              borderSide:
-                  BorderSide(color: Theme.of(context).secondaryHeaderColor)),
+            borderRadius: const BorderRadius.all(Radius.circular(10)),
+            borderSide: BorderSide(color: Theme.of(context).secondaryHeaderColor)),
           enabledBorder: OutlineInputBorder(
               borderRadius: const BorderRadius.all(Radius.circular(10.0)),
               borderSide:
@@ -76,7 +78,7 @@ class OwDropdown extends StatelessWidget {
         ),
         value: value,
         onChanged: onChanged,
-        items: listaOpcoes.map((String value) {
+        items: optionsList.map((String value) {
           return new DropdownMenuItem<String>(
             value: value,
             child: Text(value),
