@@ -5,3 +5,4 @@ export 'package:components_venver/src/material/widgets/widgets.dart';
 export 'package:components_venver/src/material/transitions/transitions.dart';
 export 'package:components_venver/src/material/pages/pages.dart';
 export 'package:components_venver/src/material/toasts/toasts.dart';
+export 'package:components_venver/src/settings/components.dart';

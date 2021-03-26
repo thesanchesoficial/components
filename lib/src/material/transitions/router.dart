@@ -1,5 +1,4 @@
 import 'package:components_venver/material.dart';
-import 'package:components_venver/settings/settings.dart';
 import 'package:flutter/material.dart';
 
 class OwRouter {
