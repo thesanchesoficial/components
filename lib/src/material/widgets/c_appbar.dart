@@ -15,7 +15,7 @@ class OwAppBar extends StatelessWidget implements PreferredSizeWidget {
   final Color foregroundColor;
   final PreferredSizeWidget bottom;
   final bool centerTitle;
-  final bool showBackAutomatically;
+  final bool showBackButtonAutomatically;
 
   const OwAppBar({
     Key key,
@@ -28,7 +28,7 @@ class OwAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.color,
     this.foregroundColor,
     this.centerTitle = true,
-    this.showBackAutomatically = true,
+    this.showBackButtonAutomatically = true,
     this.elevation = 0,
   }) : super(key: key);
 
@@ -37,22 +37,29 @@ class OwAppBar extends StatelessWidget implements PreferredSizeWidget {
     return AppBar(
       leading: leading,
       centerTitle: centerTitle,
-      automaticallyImplyLeading: showBackAutomatically,
-      title: child ??
-        title == null ? null : Column(
+      automaticallyImplyLeading: showBackButtonAutomatically,
+      title: child ?? title == null 
+        ? null 
+        : Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Text(
-              title.toString().toUpperCase(),
-              style:
-                  const TextStyle(fontSize: 15, fontWeight: FontWeight.w500, color: Colors.white),
+              title.toUpperCase(),
+              style: const TextStyle(
+                fontSize: 15, 
+                fontWeight: FontWeight.w500, 
+                color: Colors.white,
+              ),
             ),
             subtitle != null
               ? Text(
-                  subtitle.toString().toUpperCase(),
-                  style: TextStyle(fontSize: 13, color: Colors.grey[200]),
-                )
+                subtitle.toUpperCase(),
+                style: TextStyle(
+                  fontSize: 13, 
+                  color: Colors.grey[200],
+                ),
+              )
               : const SizedBox(),
           ],
         ),
