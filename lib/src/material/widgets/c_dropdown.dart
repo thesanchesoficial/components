@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class OwDropdown extends StatelessWidget {
   final String value;
-  final bool expanded;
+  final bool isExpanded;
   final String labelText;
   final bool readOnly;
   final ValueChanged<String> onChanged;
@@ -11,6 +11,10 @@ class OwDropdown extends StatelessWidget {
   final FocusNode focusNode;
   final List<String> optionsList;
   final Color color;
+  final bool enabled;
+  final Widget disabledHint;
+
+  final Color errorColor = Colors.red;
 
   const OwDropdown({
     Key key,
@@ -21,9 +25,11 @@ class OwDropdown extends StatelessWidget {
     this.margin,
     this.value,
     this.focusNode,
-    this.optionsList = const <String>["a"],
+    this.optionsList,
     this.color,
-  })  : expanded = false,
+    this.enabled = true,
+    this.disabledHint,
+  })  : isExpanded = false,
         super(key: key);
 
   const OwDropdown.withExpanded({
@@ -35,9 +41,11 @@ class OwDropdown extends StatelessWidget {
     this.margin,
     this.value,
     this.focusNode,
-    this.optionsList = const <String>["a"],
+    this.optionsList,
     this.color,
-  })  : expanded = true,
+    this.enabled = true,
+    this.disabledHint,
+  })  : isExpanded = true,
         super(key: key);
 
   @override
@@ -46,7 +54,8 @@ class OwDropdown extends StatelessWidget {
       margin: margin,
       child: DropdownButtonFormField(
         focusNode: focusNode,
-        isExpanded: expanded,
+        isExpanded: isExpanded,
+        disabledHint: disabledHint,
         decoration: InputDecoration(
           filled: true,
           fillColor: color ?? Theme.of(context).cardColor,
@@ -63,27 +72,34 @@ class OwDropdown extends StatelessWidget {
             borderRadius: const BorderRadius.all(Radius.circular(10)),
             borderSide: BorderSide(color: Theme.of(context).secondaryHeaderColor)),
           enabledBorder: OutlineInputBorder(
-              borderRadius: const BorderRadius.all(Radius.circular(10.0)),
-              borderSide:
-                  BorderSide(color: Theme.of(context).secondaryHeaderColor)),
-          contentPadding:
-              const EdgeInsets.only(left: 20, right: 20, top: 15, bottom: 14),
-          labelStyle: TextStyle(
-              color: Theme.of(context).primaryTextTheme.bodyText1.color),
-          errorBorder: const UnderlineInputBorder(
-            borderRadius: BorderRadius.all(Radius.circular(10)),
-            borderSide: BorderSide(color: Colors.red),
+            borderRadius: const BorderRadius.all(Radius.circular(10.0)),
+            borderSide: BorderSide(color: Theme.of(context).secondaryHeaderColor),
           ),
-          errorStyle: const TextStyle(color: Colors.red),
+          contentPadding: const EdgeInsets.only(
+            left: 20, 
+            right: 20, 
+            top: 15, 
+            bottom: 14,
+          ),
+          labelStyle: TextStyle(
+            color: Theme.of(context).primaryTextTheme.bodyText1.color,
+          ),
+          errorBorder: UnderlineInputBorder(
+            borderRadius: const BorderRadius.all(Radius.circular(10)),
+            borderSide: BorderSide(color: errorColor),
+          ),
+          errorStyle: TextStyle(color: errorColor),
         ),
         value: value,
-        onChanged: onChanged,
-        items: optionsList.map((String value) {
-          return new DropdownMenuItem<String>(
+        onChanged: enabled
+          ? onChanged
+          : null,
+        items: optionsList?.map((String value) {
+          return DropdownMenuItem<String>(
             value: value,
             child: Text(value),
           );
-        }).toList(),
+        })?.toList(),
       ),
     );
   }
