@@ -15,9 +15,11 @@ class OwFloatingButton extends StatelessWidget {
   final bool autofocus;
   final FocusNode focusNode;
   final MouseCursor mouseCursor;
-  final bool back;
-  final bool next;
-  final bool two;
+  final Widget iconLabel;
+  final String textLabel;
+  final bool buttonOnRight;
+  final bool useAddIcon;
+  
 
   OwFloatingButton({
     Key key,
@@ -28,46 +30,18 @@ class OwFloatingButton extends StatelessWidget {
     this.tooltip,
     this.splashColor,
     this.foregroundColor,
-    this.isExtended = false,
     this.shape,
     this.autofocus = false,
     this.focusNode,
     this.mouseCursor,
-  }) : back = false, next = false, two = false, super(key: key);
+    this.textLabel,
+    this.useAddIcon = false,
+    this.iconLabel,
+  })  : isExtended = textLabel != null,
+        buttonOnRight = null,
+        super(key: key);
 
-  OwFloatingButton.back({
-    Key key,
-    this.backgroundColor,
-    this.onPressed,
-    this.child,
-    this.elevation,
-    this.tooltip,
-    this.splashColor,
-    this.foregroundColor,
-    this.isExtended = false,
-    this.shape,
-    this.autofocus = false,
-    this.focusNode,
-    this.mouseCursor,
-  }) : back = true, next = false, two = false, super(key: key);
-
-  OwFloatingButton.next({
-    Key key,
-    this.backgroundColor,
-    this.onPressed,
-    this.child,
-    this.elevation,
-    this.tooltip,
-    this.splashColor,
-    this.foregroundColor,
-    this.isExtended = false,
-    this.shape,
-    this.autofocus = false,
-    this.focusNode,
-    this.mouseCursor,
-  }) : back = false, next = true, two = false, super(key: key);
-
-  OwFloatingButton.twoButton({
+  OwFloatingButton.left({
     Key key,
     this.backgroundColor,
     this.onPressed,
@@ -80,52 +54,111 @@ class OwFloatingButton extends StatelessWidget {
     this.autofocus = false,
     this.focusNode,
     this.mouseCursor,
-  }) : back = false, next = false, two = true, isExtended = true, super(key: key);
+    this.textLabel,
+    this.useAddIcon = false,
+    this.iconLabel,
+  })  : buttonOnRight = false,
+        isExtended = textLabel != null,
+        super(key: key);
+
+  OwFloatingButton.right({
+    Key key,
+    this.backgroundColor,
+    this.onPressed,
+    this.child,
+    this.elevation,
+    this.tooltip,
+    this.splashColor,
+    this.foregroundColor,
+    this.shape,
+    this.autofocus = false,
+    this.focusNode,
+    this.mouseCursor,
+    this.textLabel,
+    this.useAddIcon = false,
+    this.iconLabel,
+  })  : buttonOnRight = true,
+        isExtended = textLabel != null,
+        super(key: key);
+  
+  // OwFloatingButton.extended({
+  //   Key key,
+  //   this.backgroundColor,
+  //   this.onPressed,
+  //   this.child,
+  //   this.elevation,
+  //   this.tooltip,
+  //   this.splashColor,
+  //   this.foregroundColor,
+  //   this.isExtended = false,
+  //   this.shape,
+  //   this.autofocus = false,
+  //   this.focusNode,
+  //   this.mouseCursor,
+  //   this.buttonOnRight,
+  // })  : typeButton = "next",
+  //       super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    if(two) {
-      return Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            FloatingActionButton(
-              backgroundColor: backgroundColor ?? AppTheme.verdeVenver,
-              heroTag: "Voltar",
-              tooltip: "Voltar",
-              onPressed: () {},
-              child: Icon(Icons.arrow_back_outlined, size: 25),
-            ),
-            SizedBox(width: 40),
-            FloatingActionButton.extended(
-              backgroundColor: backgroundColor ?? AppTheme.verdeVenver,
-              heroTag: "Avançar",
-              tooltip: "Avançar",
-              onPressed: () {},
-              icon: Icon(Icons.arrow_forward_outlined, size: 25),
-              isExtended: true,
-              label: Text("Avançar"),
-            )
-          ],
-        ),
-      );
-    } else {
-      return FloatingActionButton(
+    return isExtended
+      ? FloatingActionButton.extended(
         key: key,
         onPressed: onPressed,
         autofocus: autofocus,
         backgroundColor: backgroundColor ?? AppTheme.verdeVenver,
-        child: child ?? next ? Icon(Icons.arrow_forward_outlined) : back ? Icon(Icons.arrow_back_outlined) : Icon(Icons.add),
         elevation: elevation,
         focusNode: focusNode,
         shape: shape,
-        tooltip: tooltip ?? next ? "Avançar" : back ? "Voltar" : "Adicionar" ,
+        tooltip: tooltip ?? textLabel,
+        mouseCursor: mouseCursor,
+        splashColor: splashColor,
+        isExtended: isExtended,
+        foregroundColor: foregroundColor ?? Colors.white,
+        label: _label(),
+        icon: buttonOnRight == false 
+          ? _icon() 
+          : null,
+      )
+      : FloatingActionButton(
+        key: key,
+        onPressed: onPressed,
+        autofocus: autofocus,
+        backgroundColor: backgroundColor ?? AppTheme.verdeVenver,
+        child: child ?? _icon(),
+        elevation: elevation,
+        focusNode: focusNode,
+        shape: shape,
+        tooltip: tooltip,
         mouseCursor: mouseCursor,
         splashColor: splashColor,
         isExtended: isExtended,
         foregroundColor: foregroundColor ?? Colors.white
       );
-    }
+  }
+
+  Widget _label() {
+    return Row(
+      children: buttonOnRight == false
+        ? [
+          Text(textLabel),
+        ]
+        : [
+          Text(textLabel),
+          const SizedBox(width: 10),
+          _icon(),
+        ],
+    );
+  }
+
+  Widget _icon() {
+    return iconLabel ?? useAddIcon || buttonOnRight == null
+      ? const Icon(Icons.add, size: 25) 
+      : Icon(
+        !buttonOnRight
+          ? Icons.arrow_back_outlined
+          : Icons.arrow_forward_outlined, 
+        size: 25,
+      );
   }
 }

@@ -2,14 +2,14 @@ import 'package:components_venver/src/settings/variable.dart';
 import 'package:flutter/foundation.dart';
 
 void p([dynamic string]) {
-  if (_validadePrint()) {
+  if (_isPrintEnabled()) {
     final ms = DateTime.now().millisecondsSinceEpoch;
     print("[$ms]: $string");
   }
 }
 
 void pList([List list]) {
-  if (_validadePrint()) {
+  if (_isPrintEnabled()) {
     if (list != null) {
       p("List - length: ${list.length} - type: ${list.runtimeType}");
       for (int i = 0; i < list.length; i++)
@@ -20,6 +20,6 @@ void pList([List list]) {
   } 
 }
 
-bool _validadePrint() {
+bool _isPrintEnabled() {
   return !kReleaseMode && !hidePrintApplication;
 }

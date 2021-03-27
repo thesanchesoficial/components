@@ -11,3 +11,4 @@ export 'package:components_venver/src/material/components/widgets/w_navigation_i
 export 'package:components_venver/src/material/components/widgets/w_slider.dart';
 export 'package:components_venver/src/material/components/widgets/w_stories.dart';
 export 'package:components_venver/src/material/components/widgets/w_textfield.dart';
+export 'package:components_venver/src/material/components/widgets/w_two_floating_buttons.dart';

@@ -13,6 +13,8 @@ class OwDropdown extends StatelessWidget {
   final Color color;
   final bool enabled;
   final Widget disabledHint;
+  final Widget hint;
+  final String hintText;
 
   final Color errorColor = Colors.red;
 
@@ -29,6 +31,8 @@ class OwDropdown extends StatelessWidget {
     this.color,
     this.enabled = true,
     this.disabledHint,
+    this.hint,
+    this.hintText,
   })  : isExpanded = false,
         super(key: key);
 
@@ -45,6 +49,8 @@ class OwDropdown extends StatelessWidget {
     this.color,
     this.enabled = true,
     this.disabledHint,
+    this.hint,
+    this.hintText,
   })  : isExpanded = true,
         super(key: key);
 
@@ -56,6 +62,10 @@ class OwDropdown extends StatelessWidget {
         focusNode: focusNode,
         isExpanded: isExpanded,
         disabledHint: disabledHint,
+        hint: hint ?? 
+          hintText != null 
+            ? Text(hintText)
+            : null,
         decoration: InputDecoration(
           filled: true,
           fillColor: color ?? Theme.of(context).cardColor,
