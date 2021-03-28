@@ -21,8 +21,8 @@ class OwProgressBar extends StatelessWidget {
     this.height = 10,
     this.radius = 10,
     this.duration = const Duration(milliseconds: 500),
-    this.progressColor = Colors.blue, // ! Change
-    this.barColor,
+    this.progressColor = Colors.green, // ! Change
+    this.barColor = Colors.grey,
     this.curve = Curves.linear,
     this.maxWidth,
   })  : super(key: key);
@@ -35,7 +35,7 @@ class OwProgressBar extends StatelessWidget {
       ),
       child: Container(
         decoration: BoxDecoration(
-          color: barColor ?? progressColor.withOpacity(.4),
+          color: barColor,
         ),
         child: Align(
           alignment: Alignment.centerLeft,

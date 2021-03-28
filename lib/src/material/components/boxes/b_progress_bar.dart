@@ -16,8 +16,8 @@ class OwBoxProgressBar extends StatelessWidget {
     this.quantityFilled = 0,
     this.spaceBetween,
     this.radius = 10,
-    this.progressColor = Colors.red, // ! Change
-    this.barColor,
+    this.progressColor = Colors.green,
+    this.barColor = Colors.grey,
     this.height = 10,
     this.colorAnimationLinearProgress,
   })  : super(key: key);
@@ -33,12 +33,12 @@ class OwBoxProgressBar extends StatelessWidget {
 
   List<Widget> _progressBarList(BuildContext context) {
     List<Widget> _progressBars = [];
-    double _spaceBetween = spaceBetween ?? height / 2;
     for(int i = 0; i < quantity; i++) {
+      double _spaceBetween = spaceBetween ?? i > quantityFilled ? (height / 2) : 0;
       _progressBars.add(Expanded(
         child: ClipRRect(
           borderRadius: BorderRadius.all(
-            Radius.circular(radius),
+            Radius.circular(i > quantityFilled ? radius : 0),
           ),
           child: Container(
             height: height,
@@ -49,7 +49,7 @@ class OwBoxProgressBar extends StatelessWidget {
                 : Colors.transparent,
             child: i == quantityFilled
               ? LinearProgressIndicator(
-                backgroundColor: barColor ?? progressColor.withOpacity(.4),
+                backgroundColor: barColor,
                 valueColor: colorAnimationLinearProgress ?? AlwaysStoppedAnimation<Color>(
                   progressColor,
                 ),
