@@ -1,6 +1,6 @@
 name: components_venver
 description: Componentes para desenvolvimento de aplicativos Venver
-version: 0.0.30
+version: 0.0.31
 author: Matheus e Nicollas
 homepage:
 
@@ -23,7 +23,7 @@ dependencies:
   flutter_svg: ^0.21.0-nullsafety.0
   story_view: ^0.13.0-nullsafety.1
   flutter_cache_manager: ^3.0.0-nullsafety.1
-  uuid: ^3.0.1
+  # uuid: ^3.0.1
   eva_icons_flutter: ^2.0.0
 
 dev_dependencies:
