@@ -18,19 +18,8 @@ class OwTwoFloatingButtons extends StatelessWidget {
   final Color foregroundColor;
   final Color backgroundColor;
   final ShapeBorder shape;
-  // final bool autofocus;
-  // final FocusNode focusNode;
 
-  final String typeButton;
-
-
-  // ! Global
-  final String backTextFloatingButton = "Voltar";
-  final String nextTextFloatingButton = "Avançar";
-  final String addTextFloatingButton = "Adicionar";
-  
-
-  OwTwoFloatingButtons({ // Add extended
+  OwTwoFloatingButtons({
     Key key,
     this.onPressedLeft,
     this.onPressedRight,
@@ -47,7 +36,6 @@ class OwTwoFloatingButtons extends StatelessWidget {
     this.shape,
   })  : isExtendedLeft = textLeft != null,
         isExtendedRight = textRight != null,
-        typeButton = null,
         super(key: key);
   
   @override

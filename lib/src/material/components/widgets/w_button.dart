@@ -109,9 +109,13 @@ class OwButton extends StatelessWidget {
       height: height,
       margin: margin,
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.all(Radius.circular(
-          hideRadius ? 0 : radius,
-        )),
+        borderRadius: BorderRadius.all(
+          Radius.circular(
+            hideRadius 
+              ? 0 
+              : radius,
+          ),
+        ),
         color: Colors.transparent,
       ),
       child: ElevatedButton(

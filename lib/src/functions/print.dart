@@ -11,7 +11,7 @@ void p([dynamic string]) {
 void pList([List list]) {
   if (_isPrintEnabled()) {
     if (list != null) {
-      p("List - length: ${list.length} - type: ${list.runtimeType}");
+      p("${list.runtimeType} (length: ${list.length})");
       for (int i = 0; i < list.length; i++)
         print("[$i]: ${list[i]}");
     } else {

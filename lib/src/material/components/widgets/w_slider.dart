@@ -4,7 +4,7 @@ class SliderVenver extends StatefulWidget {
   final double sliderHeight;
   final int min;
   final int max;
-  final fullWidth;
+  final bool fullWidth;
   final String textoEsquerda;
   final String textoDireita;
 

@@ -19,7 +19,6 @@ class OwFloatingButton extends StatelessWidget {
   final String textLabel;
   final bool buttonOnRight;
   final bool useAddIcon;
-  
 
   OwFloatingButton({
     Key key,
@@ -80,24 +79,6 @@ class OwFloatingButton extends StatelessWidget {
   })  : buttonOnRight = true,
         isExtended = textLabel != null,
         super(key: key);
-  
-  // OwFloatingButton.extended({
-  //   Key key,
-  //   this.backgroundColor,
-  //   this.onPressed,
-  //   this.child,
-  //   this.elevation,
-  //   this.tooltip,
-  //   this.splashColor,
-  //   this.foregroundColor,
-  //   this.isExtended = false,
-  //   this.shape,
-  //   this.autofocus = false,
-  //   this.focusNode,
-  //   this.mouseCursor,
-  //   this.buttonOnRight,
-  // })  : typeButton = "next",
-  //       super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -133,7 +114,7 @@ class OwFloatingButton extends StatelessWidget {
         mouseCursor: mouseCursor,
         splashColor: splashColor,
         isExtended: isExtended,
-        foregroundColor: foregroundColor ?? Colors.white
+        foregroundColor: foregroundColor ?? Colors.white,
       );
   }
 
