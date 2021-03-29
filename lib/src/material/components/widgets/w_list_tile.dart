@@ -96,6 +96,7 @@ class OwListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      key: key,
       margin: margin,
       decoration: BoxDecoration(
         borderRadius: const BorderRadius.all(Radius.circular(10)),

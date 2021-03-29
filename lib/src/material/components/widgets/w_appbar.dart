@@ -35,6 +35,7 @@ class OwAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
+      key: key,
       leading: leading,
       centerTitle: centerTitle,
       automaticallyImplyLeading: showBackButtonAutomatically,

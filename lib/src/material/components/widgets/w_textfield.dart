@@ -158,6 +158,7 @@ class OwTextField extends StatelessWidget {
   Widget build(BuildContext context) {
     if (suggestions) {
       return Container(
+        key: key,
         margin: margin,
         decoration: BoxDecoration(
           borderRadius: const BorderRadius.all(Radius.circular(10)),
@@ -233,6 +234,7 @@ class OwTextField extends StatelessWidget {
       );
     } else {
       return Container(
+        key: key,
         margin: margin,
         decoration: BoxDecoration(
           borderRadius: const BorderRadius.all(Radius.circular(10)),

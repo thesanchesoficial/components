@@ -9,6 +9,7 @@ class SliderVenver extends StatefulWidget {
   final String textoDireita;
 
   SliderVenver({
+    Key key,
     this.sliderHeight = 48,
     this.max = 10,
     this.min = 0,
@@ -30,6 +31,7 @@ class _SliderVenverState extends State<SliderVenver> {
     if (this.widget.fullWidth) paddingFactor = .3;
 
     return Container(
+      key: widget.key,
       width: this.widget.fullWidth
         ? double.infinity
         : (this.widget.sliderHeight) * 5.5,

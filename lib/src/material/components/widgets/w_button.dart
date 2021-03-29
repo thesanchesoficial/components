@@ -106,6 +106,7 @@ class OwButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      key: key,
       height: height,
       margin: margin,
       decoration: BoxDecoration(

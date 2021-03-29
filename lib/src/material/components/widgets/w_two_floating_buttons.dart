@@ -18,9 +18,11 @@ class OwTwoFloatingButtons extends StatelessWidget {
   final Color foregroundColor;
   final Color backgroundColor;
   final ShapeBorder shape;
+  final bool keyOnRight;
 
   OwTwoFloatingButtons({
     Key key,
+    this.keyOnRight = true,
     this.onPressedLeft,
     this.onPressedRight,
     this.tooltipLeft,
@@ -47,6 +49,9 @@ class OwTwoFloatingButtons extends StatelessWidget {
         children: <Widget>[
           isExtendedLeft
             ? FloatingActionButton.extended(
+              key: !keyOnRight 
+                ? key 
+                : null,
               backgroundColor: backgroundColor ?? AppTheme.verdeVenver,
               onPressed: onPressedLeft,
               isExtended: isExtendedLeft,
@@ -67,6 +72,9 @@ class OwTwoFloatingButtons extends StatelessWidget {
               ),
             )
             : FloatingActionButton(
+              key: !keyOnRight 
+                ? key 
+                : null,
               backgroundColor: backgroundColor ?? AppTheme.verdeVenver,
               onPressed: onPressedLeft,
               isExtended: isExtendedLeft,
@@ -83,6 +91,9 @@ class OwTwoFloatingButtons extends StatelessWidget {
           const SizedBox(width: 40),
           isExtendedRight
             ? FloatingActionButton.extended(
+              key: keyOnRight 
+                ? key 
+                : null,
               backgroundColor: backgroundColor ?? AppTheme.verdeVenver,
               onPressed: onPressedRight,
               isExtended: isExtendedRight,
@@ -103,6 +114,9 @@ class OwTwoFloatingButtons extends StatelessWidget {
               ),
             ) 
             : FloatingActionButton(
+              key: keyOnRight 
+                ? key 
+                : null,
               backgroundColor: backgroundColor ?? AppTheme.verdeVenver,
               onPressed: onPressedRight,
               isExtended: isExtendedRight,

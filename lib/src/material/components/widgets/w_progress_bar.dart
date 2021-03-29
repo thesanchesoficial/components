@@ -30,6 +30,7 @@ class OwProgressBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
+      key: key,
       borderRadius: BorderRadius.all(
         Radius.circular(radius),
       ),

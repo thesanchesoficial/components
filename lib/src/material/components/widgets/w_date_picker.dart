@@ -34,6 +34,7 @@ class OwDatePicker extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      key: key,
       margin: margin,
       decoration: BoxDecoration(
         color: Theme.of(context).cardColor,

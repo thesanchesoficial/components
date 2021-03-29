@@ -57,6 +57,7 @@ class OwDropdown extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      key: key,
       margin: margin,
       child: DropdownButtonFormField(
         focusNode: focusNode,
