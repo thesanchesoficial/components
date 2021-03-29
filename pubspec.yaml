@@ -15,7 +15,7 @@ dependencies:
   # process: ^4.0.0-nullsafety
   path: ^1.7.0
   process: ^4.2.1
-  flutter_typeahead: ^2.0.0
+  flutter_typeahead: ^3.1.1
   flutter_masked_text: ^0.8.0
   bot_toast: ^3.0.5
   encrypt: ^5.0.0
