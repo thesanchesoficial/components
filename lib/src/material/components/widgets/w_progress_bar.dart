@@ -8,7 +8,6 @@ class OwProgressBar extends StatelessWidget {
   final Color barColor;
   final Curve curve;
   final double maxWidth;
-
   final bool fill;
   final bool fullyEmpty;
   final bool resetWithoutAnimation;

@@ -9,6 +9,7 @@ class OwBoxProgressBar extends StatelessWidget {
   final Color progressColor;
   final Color barColor;
   final Animation<Color> colorAnimationLinearProgress;
+  final bool animated;
 
   const OwBoxProgressBar({
     Key key,
@@ -20,6 +21,7 @@ class OwBoxProgressBar extends StatelessWidget {
     this.barColor = Colors.grey,
     this.height = 10,
     this.colorAnimationLinearProgress,
+    this.animated = true,
   })  : super(key: key);
 
   @override
@@ -44,10 +46,10 @@ class OwBoxProgressBar extends StatelessWidget {
             height: height,
             color: i < quantityFilled
               ? progressColor
-              : i > quantityFilled
+              : i > quantityFilled || !animated
                 ? barColor ?? progressColor.withOpacity(.4)
                 : Colors.transparent,
-            child: i == quantityFilled
+            child: i == quantityFilled && animated
               ? LinearProgressIndicator(
                 backgroundColor: barColor ?? progressColor.withOpacity(.4),
                 valueColor: colorAnimationLinearProgress ?? AlwaysStoppedAnimation<Color>(
