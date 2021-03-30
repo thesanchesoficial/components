@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 
 class NenhumItem extends StatefulWidget {
   final String titulo;
@@ -20,7 +19,7 @@ class _NenhumItemState extends State<NenhumItem> {
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisSize: MainAxisSize.max,
         children: <Widget>[
-          widget.imagem == null ? SizedBox() : SvgPicture.asset(widget.imagem, height: 250),
+          widget.imagem == null ? SizedBox() : Image.asset(widget.imagem, height: 250),
           widget.imagem == null ? SizedBox() : SizedBox(height: 20),
           Text(
             widget.titulo,
