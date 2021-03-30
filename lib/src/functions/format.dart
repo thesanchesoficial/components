@@ -241,7 +241,7 @@ class OwFormat {
     } else return value ?? value.toString();
   }
 
-  // ! Ver oq vai retornar se for null, se vai retornar null ou "null"
+  // ! Ver nas funções oq vai retornar se for null, se vai retornar null ou "null"
   /// Upper case on the first letter, and the rest keeps the same
   static String upperFirstKeepRest(String value) {
     if (value != null) {
@@ -318,17 +318,17 @@ class OwFormat {
     return result ?? 0.0;
   }
 
-  /// Remove from [value] the characters passed on [removeCharacters]
+  /// Remove from [value] the characters passed on [removedCharacters]
   static String removerCharacters(
     String value, 
-    String removeCharacters,
+    String removedCharacters,
     {bool trim = true,
   }) {
     if (trim) value = value.trim();
 
-    if (removeCharacters != null)
-      for (int i = 0; i < removeCharacters.length; i++)
-        value = value.replaceAll(removeCharacters[i], "");
+    if (removedCharacters != null)
+      for (int i = 0; i < removedCharacters.length; i++)
+        value = value.replaceAll(removedCharacters[i], "");
 
     return value;
   }
