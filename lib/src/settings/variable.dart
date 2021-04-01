@@ -1,3 +1,3 @@
 bool hidePrintApplication = true;
-bool isWebApplication = false;
+bool isWebApplication = true;
 double webStartsWithWidth = 500;

@@ -1,12 +1,9 @@
 import 'package:components_venver/functions.dart';
 
-/// [stateOrUf] can be the state name (BR), or UF (2 letters)
-///
-/// Returns null if [stateOrUf] is null, or if not found
-String ufAbbreviated(String stateOrUf) {
-  if(stateOrUf == null) return null;
+class Br {
+  Br._();
 
-  List<Map<String, String>> states = [
+  static const List<Map<String, String>> states = [
     {
       "state": "Acre",
       "uf": "AC",
@@ -117,21 +114,29 @@ String ufAbbreviated(String stateOrUf) {
     },
   ];
 
-  String from = "state";
-  String to = "uf";
-  if(stateOrUf.length == 2) {
-    from = "uf";
-    to = "state";
-  }
+  /// [stateOrUf] can be the state name (BR), or UF (2 letters)
+  ///
+  /// Returns null if [stateOrUf] is null, or if not found
+  static String changeStateUf(String stateOrUf) {
+    if(stateOrUf == null) return null;
 
-  for (Map<String, String> i in states) {
-    if(
-      OwFormat.removerAccentAndPonctuation(stateOrUf).contains(
-        OwFormat.removerAccentAndPonctuation(i[from]),
-      )
-    ) {
-      return i[to];
+    String from = "state";
+    String to = "uf";
+    if(stateOrUf.length == 2) {
+      from = "uf";
+      to = "state";
     }
+
+    for (Map<String, String> i in states) {
+      if(
+        OwFormat.removerAccentAndPonctuation(stateOrUf).contains(
+          OwFormat.removerAccentAndPonctuation(i[from]),
+        )
+      ) {
+        return i[to];
+      }
+    }
+    return null;
   }
-  return null;
 }
+

@@ -3,7 +3,12 @@ import 'package:flutter/material.dart';
 class ScreenTransition {
   ScreenTransition._();
 
-  static screenBottomSheet(BuildContext context, Widget page, {bool secondPage: false}) {
+  static screenBottomSheet(
+    BuildContext context, 
+    Widget page, 
+    {bool secondPage: false, 
+    bool isPageResponsive = false,
+  }) {
     return showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -48,5 +53,4 @@ class ScreenTransition {
       }
     );
   }
-
 }

@@ -23,7 +23,7 @@ class OwScrollbar extends StatelessWidget {
     this.scrollbarThicknessMobile,
     this.scrollbarIsAlwaysShownOnWeb = true,
     this.scrollbarIsAlwaysShownOnMobile = false,
-    this.scrollbarRadius,
+    this.scrollbarRadius = 5,
     this.returnSingleChildScrollView = true,
     this.scrollPhysicsMobile = const BouncingScrollPhysics(),
     this.scrollPhysicsWeb = const BouncingScrollPhysics(),

@@ -8,11 +8,11 @@ class OwValidRequest {
     Function beforeRequest, 
     Function afterRequest,
   }) async {
-    if(showLoading) OwToast.loading(); // show loading
+    if(showLoading) OwBotToast.loading(); // show loading
     await beforeRequest(); // run funcions before api
     Map<String, dynamic> retornoApi = await function; // call api
     await afterRequest(); // run funcions after api
-    OwToast.close(); // close all loading
+    OwBotToast.close(); // close all loading
     return retornoApi; // return result api
   }
 

@@ -1,3 +1,6 @@
+import 'package:components_venver/src/settings/variable.dart';
+import 'package:flutter/cupertino.dart';
+
 class F {
   F._();
 
@@ -11,6 +14,10 @@ class F {
   static const int topLimitInMinutes = 5;
   static const String fromWord = "de";
   static const String untilWord = "até";
+
+  static bool isWeb(BuildContext context) {
+    return MediaQuery.of(context).size.width >= webStartsWithWidth;
+  }
 
   /// Returns the quantity of days, hours and minutes based on [d]
   /// 
