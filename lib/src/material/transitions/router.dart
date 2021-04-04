@@ -5,15 +5,15 @@ import 'package:flutter/material.dart';
 class OwRouter {
   const OwRouter._();
 
-  static _goRouter(router, BuildContext context, bool removeUntil, {bool isPageResponsive = false}) {
+  static _goRouter(router, BuildContext context, bool removeUntil, {bool isPageResponsive = false}) async {
     if(isPageResponsive) {
       if(removeUntil) {
-        navigatorGlobalKey.currentState.pushAndRemoveUntil(router, (route) => false);
+        return await navigatorGlobalKey.currentState.pushAndRemoveUntil(router, (route) => false);
       } else {
-        navigatorGlobalKey.currentState.push(router);
+        return await navigatorGlobalKey.currentState.push(router);
       }
     } else {
-      openLink(context, router);
+      return await openLink(context, router);
     }
   }
 
@@ -28,7 +28,7 @@ class OwRouter {
 
 
 openModal(BuildContext context, Widget widget) async {
-  if(isWebApplication) {
+  if(MediaQuery.of(context).size.width > webStartsWithWidth) {
     return await showDialog(
       context: context,
       builder: (context) {
@@ -49,7 +49,7 @@ openModal(BuildContext context, Widget widget) async {
 }
 
 openLink(BuildContext context, Widget widget) async {
-  if(isWebApplication) {
+  if(MediaQuery.of(context).size.width > webStartsWithWidth) {
     return await showDialog(
       context: context,
       builder: (context) {
