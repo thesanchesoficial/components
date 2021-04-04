@@ -70,8 +70,8 @@ openLink(BuildContext context, Widget widget) async {
       }
     );
   } else {
-    // return await Navigator.push(context, DireitaEsquerda(page: widget));
-    return await OwRouter.rightToLeft(context, widget);
+    return await Navigator.push(context, RightToLeft(page: widget));
+    // return await OwRouter.rightToLeft(context, widget);
   }
 }
 
