@@ -1,3 +1,4 @@
+import 'package:components_venver/src/functions/f.dart';
 import 'package:components_venver/src/settings/variable.dart';
 import 'package:flutter/material.dart';
 
@@ -14,6 +15,9 @@ class OwScrollbar extends StatelessWidget {
   final ScrollPhysics scrollPhysicsWeb;
   final EdgeInsetsGeometry padding;
   final Widget child;
+  final bool scrollbarBackground;
+  final Color scrollColor;
+  final double scrollColorOpacity;
 
   const OwScrollbar({
     Key key,
@@ -29,33 +33,42 @@ class OwScrollbar extends StatelessWidget {
     this.scrollPhysicsWeb = const BouncingScrollPhysics(),
     this.padding,
     this.child,
+    this.scrollbarBackground = false, // ! Terminar
+    this.scrollColor = Colors.grey,
+    this.scrollColorOpacity = 0.4,
+
   })  : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    bool _showScrollbar = showScrollbar ?? isWebApplication;
+    bool _showScrollbar = showScrollbar ?? F.isWeb(context);
     return _showScrollbar
-      ? Scrollbar(
+      ? RawScrollbar(
+        thumbColor: scrollColor.withOpacity(scrollColorOpacity),
         controller: scrollController,
-        child: _child(),
-        thickness: isWebApplication
+        child: _child(context),
+        // child: scrollbarBackground
+        //   ? F.isWeb(context) && scrollbarIsAlwaysShownOnWeb
+        //     ? 
+        //   : null,
+        thickness: F.isWeb(context)
           ? scrollbarThicknessWeb
           : scrollbarThicknessMobile,
-        isAlwaysShown: isWebApplication
+        isAlwaysShown: F.isWeb(context)
           ? scrollbarIsAlwaysShownOnWeb
           : scrollbarIsAlwaysShownOnMobile,
         radius: Radius.circular(scrollbarRadius),
       )
-      : _child();
+      : _child(context);
   }
 
-  Widget _child() {
+  Widget _child(BuildContext context) {
     return returnSingleChildScrollView
       ? SingleChildScrollView(
         padding: padding,
         controller: scrollController,
         child: child,
-        physics: isWebApplication
+        physics: F.isWeb(context)
           ? scrollPhysicsWeb
           : scrollPhysicsMobile,
       )
@@ -63,5 +76,12 @@ class OwScrollbar extends StatelessWidget {
         padding: padding,
         child: child,
       );
+  }
+
+  Widget _backgroundScroll() {
+    return Container(
+      width: 10,
+      color: Colors.yellow,
+    );
   }
 }

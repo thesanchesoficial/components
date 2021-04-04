@@ -1,3 +1,4 @@
+import 'package:components_venver/material.dart';
 import 'package:components_venver/src/settings/variable.dart';
 import 'package:flutter/material.dart';
 
@@ -77,16 +78,14 @@ class OwScaffold extends StatelessWidget {
   }
 
   Widget _scrollbar() {
-    return Scrollbar(
-      controller: scrollController,
+    return OwScrollbar(
+      scrollController: scrollController,
       child: _body(),
-      thickness: isWebApplication
-        ? scrollbarThicknessWeb
-        : scrollbarThicknessMobile,
-      isAlwaysShown: isWebApplication
-        ? scrollbarIsAlwaysShownOnWeb
-        : scrollbarIsAlwaysShownOnMobile,
-      radius: Radius.circular(scrollbarRadius),
+      scrollbarThicknessMobile: scrollbarThicknessMobile,
+      scrollbarThicknessWeb: scrollbarThicknessWeb,
+      scrollbarIsAlwaysShownOnMobile: scrollbarIsAlwaysShownOnMobile,
+      scrollbarIsAlwaysShownOnWeb: scrollbarIsAlwaysShownOnWeb,
+      scrollbarRadius: scrollbarRadius,
     );
   }
 
