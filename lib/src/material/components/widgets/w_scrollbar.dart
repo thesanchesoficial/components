@@ -10,14 +10,14 @@ class OwScrollbar extends StatelessWidget {
   final bool scrollbarIsAlwaysShownOnWeb;
   final bool scrollbarIsAlwaysShownOnMobile;
   final double scrollbarRadius;
-  final bool returnSingleChildScrollView;
+  final bool useSingleChildScrollView;
   final ScrollPhysics scrollPhysicsMobile;
   final ScrollPhysics scrollPhysicsWeb;
   final EdgeInsetsGeometry padding;
   final Widget child;
-  final bool scrollbarBackground;
   final Color scrollColor;
   final double scrollColorOpacity;
+  final Color backgroundScrollColor;
 
   const OwScrollbar({
     Key key,
@@ -28,60 +28,81 @@ class OwScrollbar extends StatelessWidget {
     this.scrollbarIsAlwaysShownOnWeb = true,
     this.scrollbarIsAlwaysShownOnMobile = false,
     this.scrollbarRadius = 5,
-    this.returnSingleChildScrollView = true,
+    this.useSingleChildScrollView = true,
     this.scrollPhysicsMobile = const BouncingScrollPhysics(),
-    this.scrollPhysicsWeb = const BouncingScrollPhysics(),
+    this.scrollPhysicsWeb, // = const BouncingScrollPhysics(),
     this.padding,
     this.child,
-    this.scrollbarBackground = false, // ! Terminar
     this.scrollColor = Colors.grey,
-    this.scrollColorOpacity = 0.4,
+    this.scrollColorOpacity = 1,
+    this.backgroundScrollColor,
 
   })  : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    bool _showScrollbar = showScrollbar ?? F.isWeb(context);
+    bool _showAsWeb = isWebApplication ? F.isWeb(context) : false; // isWebApplication; // F.isWeb(context); // * Once, or using width
+      // Se for deixar assim, alterar direto na função F.isWeb(context);
+    bool _showScrollbar = showScrollbar ?? _showAsWeb;
     return _showScrollbar
       ? RawScrollbar(
         thumbColor: scrollColor.withOpacity(scrollColorOpacity),
         controller: scrollController,
-        child: _child(context),
-        // child: scrollbarBackground
-        //   ? F.isWeb(context) && scrollbarIsAlwaysShownOnWeb
-        //     ? 
-        //   : null,
-        thickness: F.isWeb(context)
+        child: _page(context, _showAsWeb),
+        thickness: _showAsWeb
           ? scrollbarThicknessWeb
           : scrollbarThicknessMobile,
-        isAlwaysShown: F.isWeb(context)
+        isAlwaysShown: _showAsWeb
           ? scrollbarIsAlwaysShownOnWeb
           : scrollbarIsAlwaysShownOnMobile,
         radius: Radius.circular(scrollbarRadius),
       )
-      : _child(context);
+      : _page(context, _showAsWeb);
   }
 
-  Widget _child(BuildContext context) {
-    return returnSingleChildScrollView
-      ? SingleChildScrollView(
-        padding: padding,
-        controller: scrollController,
-        child: child,
-        physics: F.isWeb(context)
-          ? scrollPhysicsWeb
-          : scrollPhysicsMobile,
-      )
-      : Container(
-        padding: padding,
-        child: child,
-      );
-  }
-
-  Widget _backgroundScroll() {
+  Widget _page(BuildContext context, bool showAsWeb) {
     return Container(
-      width: 10,
-      color: Colors.yellow,
+      padding: padding,
+      decoration: _backgroundScroll(showAsWeb),
+      child: useSingleChildScrollView
+        ? _singleChildScrollView(context, showAsWeb)
+        : child,
     );
+  }
+
+  Widget _singleChildScrollView(BuildContext context, bool showAsWeb) {
+    return SingleChildScrollView(
+      padding: padding,
+      controller: scrollController,
+      child: child,
+      physics: showAsWeb
+        ? scrollPhysicsWeb
+        : scrollPhysicsMobile,
+    );
+  }
+
+  BoxDecoration _backgroundScroll(bool showAsWeb) {
+    if(backgroundScrollColor != null) {
+      if(!showAsWeb && scrollbarIsAlwaysShownOnMobile) {
+        return BoxDecoration(
+          border: Border(
+            right: BorderSide(
+              width: scrollbarThicknessMobile + 1, 
+              color: backgroundScrollColor,
+            ),
+          ),
+        );
+      } else if(showAsWeb && scrollbarIsAlwaysShownOnWeb) {
+        return BoxDecoration(
+          border: Border(
+            right: BorderSide(
+              width: scrollbarThicknessWeb + 1, 
+              color: backgroundScrollColor,
+            ),
+          ),
+        );
+      }
+    }
+    return null;
   }
 }
