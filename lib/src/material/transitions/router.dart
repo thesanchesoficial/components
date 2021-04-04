@@ -5,15 +5,15 @@ import 'package:flutter/material.dart';
 class OwRouter {
   const OwRouter._();
 
-  static _goRouter(router, BuildContext context, bool removeUntil, {bool isPageResponsive = false}) async {
+  static _goRouter(router, BuildContext context, bool removeUntil, {bool isPageResponsive = false}) {
     if(isPageResponsive) {
       if(removeUntil) {
-        return await navigatorGlobalKey.currentState.pushAndRemoveUntil(router, (route) => false);
+        navigatorGlobalKey.currentState.pushAndRemoveUntil(router, (route) => false);
       } else {
-        return await navigatorGlobalKey.currentState.push(router);
+        navigatorGlobalKey.currentState.push(router);
       }
     } else {
-      return await openLink(context, router);
+      openLink(context, router);
     }
   }
 
