@@ -23,8 +23,8 @@ class OwScrollbar extends StatelessWidget {
     Key key,
     this.showScrollbar,
     this.scrollController,
-    this.scrollbarThicknessWeb,
-    this.scrollbarThicknessMobile,
+    this.scrollbarThicknessWeb = 20,
+    this.scrollbarThicknessMobile = 10,
     this.scrollbarIsAlwaysShownOnWeb = true,
     this.scrollbarIsAlwaysShownOnMobile = false,
     this.scrollbarRadius = 5,
@@ -36,7 +36,6 @@ class OwScrollbar extends StatelessWidget {
     this.scrollColor = Colors.grey,
     this.scrollColorOpacity = 1,
     this.backgroundScrollColor,
-
   })  : super(key: key);
 
   @override
