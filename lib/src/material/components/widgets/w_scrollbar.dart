@@ -15,16 +15,16 @@ class OwScrollbar extends StatelessWidget {
   final ScrollPhysics scrollPhysicsWeb;
   final EdgeInsetsGeometry padding;
   final Widget child;
-  final Color scrollColor;
+     Color scrollColor;
   final double scrollColorOpacity;
-  final Color backgroundScrollColor;
+  Color backgroundScrollColor;
 
   OwScrollbar({
     Key key,
     this.showScrollbar,
     this.scrollController,
-    this.scrollbarThicknessWeb = 20,
-    this.scrollbarThicknessMobile = 10,
+    this.scrollbarThicknessWeb = 15,
+    this.scrollbarThicknessMobile = 8,
     this.scrollbarIsAlwaysShownOnWeb = true,
     this.scrollbarIsAlwaysShownOnMobile = false,
     this.scrollbarRadius = 5,
@@ -40,6 +40,8 @@ class OwScrollbar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    backgroundScrollColor = backgroundScrollColor ?? Theme.of(context).cardColor.withOpacity(.3);
+    scrollColor = scrollColor ?? Theme.of(context).secondaryHeaderColor;
     bool _showAsWeb = isWebApplication ? F.isWeb(context) : false; // isWebApplication; // F.isWeb(context); // * Once, or using width
       // Se for deixar assim, alterar direto na função F.isWeb(context);
     bool _showScrollbar = showScrollbar ?? _showAsWeb;
