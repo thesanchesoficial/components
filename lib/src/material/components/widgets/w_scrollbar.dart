@@ -33,9 +33,9 @@ class OwScrollbar extends StatelessWidget {
     this.scrollPhysicsWeb, // = const BouncingScrollPhysics(),
     this.padding,
     this.child,
-    this.scrollColor = Colors.grey,
+    this.scrollColor,
     this.scrollColorOpacity = 1,
-    this.backgroundScrollColor = Colors.yellow
+    this.backgroundScrollColor,
   })  : super(key: key);
 
   @override
