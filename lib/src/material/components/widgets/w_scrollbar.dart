@@ -3,6 +3,21 @@ import 'package:components_venver/src/settings/variable.dart';
 import 'package:flutter/material.dart';
 
 class OwScrollbar extends StatelessWidget {
+  final bool showScrollbar;
+  final ScrollController scrollController;
+  final double scrollbarThicknessWeb;
+  final double scrollbarThicknessMobile;
+  final bool scrollbarIsAlwaysShownOnWeb;
+  final bool scrollbarIsAlwaysShownOnMobile;
+  final double scrollbarRadius;
+  final bool useSingleChildScrollView;
+  final ScrollPhysics scrollPhysicsMobile;
+  final ScrollPhysics scrollPhysicsWeb;
+  final EdgeInsetsGeometry padding;
+  final Widget child;
+  final Color scrollColor;
+  final double scrollColorOpacity;
+  final Color backgroundScrollColor;
 
   OwScrollbar({
     Key key,
@@ -22,10 +37,6 @@ class OwScrollbar extends StatelessWidget {
     this.scrollColorOpacity = 1,
     this.backgroundScrollColor,
   })  : super(key: key);
-
-  
-
-  
 
   @override
   Widget build(BuildContext context) {
@@ -96,20 +107,4 @@ class OwScrollbar extends StatelessWidget {
     }
     return null;
   }
-
-  final bool showScrollbar;
-  final ScrollController scrollController;
-  final double scrollbarThicknessWeb;
-  final double scrollbarThicknessMobile;
-  final bool scrollbarIsAlwaysShownOnWeb;
-  final bool scrollbarIsAlwaysShownOnMobile;
-  final double scrollbarRadius;
-  final bool useSingleChildScrollView;
-  final ScrollPhysics scrollPhysicsMobile;
-  final ScrollPhysics scrollPhysicsWeb;
-  final EdgeInsetsGeometry padding;
-  final Widget child;
-  final Color scrollColor;
-  final double scrollColorOpacity;
-  final Color backgroundScrollColor;
 }
