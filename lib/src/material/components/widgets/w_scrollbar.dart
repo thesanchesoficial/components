@@ -19,7 +19,7 @@ class OwScrollbar extends StatelessWidget {
   final double scrollColorOpacity;
   final Color backgroundScrollColor;
 
-  const OwScrollbar({
+  OwScrollbar({
     Key key,
     this.showScrollbar,
     this.scrollController,
@@ -35,7 +35,7 @@ class OwScrollbar extends StatelessWidget {
     this.child,
     this.scrollColor = Colors.grey,
     this.scrollColorOpacity = 1,
-    this.backgroundScrollColor,
+    this.backgroundScrollColor = Colors.yellow
   })  : super(key: key);
 
   @override
@@ -44,17 +44,20 @@ class OwScrollbar extends StatelessWidget {
       // Se for deixar assim, alterar direto na função F.isWeb(context);
     bool _showScrollbar = showScrollbar ?? _showAsWeb;
     return _showScrollbar
-      ? RawScrollbar(
-        thumbColor: scrollColor.withOpacity(scrollColorOpacity),
-        controller: scrollController,
-        child: _page(context, _showAsWeb),
-        thickness: _showAsWeb
-          ? scrollbarThicknessWeb
-          : scrollbarThicknessMobile,
-        isAlwaysShown: _showAsWeb
-          ? scrollbarIsAlwaysShownOnWeb
-          : scrollbarIsAlwaysShownOnMobile,
-        radius: Radius.circular(scrollbarRadius),
+      ? Padding(
+        padding: const EdgeInsets.only(right: 2),
+        child: RawScrollbar(
+          thumbColor: scrollColor.withOpacity(scrollColorOpacity),
+          controller: scrollController,
+          child: _page(context, _showAsWeb),
+          thickness: _showAsWeb
+            ? scrollbarThicknessWeb
+            : scrollbarThicknessMobile,
+          isAlwaysShown: _showAsWeb
+            ? scrollbarIsAlwaysShownOnWeb
+            : scrollbarIsAlwaysShownOnMobile,
+          radius: Radius.circular(scrollbarRadius),
+        ),
       )
       : _page(context, _showAsWeb);
   }
@@ -95,7 +98,7 @@ class OwScrollbar extends StatelessWidget {
         return BoxDecoration(
           border: Border(
             right: BorderSide(
-              width: scrollbarThicknessWeb + 1, 
+              width: scrollbarThicknessWeb + 2, 
               color: backgroundScrollColor,
             ),
           ),
