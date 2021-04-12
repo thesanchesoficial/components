@@ -3,28 +3,29 @@ import 'package:flutter/material.dart';
 class OwProgressBar extends StatelessWidget {
   final double height;
   final double radius;
-  final Duration duration;
-  final Color progressColor;
+  final Color progressBarColor;
   final Color barColor;
+  final Duration duration;
   final Curve curve;
-  final double maxWidth;
-  final bool fill;
-  final bool fullyEmpty;
-  final bool resetWithoutAnimation;
+  final bool animated;
+  final int totalSteps;
+  final int filledSteps;
+  final double fillPercent;
 
   OwProgressBar({
     Key key,
-    this.resetWithoutAnimation = false,
-    this.fill = false,
-    this.fullyEmpty = false,
+    this.animated = true,
     this.height = 10,
     this.radius = 10,
-    this.duration = const Duration(milliseconds: 500),
-    this.progressColor = Colors.green, // ! Change
+    this.duration = const Duration(seconds: 1),
+    this.progressBarColor = Colors.green, // ! Change
     this.barColor = Colors.grey,
     this.curve = Curves.linear,
-    this.maxWidth,
-  })  : super(key: key);
+    this.totalSteps = 10,
+    this.filledSteps = 1,
+    this.fillPercent,
+  })  : assert(fillPercent == null || (fillPercent != null && fillPercent <= 1)),
+        super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -37,43 +38,42 @@ class OwProgressBar extends StatelessWidget {
         decoration: BoxDecoration(
           color: barColor,
         ),
-        child: Align(
-          alignment: Alignment.centerLeft,
-          child: AnimatedContainer(
-            curve: curve,
-            duration: _defineDuration(),
-            alignment: const Alignment(0, 0),
-            width: _defineWidth(context),
-            height: height,
-            decoration: BoxDecoration(
-              color: progressColor,
-              borderRadius: BorderRadius.all(
-                Radius.circular(radius),
+        child: LayoutBuilder(
+          builder: (context, constriants) {
+            return Align(
+              alignment: Alignment.centerLeft,
+              child: AnimatedContainer(
+                curve: curve,
+                duration: _defineDuration(),
+                width: _defineWidth(constriants.maxWidth),
+                height: height,
+                decoration: BoxDecoration(
+                  color: progressBarColor,
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(radius),
+                  ),
+                ),
               ),
-            ),
-          ),
-        ),
+            );
+          },
+        )
       ),
     );
   }
 
-  double _defineWidth(BuildContext context) {
-    if(fill) {
-      return maxWidth ?? MediaQuery.of(context).size.width;
+  double _defineWidth(double width) {
+    if(fillPercent != null) {
+      return fillPercent * width;
     } else {
-      if(fullyEmpty) {
-        return 0;
-      } else {
-        return height;
-      }
+      return (filledSteps / totalSteps) * width;
     }
   }
 
   Duration _defineDuration() {
-    if(resetWithoutAnimation) {
-      return Duration.zero;
-    } else {
+    if(animated) {
       return duration;
+    } else {
+      return Duration.zero;
     }
   }
 }

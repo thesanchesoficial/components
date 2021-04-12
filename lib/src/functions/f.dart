@@ -16,7 +16,9 @@ class F {
   static const String untilWord = "até";
 
   static bool isWeb(BuildContext context) {
-    return MediaQuery.of(context).size.width >= webStartsWithWidth;
+    return isWebApplication
+      ? MediaQuery.of(context).size.width >= webStartsWithWidth
+      : false;
   }
 
   /// Returns the quantity of days, hours and minutes based on [d]

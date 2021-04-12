@@ -27,6 +27,7 @@ dependencies:
   flutter_cache_manager: ^3.0.1
   # uuid: ^3.0.1
   eva_icons_flutter: ^2.0.0
+  intl: ^0.17.0
 
 dev_dependencies:
   flutter_test:

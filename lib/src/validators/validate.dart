@@ -7,7 +7,7 @@ import '../functions/format.dart';
 class OwValidate {
   const OwValidate._();
 
-  // ! Separete to a initializer
+  // ! Separete to an initializer
   static const int MAX_CHARACTERS = 255;
 
   static const int minLengthName = 5;
