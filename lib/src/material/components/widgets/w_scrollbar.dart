@@ -15,9 +15,9 @@ class OwScrollbar extends StatelessWidget {
   final ScrollPhysics scrollPhysicsWeb;
   final EdgeInsetsGeometry padding;
   final Widget child;
-  final Color scrollColor;
+  Color scrollColor;
   final double scrollColorOpacity;
-  final Color backgroundScrollColor;
+  Color backgroundScrollColor;
 
   OwScrollbar({
     Key key,
@@ -40,8 +40,9 @@ class OwScrollbar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    bool _showAsWeb = isWebApplication ? F.isWeb(context) : false; // isWebApplication; // F.isWeb(context); // * Once, or using width
-      // Se for deixar assim, alterar direto na função F.isWeb(context);
+    bool _showAsWeb = isWebApplication ? F.isWeb(context) : false;
+    backgroundScrollColor = backgroundScrollColor ?? Theme.of(context).cardColor.withOpacity(.3);
+    scrollColor = scrollColor ?? Theme.of(context).secondaryHeaderColor;
     bool _showScrollbar = showScrollbar ?? _showAsWeb;
     return _showScrollbar
       ? Padding(
