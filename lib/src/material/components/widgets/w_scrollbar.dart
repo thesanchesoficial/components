@@ -47,10 +47,8 @@ class OwScrollbar extends StatelessWidget {
     return _showScrollbar
       ? Padding(
         padding: const EdgeInsets.only(right: 2),
-        child: Theme(
-          data: ThemeData(
-            accentColor: Colors.orange,
-          ),
+        child: ScrollConfiguration(
+          behavior: MyBehavior(),
           child: RawScrollbar(
             thumbColor: scrollColor.withOpacity(scrollColorOpacity),
             controller: scrollController,
@@ -112,5 +110,13 @@ class OwScrollbar extends StatelessWidget {
       }
     }
     return null;
+  }
+}
+
+class MyBehavior extends ScrollBehavior {
+  @override
+  Widget buildViewportChrome(
+      BuildContext context, Widget child, AxisDirection axisDirection) {
+    return child;
   }
 }
