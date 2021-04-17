@@ -149,4 +149,12 @@ class F {
   });
   */
 
+  // It returns a list of initialized FocusNode instance
+  List<FocusNode> initialilzeFocusNodeList(int quantity) {
+    List<FocusNode> returned = [];
+    for(int i = 0; i < quantity; i++) {
+      returned.add(FocusNode());
+    }
+    return returned;
+  }
 }

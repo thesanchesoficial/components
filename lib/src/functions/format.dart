@@ -626,12 +626,14 @@ class OwFormat {
   /// 
   /// [precision] is the precision of the decimal places
   /// 
+  /// [removeRightDecimalZeros] is to remove right zeros (*1.10* -> *1.1*)
+  /// 
   /// Example:
   /// ["432816", "000000", "000", 0, "aaa123", 12345678, 1.2312, "100", "1.000,7", 15, "1,8", 0.185, 1.0001, "R\$ 1.200,9", "R\$ 9,200.6", null]
   /// 
   /// Result from example (standard values):
   /// ["R\$ 432.816,00", freePriceWord, freePriceWord, freePriceWord, "R\$ 123,00", "R\$ 12.345.678,00", "R\$ 1,23", "R\$ 100,00", "R\$ 1000,70", "R\$ 15,00", "R\$ 1,80", "R\$ 0,18", "R\$ 1,00", "R\$ 1.200,90", "R\$ 9.200,60", freePriceWord]
-  static String toCurrency( // TODO: Talvez, colocar uma opção pra ocultar os 0s da direita depois do ponto
+  static String toCurrency(
     dynamic value, 
     {String leftSymbol = "R\$ ",
     String rightSymbol = "",
