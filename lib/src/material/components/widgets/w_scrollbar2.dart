@@ -3,7 +3,7 @@ import 'package:components_venver/src/settings/variable.dart';
 import 'package:flutter/material.dart';
 
 // ignore: must_be_immutable
-class OwScrollbar extends StatelessWidget {
+class OwScrollbar2 extends StatelessWidget {
   final bool showScrollbar;
   final ScrollController scrollController;
   final double scrollbarThicknessWeb;
@@ -20,7 +20,7 @@ class OwScrollbar extends StatelessWidget {
   final double scrollColorOpacity;
   final Color backgroundScrollColor;
 
-  OwScrollbar({
+  OwScrollbar2({
     Key key,
     this.showScrollbar,
     this.scrollController,
