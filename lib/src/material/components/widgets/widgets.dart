@@ -13,7 +13,7 @@ export 'package:components_venver/src/material/components/widgets/w_slider.dart'
 export 'package:components_venver/src/material/components/widgets/w_stories.dart';
 export 'package:components_venver/src/material/components/widgets/w_text_field.dart';
 export 'package:components_venver/src/material/components/widgets/w_two_floating_buttons.dart';
-export 'package:components_venver/src/material/components/widgets/w_scrollbar.dart';
+// export 'package:components_venver/src/material/components/widgets/w_scrollbar.dart';
 export 'package:components_venver/src/material/components/widgets/w_scrollbar2.dart';
 export 'package:components_venver/src/material/components/widgets/w_progress_bar.dart';
 export 'package:components_venver/src/material/components/widgets/w_page_view.dart';

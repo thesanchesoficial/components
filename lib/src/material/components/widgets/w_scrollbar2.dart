@@ -1,9 +1,8 @@
 import 'package:components_venver/src/functions/f.dart';
-import 'package:components_venver/src/settings/variable.dart';
 import 'package:flutter/material.dart';
 
 // ignore: must_be_immutable
-class OwScrollbar2 extends StatelessWidget {
+class OwScrollbar extends StatelessWidget {
   final bool showScrollbar;
   final ScrollController scrollController;
   final double scrollbarThicknessWeb;
@@ -22,7 +21,7 @@ class OwScrollbar2 extends StatelessWidget {
   final bool disallowGlow;
   final double spaceBetweenScrollAndBorder;
 
-  OwScrollbar2({
+  OwScrollbar({
     Key key,
     this.showScrollbar,
     this.scrollController,
