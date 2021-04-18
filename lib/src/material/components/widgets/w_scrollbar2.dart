@@ -129,10 +129,10 @@ class OwScrollbar2 extends StatelessWidget {
       decoration: _hasBackgroundScroll()
         ? _backgroundScrollDecoration()
         : null,
-      // child: useSingleChildScrollView
-      //   ? _singleChildScrollView(context)
-      //   : child,
-      child: _singleChildScrollView(context),
+      child: useSingleChildScrollView
+        ? _singleChildScrollView(context)
+        : child,
+      // child: _singleChildScrollView(context),
     );
   }
 
