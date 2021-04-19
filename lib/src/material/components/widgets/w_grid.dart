@@ -50,7 +50,7 @@ class OwGrid extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         key: key,
-        // children: _columnChildren(context),
+        // children: _columnChildren(context), // * Pra voltar pro antigo, é só decomentar essa linha e as funções comentadas abaixo
         children: _columnWidgets(context),
       ),
     );
