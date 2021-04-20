@@ -17,6 +17,7 @@ class OwGrid extends StatelessWidget {
   final BoxConstraints constraints;
   final List<List<int>> layout;
   final bool fillLastRow;
+  final bool expandLastColumn;
 
   const OwGrid({
     Key key,
@@ -36,6 +37,7 @@ class OwGrid extends StatelessWidget {
     this.heightRows,
     this.layout,
     this.fillLastRow = false,
+    this.expandLastColumn = true,
   }) :  
   // assert((flexColumns != null && flexColumns.length >= numbersInRowAccordingToWidgth.length) || flexColumns == null),
         super(key: key);
@@ -124,7 +126,11 @@ class OwGrid extends StatelessWidget {
         }
 
         double _widthChild;
-        if(_hasFlex || (!_hasFlex && column + 1 < _quantityInRow)) {
+        if(
+          _hasFlex || 
+          (!_hasFlex && column + 1 < _quantityInRow) || 
+          (!expandLastColumn && column + 1 == _quantityInRow)
+        ) {
           if(widthColumns != null && widthColumns.length > column && widthColumns[column] != null) {
             _widthChild = widthColumns[column];
           }
