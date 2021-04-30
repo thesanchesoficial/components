@@ -1,6 +1,6 @@
 name: components_venver
 description: Componentes para desenvolvimento de aplicativos Venver
-version: 0.0.35
+version: 0.0.36
 author: Matheus e Nicollas
 homepage:
 
@@ -17,7 +17,7 @@ dependencies:
   process: ^4.2.1
   flutter_typeahead: ^3.1.1
   flutter_masked_text: ^0.8.0
-  bot_toast: ^3.0.5
+  bot_toast: ^4.0.1
   encrypt: ^5.0.0
   pretty_qr_code: ^1.0.1
   cpfcnpj: ^1.0.3

@@ -4,6 +4,7 @@ import 'package:components_venver/src/settings/variable.dart';
 import 'package:flutter/material.dart';
 
 GlobalKey<NavigatorState> navigatorGlobalKey = GlobalKey<NavigatorState>();
+BotToastNavigatorObserver botToastNavigatorObserver = BotToastNavigatorObserver();
 
 // ignore: non_constant_identifier_names
 TransitionBuilder ComponentsInit({

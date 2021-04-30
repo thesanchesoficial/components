@@ -77,13 +77,16 @@ class OwScrollbar extends StatelessWidget {
   }
 
   Widget _singleChildScrollView(BuildContext context, bool showAsWeb) {
-    return SingleChildScrollView(
-      padding: padding,
-      controller: scrollController,
-      child: child,
-      physics: showAsWeb
-        ? scrollPhysicsWeb
-        : scrollPhysicsMobile,
+    return ScrollConfiguration(
+      behavior: MyBehavior(),
+      child: SingleChildScrollView(
+        padding: padding,
+        controller: scrollController,
+        child: child,
+        physics: showAsWeb
+          ? scrollPhysicsWeb
+          : scrollPhysicsMobile,
+      ),
     );
   }
 
