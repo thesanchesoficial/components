@@ -1,6 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
+// https://pub.dev/packages/page_view_indicators & https://pub.dev/packages/loop_page_view/example (see also https://pub.dev/packages/expandable_page_view)
 class OwPageView extends StatelessWidget {
   final bool loop;
   final double height;

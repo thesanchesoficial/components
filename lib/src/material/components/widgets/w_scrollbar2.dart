@@ -1,9 +1,8 @@
 import 'package:components_venver/src/functions/f.dart';
-import 'package:components_venver/src/settings/variable.dart';
 import 'package:flutter/material.dart';
 
 // ignore: must_be_immutable
-class OwScrollbar2 extends StatelessWidget {
+class OwScrollbar extends StatelessWidget {
   final bool showScrollbar;
   final ScrollController scrollController;
   final double scrollbarThicknessWeb;
@@ -19,8 +18,10 @@ class OwScrollbar2 extends StatelessWidget {
   final Color scrollColor;
   final double scrollColorOpacity;
   final Color backgroundScrollColor;
+  final bool disallowGlow;
+  final double spaceBetweenScrollAndBorder;
 
-  OwScrollbar2({
+  OwScrollbar({
     Key key,
     this.showScrollbar,
     this.scrollController,
@@ -37,6 +38,8 @@ class OwScrollbar2 extends StatelessWidget {
     this.scrollColor,
     this.scrollColorOpacity = 1,
     this.backgroundScrollColor,
+    this.disallowGlow = true,
+    this.spaceBetweenScrollAndBorder = 2,
   })  : super(key: key);
 
   bool _showAsWeb;
@@ -47,7 +50,7 @@ class OwScrollbar2 extends StatelessWidget {
   Widget build(BuildContext context) {
     _showAsWeb = F.isWeb(context);
     _backgroundScrollColor = backgroundScrollColor ?? Theme.of(context).cardColor.withOpacity(.3);
-    _scrollColor = scrollColor ?? Theme.of(context).primaryTextTheme.bodyText1.color.withOpacity(.65);
+    _scrollColor = scrollColor ?? Theme.of(context).secondaryHeaderColor; // Theme.of(context).primaryTextTheme.bodyText1.color.withOpacity(.65);
 
     return _hasBackgroundScroll()
       ? Column(
@@ -58,7 +61,7 @@ class OwScrollbar2 extends StatelessWidget {
         ],
       )
       : showScrollbar ?? _showAsWeb
-        ? _rawScrollbar(context)
+        ? _removeGlowScroll(context)
         : _page(context);
     // return showScrollbar ?? _showAsWeb
     //   ? _backgroundScroll() != null
@@ -78,21 +81,31 @@ class OwScrollbar2 extends StatelessWidget {
   }
 
   Widget _backgroundContainer(BuildContext context) {
-    double width = 2;
-
     return Container(
       decoration: BoxDecoration(
         border: Border(
           right: BorderSide(
-            width: width,
+            width: spaceBetweenScrollAndBorder,
             color: _backgroundScrollColor,
           ),
         ),
       ),
       child: showScrollbar ?? _showAsWeb
-        ? _rawScrollbar(context)
+        ? _removeGlowScroll(context)
         : _page(context),
     );
+  }
+
+  Widget _removeGlowScroll(BuildContext context) {
+    return disallowGlow
+      ? NotificationListener<OverscrollIndicatorNotification>(
+        onNotification: (overscroll) {
+          overscroll.disallowGlow();
+          return true;
+        },
+        child: _rawScrollbar(context),
+      )
+      : _rawScrollbar(context);
   }
 
   Widget _rawScrollbar(BuildContext context) {
@@ -115,10 +128,10 @@ class OwScrollbar2 extends StatelessWidget {
       decoration: _hasBackgroundScroll()
         ? _backgroundScrollDecoration()
         : null,
-      // child: useSingleChildScrollView
-      //   ? _singleChildScrollView(context)
-      //   : child,
-      child: _singleChildScrollView(context),
+      child: useSingleChildScrollView
+        ? _singleChildScrollView(context)
+        : child,
+      // child: _singleChildScrollView(context),
     );
   }
 
