@@ -1,9 +1,55 @@
 import 'package:components_venver/functions.dart';
+import 'package:components_venver/src/settings/filter_mask.dart';
+import 'package:components_venver/src/settings/mask_type.dart';
 import 'package:components_venver/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
+
+// ! VER
+/*
+https://pub.dev/packages/flutter_masked_text
+https://pub.dev/packages/mask_text_input_formatter
+https://pub.dev/packages/masked_text_formatter
+https://pub.dev/packages/extended_masked_text
+https://pub.dev/packages/masked_controller
+https://pub.dev/packages/masked_text_input_formatter
+*/
+
+enum TextFieldType {
+  cpf,
+  cnpj,
+  cpf_Cnpj,
+  date,
+  phone8,
+  phone9,
+  phone10,
+  phone11,
+  phone12,
+  phone13,
+  phone8_9,
+  phone8_10,
+  phone8_11,
+  phone8_12,
+  phone8_13,
+  phone9_10,
+  phone9_11,
+  phone9_12,
+  phone9_13,
+  phone10_11,
+  phone10_12,
+  phone10_13,
+  phone11_12,
+  phone11_13,
+  phone12_13,
+  cardNumber,
+  cvvCard,
+  dateCardYYYY,
+  dateCardYY,
+  currency,
+  integer,
+}
 
 // ignore: must_be_immutable
 class OwTextField extends StatelessWidget {
@@ -41,11 +87,15 @@ class OwTextField extends StatelessWidget {
   final List<dynamic> suggestionsList;
   final bool ignoreAccentsOnSuggestion;
   final bool caseSensitiveOnSuggestion;
-  final String fieldType;
+  final TextFieldType fieldType;
   final bool unfocusIfNoNextFocusNode;
   final List<FocusNode> focusNodeList;
   final int focusNodeIndex;
   // final VoidCallback onPressedSuffix;
+
+  // ! assert() se passar focusNodeList, tem que passar focusNodeIndex
+  // assert(focusNodeList == null && focusNodeIndex == null || (focusNodeIndex != null && focusNodeIndex != null)),
+  // ! passar type pra enum
 
   OwTextField({
     Key key,
@@ -87,6 +137,10 @@ class OwTextField extends StatelessWidget {
         this.suggestionsList = null,
         this.ignoreAccentsOnSuggestion = null,
         this.caseSensitiveOnSuggestion = null,
+        assert(
+          (focusNodeList == null && focusNodeIndex == null) || (focusNodeList != null && focusNodeIndex != null), 
+          "If you pass 'focusNodeList', you need to pass the position with 'focusNodeIndex'",
+        ),
         super(key: key);
 
   OwTextField.withSuggestions({
@@ -129,7 +183,14 @@ class OwTextField extends StatelessWidget {
   })  : this.fieldType = null,
         this.onSaved = null,
         this.validator = null,
-        assert(suggestionsList != null),
+        assert(
+          suggestionsList != null, 
+          "'suggestionsList', can not be null",
+        ),
+        assert(
+          (focusNodeList == null && focusNodeIndex == null) || (focusNodeList != null && focusNodeIndex != null), 
+          "If you pass 'focusNodeList', you need to pass the position with 'focusNodeIndex'",
+        ),
         super(key: key);
 
   OwTextField.type({
@@ -165,13 +226,17 @@ class OwTextField extends StatelessWidget {
     this.suffixIcon,
     this.onSaved,
     this.validator,
-    this.fieldType,
+    @required this.fieldType,
     this.unfocusIfNoNextFocusNode = true,
     this.focusNodeList,
     this.focusNodeIndex,
   })  : this.suggestionsList = null,
         this.ignoreAccentsOnSuggestion = null,
         this.caseSensitiveOnSuggestion = null,
+        assert(
+          (focusNodeList == null && focusNodeIndex == null) || (focusNodeList != null && focusNodeIndex != null), 
+          "If you pass 'focusNodeList', you need to pass the position with 'focusNodeIndex'",
+        ),
         super(key: key);
 
   TextInputType _keyboardType;
@@ -181,11 +246,13 @@ class OwTextField extends StatelessWidget {
   TextInputAction _textInputAction = TextInputAction.next;
   FocusNode _nextFocusNode;
   FocusNode _focusNode;
+  Function _changeMask;
 
   @override
   Widget build(BuildContext context) {
     changeTextFieldType(context);
     defineFocusNode(context);
+    
     return Container(
       key: key,
       margin: margin,
@@ -260,8 +327,8 @@ class OwTextField extends StatelessWidget {
         //   if(onChanged != null) {
         //     onChanged(_);
         //   }
-        //   if(_onChanged != null) {
-        //     _onChanged(_);
+        //   if(_changeMask != null) {
+        //     _changeMask(_);
         //   }
         // },
         onChanged: onChanged,
@@ -389,6 +456,39 @@ class OwTextField extends StatelessWidget {
   }
 
   void changeTextFieldType(BuildContext context) {
+    if(fieldType == TextFieldType.cpf_Cnpj) {
+      MaskTextInputFormatter _maskFormatter;
+      if(controller?.text?.length == MaskType.cpf.length) {
+        _maskFormatter = MaskTextInputFormatter(
+          initialText: controller?.text,
+          mask: MaskType.cpf,
+          filter: FilterMask.number,
+        );
+      } else {
+        _maskFormatter = MaskTextInputFormatter(
+          initialText: controller?.text,
+          mask: MaskType.cnpj,
+          filter: FilterMask.number,
+        );
+      }
+      _inputFormatters = [_maskFormatter];
+
+      _changeMask = () { // ! Passar para o onChanged e testar o assert da lista de FocusNode
+        int position = controller?.selection?.baseOffset;
+        String text = _maskFormatter.getUnmaskedText();
+        String mask = _maskFormatter.getMask();
+        if(text.length > 10 && mask != MaskType.cpf) {
+          _maskFormatter.updateMask(mask: MaskType.cpf, filter: FilterMask.number);
+          // controller.updateMask(MaskType.cpf); // ! Descomentar
+          controller.selection = TextSelection.fromPosition(TextPosition(offset: position));
+        } else if(text.length <= 10 && mask != MaskType.cnpj) {
+          _maskFormatter.updateMask(mask: MaskType.cnpj, filter: FilterMask.number);
+          // controller.updateMask(MaskType.cnpj); // ! Descomentar
+          controller.selection = TextSelection.fromPosition(TextPosition(offset: position));
+        }
+      };
+    }
+
     if(fieldType != null) {
       // bool hasMask = false; // * Finalizar
       // if(
@@ -518,10 +618,56 @@ class OwTextField extends StatelessWidget {
         word = word.toLowerCase();
       }
       if(ignoreAccentsOnSuggestion) {
-        item = OwFormat.removerAccentAndPonctuation(item, useLowerCase: false);
-        word = OwFormat.removerAccentAndPonctuation(word, useLowerCase: false);
+        item = OwFormat.removeAccentAndPonctuation(item, useLowerCase: false);
+        word = OwFormat.removeAccentAndPonctuation(word, useLowerCase: false);
       }
       return item.contains(word);
     });
   }
 }
+
+
+
+/* +++++++++++++++++++++++++++++++++++++++++++++++++++
+https://stackoverflow.com/questions/50395032/flutter-textfield-with-currency-format
+
+[THIS CODE DOESN'T WORKS FOR ALL CASES]
+
+I just got it working this way, sharing in case someone needs too:
+
+TextField
+
+TextFormField(  
+    //validator: ,  
+    controller: controllerValor,  
+    inputFormatters: [  
+        WhitelistingTextInputFormatter.digitsOnly,
+        // Fit the validating format.
+        //fazer o formater para dinheiro
+        CurrencyInputFormatter()
+    ],
+    keyboardType: TextInputType.number, ...
+
+TextInputFormatter
+
+class CurrencyInputFormatter extends TextInputFormatter {
+
+    TextEditingValue formatEditUpdate(TextEditingValue oldValue, TextEditingValue newValue) {
+
+        if(newValue.selection.baseOffset == 0){
+            print(true);
+            return newValue;
+        }
+
+        double value = double.parse(newValue.text);
+
+        final formatter = NumberFormat.simpleCurrency(locale: "pt_Br");
+
+        String newText = formatter.format(value/100);
+
+        return newValue.copyWith(
+            text: newText,
+            selection: new TextSelection.collapsed(offset: newText.length));
+    }
+}
+*/

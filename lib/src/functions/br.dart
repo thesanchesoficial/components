@@ -129,8 +129,8 @@ class Br {
 
     for (Map<String, String> i in states) {
       if(
-        OwFormat.removerAccentAndPonctuation(stateOrUf).contains(
-          OwFormat.removerAccentAndPonctuation(i[from]),
+        OwFormat.removeAccentAndPonctuation(stateOrUf).contains(
+          OwFormat.removeAccentAndPonctuation(i[from]),
         )
       ) {
         return i[to];
