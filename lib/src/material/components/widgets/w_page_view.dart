@@ -223,6 +223,11 @@ enum IndicatorDotTouch {
   goToOnlyCheckedPage,
 }
 
+// ! Deixar passar um filho pro pageIndicator (como por exemplo, exibir as miniaturas das imagens)
+// ! Criar um Builder
+// ! Colocar opção pra desabilitar rolagem (quando dá zoom em uma imagem e arrasta pro lado (no zoom), vai pra próxima imagem)
+// ! Adicionar (tela inicial venver): 
+
 // Maybe add this too: https://pub.dev/packages/expandable_page_view
 class OwPageView extends StatefulWidget {
   final double height;

@@ -69,23 +69,23 @@ class OwMaskedController {
     );
   }
 
-  static MaskedTextController cvvCard({String text}) {
+  static MaskedTextController cardCvv({String text}) {
     return MaskedTextController(
-      mask: MaskType.cvvCard,
+      mask: MaskType.cardCvv,
       text: text,
     );
   }
 
-  static MaskedTextController dateCardYY({String text}) {
+  static MaskedTextController cardDateYY({String text}) {
     return MaskedTextController(
-      mask: MaskType.dateCardYY,
+      mask: MaskType.cardDateYY,
       text: text,
     );
   }
 
-  static MaskedTextController dateCardYYYY({String text}) {
+  static MaskedTextController cardDateYYYY({String text}) {
     return MaskedTextController(
-      mask: MaskType.dateCardYYYY,
+      mask: MaskType.cardDateYYYY,
       text: text,
     );
   }

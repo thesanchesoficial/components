@@ -64,7 +64,10 @@ openLink(BuildContext context, Widget widget) async {
             ),
             height: MediaQuery.of(context).size.height * 0.95,
             width: MediaQuery.of(context).size.width * 0.5,
-            child: widget
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(10),
+              child: widget,
+            ),
           ),
         );
       }

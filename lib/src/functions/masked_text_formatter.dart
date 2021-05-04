@@ -85,25 +85,25 @@ class OwMaskedFormatter {
     );
   }
 
-  static MaskTextInputFormatter cvvCard({String initialText}) {
+  static MaskTextInputFormatter cardCvv({String initialText}) {
     return MaskTextInputFormatter(
-      mask: MaskType.cvvCard,
+      mask: MaskType.cardCvv,
       filter: FilterMask.number,
       initialText: initialText,
     );
   }
 
-  static MaskTextInputFormatter dateCardYYYY({String initialText}) {
+  static MaskTextInputFormatter cardDateYYYY({String initialText}) {
     return MaskTextInputFormatter(
-      mask: MaskType.dateCardYYYY,
+      mask: MaskType.cardDateYYYY,
       filter: FilterMask.number,
       initialText: initialText,
     );
   }
 
-  static MaskTextInputFormatter dateCardYY({String initialText}) {
+  static MaskTextInputFormatter cardDateYY({String initialText}) {
     return MaskTextInputFormatter(
-      mask: MaskType.dateCardYY,
+      mask: MaskType.cardDateYY,
       filter: FilterMask.number,
       initialText: initialText,
     );

@@ -9,9 +9,9 @@ class MaskType {
   static const String phone12 = "+00 (00) 0000 0000";
   static const String phone13 = "+00 (00) 00000 0000";
   static const String cardNumber = "0000 0000 0000 0000";
-  static const String cvvCard = "0000";
-  static const String dateCardYYYY = "00/0000";
-  static const String dateCardYY = "00/00";
+  static const String cardCvv = "0000";
+  static const String cardDateYYYY = "00/0000";
+  static const String cardDateYY = "00/00";
 }
 
 
