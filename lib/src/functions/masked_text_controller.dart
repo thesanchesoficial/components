@@ -20,47 +20,47 @@ class OwMaskedController {
     );
   }
 
-  static MaskedTextController phone8({String text}) {
+  static MaskedTextController phones(int numbersQuantity, {String text}) {
     return MaskedTextController(
-      mask: MaskType.phone8,
+      mask: MaskType.phones(numbersQuantity),
       text: text,
     );
   }
 
-  static MaskedTextController phone9({String text}) {
-    return MaskedTextController(
-      mask: MaskType.phone9,
-      text: text,
-    );
-  }
+  // static MaskedTextController phone9({String text}) {
+  //   return MaskedTextController(
+  //     mask: MaskType.phone9,
+  //     text: text,
+  //   );
+  // }
 
-  static MaskedTextController phone10({String text}) {
-    return MaskedTextController(
-      mask: MaskType.phone10,
-      text: text,
-    );
-  }
+  // static MaskedTextController phone10({String text}) {
+  //   return MaskedTextController(
+  //     mask: MaskType.phone10,
+  //     text: text,
+  //   );
+  // }
 
-  static MaskedTextController phone11({String text}) {
-    return MaskedTextController(
-      mask: MaskType.phone11,
-      text: text,
-    );
-  }
+  // static MaskedTextController phone11({String text}) {
+  //   return MaskedTextController(
+  //     mask: MaskType.phone11,
+  //     text: text,
+  //   );
+  // }
 
-  static MaskedTextController phone12({String text}) {
-    return MaskedTextController(
-      mask: MaskType.phone12,
-      text: text,
-    );
-  }
+  // static MaskedTextController phone12({String text}) {
+  //   return MaskedTextController(
+  //     mask: MaskType.phone12,
+  //     text: text,
+  //   );
+  // }
 
-  static MaskedTextController phone13({String text}) {
-    return MaskedTextController(
-      mask: MaskType.phone13,
-      text: text,
-    );
-  }
+  // static MaskedTextController phone13({String text}) {
+  //   return MaskedTextController(
+  //     mask: MaskType.phone13,
+  //     text: text,
+  //   );
+  // }
   
   static MaskedTextController cardNumber({String text}) {
     return MaskedTextController(
@@ -93,6 +93,13 @@ class OwMaskedController {
   static MaskedTextController date({String text}) {
     return MaskedTextController(
       mask: MaskType.date,
+      text: text,
+    );
+  }
+
+  static MaskedTextController cep({String text}) {
+    return MaskedTextController(
+      mask: MaskType.cep,
       text: text,
     );
   }

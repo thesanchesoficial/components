@@ -8,6 +8,9 @@ import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 
+import 'package:components_venver/src/material/components/widgets/text_field_type/text_field_type.dart';
+export 'package:components_venver/src/material/components/widgets/text_field_type/text_field_type.dart';
+
 // ! VER controllers / formatters
 /*
 https://pub.dev/packages/flutter_masked_text
@@ -18,53 +21,9 @@ https://pub.dev/packages/masked_controller
 https://pub.dev/packages/masked_text_input_formatter
 */
 
-enum TextFieldType {
-  cpf,
-  cnpj,
-  cpf_cnpj,
-  date,
-  phone8,
-  phone9,
-  phone10,
-  phone11,
-  phone12,
-  phone13,
-  phone8_9,
-  phone8_10,
-  phone8_11,
-  phone8_12,
-  phone8_13,
-  phone9_10,
-  phone9_11,
-  phone9_12,
-  phone9_13,
-  phone10_11,
-  phone10_12,
-  phone10_13,
-  phone11_12,
-  phone11_13,
-  phone12_13,
-  cardNumber,
-  cardCvv,
-  cardDateYYYY,
-  cardDateYY,
-  currency,
-  integer,
-  name,
-  email,
-  password, // ! Tentar melhorar
-  paragraph, // ! Mais de uma linha, com multline, etc (descrição do estabelecimento por exemplo)
-  cep,
-  // phone<List>(List l), // ! Ver se dá pra fazer algo assim
-}
-
+// ! Pq a rota não é feita com enum?
+// ! Adicionar autoFocus (lista de focusNode) no withSuggestions (e no dropdown)
 /* // ! Ver sobre enum's
-https://ptyagicodecamp.github.io/dart-enums.html
-https://github.com/dart-lang/language/issues/158
-https://github.com/dart-lang/language/issues/83#issuecomment-449380965
-https://stackoverflow.com/questions/38908285/add-methods-or-values-to-enum-in-dart
-https://pub.dev/documentation/extension/latest/enum/Enum-class.html
-https://stackoverflow.com/questions/29567236/dart-how-to-get-the-value-of-an-enum/29567669
 https://www.educative.io/blog/dart-2-language-features
 */
 
@@ -77,7 +36,7 @@ class OwTextField extends StatelessWidget {
   final Widget suffixIcon;
   final TextInputType keyboardType;
   final TextInputAction textInputAction;
-  final TextEditingController controller;
+  final dynamic controller; // TextEditingController
   final FormFieldValidator<String> validator;
   final ValueChanged<String> onFieldSubmitted;
   final FocusNode focusNode;
@@ -108,9 +67,11 @@ class OwTextField extends StatelessWidget {
   final bool unfocusIfNoNextFocusNode;
   final List<FocusNode> focusNodeList;
   final int focusNodeIndex;
+  final ValueChanged<String> onSuggestionSelected;
+  final bool automaticFocusWithFocusNodeList;
   // final VoidCallback onPressedSuffix;
 
-  static final String assetMsgFocusNodeList = "If you pass 'focusNodeList', you need to pass the position with 'focusNodeIndex'";
+  static final String assetMsgFocusNodeList = "If you pass 'focusNodeList', you need to pass its position with 'focusNodeIndex'";
   static final String assetMsgSuggestions = "'suggestionsList', can not be null";
   // static final BorderRadius borderRadius  = BorderRadius.all(Radius.circular(10));
 
@@ -150,10 +111,16 @@ class OwTextField extends StatelessWidget {
     this.unfocusIfNoNextFocusNode = true,
     this.focusNodeList,
     this.focusNodeIndex,
+    this.automaticFocusWithFocusNodeList = true,
   })  : this.fieldType = null,
         this.suggestionsList = null,
         this.ignoreAccentsOnSuggestion = null,
         this.caseSensitiveOnSuggestion = null,
+        this.onSuggestionSelected = null,
+        // assert(
+        //   controller is TextEditingController,
+        //   "'controller' is not TextEditingController",
+        // ),
         assert(
           (focusNodeList == null && focusNodeIndex == null) || (focusNodeList != null && focusNodeIndex != null), 
           assetMsgFocusNodeList,
@@ -197,9 +164,15 @@ class OwTextField extends StatelessWidget {
     this.unfocusIfNoNextFocusNode = true,
     this.focusNodeList,
     this.focusNodeIndex,
+    this.automaticFocusWithFocusNodeList = true,
+    this.onSuggestionSelected,
   })  : this.fieldType = null,
         this.onSaved = null,
         this.validator = null,
+        // assert(
+        //   !(controller is TextEditingController),
+        //   "'controller' is not TextEditingController",
+        // ),
         assert(
           suggestionsList != null, 
           assetMsgSuggestions,
@@ -247,9 +220,15 @@ class OwTextField extends StatelessWidget {
     this.unfocusIfNoNextFocusNode = true,
     this.focusNodeList,
     this.focusNodeIndex,
+    this.automaticFocusWithFocusNodeList = true,
   })  : this.suggestionsList = null,
+        this.onSuggestionSelected = null,
         this.ignoreAccentsOnSuggestion = null,
         this.caseSensitiveOnSuggestion = null,
+        // assert(
+        //   !(controller is MaskedTextController),
+        //   "'controller' is not MaskedTextController",
+        // ),
         assert(
           (focusNodeList == null && focusNodeIndex == null) || (focusNodeList != null && focusNodeIndex != null), 
           assetMsgFocusNodeList,
@@ -327,7 +306,7 @@ class OwTextField extends StatelessWidget {
           ),
           errorBorder: const UnderlineInputBorder(
             borderRadius: const BorderRadius.all(Radius.circular(10)),
-            borderSide: BorderSide(color: AppTheme.errorColor ?? Colors.red),
+            borderSide: const BorderSide(color: AppTheme.errorColor ?? Colors.red),
           ),
           helperText: helperText,
           helperMaxLines: 3,
@@ -464,8 +443,11 @@ class OwTextField extends StatelessWidget {
           );
         },
         onSuggestionSelected: (suggestion) {
+          if(onSuggestionSelected != null) {
+            onSuggestionSelected(suggestion?.toString());
+          }
           if(controller != null) {
-            controller.text = suggestion.toString();
+            controller.text = suggestion?.toString() ?? "";
           }
         },
       );
@@ -474,187 +456,258 @@ class OwTextField extends StatelessWidget {
 
   void changeTextFieldType(BuildContext context) {
     if(fieldType != null) {
-      switch(fieldType) {
-        case TextFieldType.name:
-          _keyboardType = TextInputType.text;
+      switch(fieldType.type) {
+        case TextFieldMaskType.name:
+          _keyboardType = TextInputType.name;
           _textCapitalization = TextCapitalization.words;
           break;
 
-        case TextFieldType.email:
+        case TextFieldMaskType.email:
           _keyboardType = TextInputType.emailAddress;
           _textCapitalization = TextCapitalization.none;
           break;
 
-        case TextFieldType.password: // ! Ver se dá para melhorar
+        case TextFieldMaskType.password: // ! Ver se dá para melhorar
           _keyboardType = TextInputType.text; // TextInputType.visiblePassword,
           _textCapitalization = TextCapitalization.none;
           break;
 
-        case TextFieldType.paragraph: // ! Terminar
+        case TextFieldMaskType.multiText: // ! Terminar
           break;
 
-        case TextFieldType.cep: // ! Terminar
-          break;
-
-        case TextFieldType.cardNumber:
+        case TextFieldMaskType.cep:
+          assert(controller is MaskedTextController);
           _keyboardType = TextInputType.phone;
-          final _mask = OwMaskedFormatter.cardNumber(initialText: controller?.text); // initialText: controller?.text ?? ""
-          _inputFormatters = [_mask];
+          controller.updateMask(MaskType.cep);
+          // var _mask = OwMaskedFormatter.cep(); // initialText: controller?.text ?? ""
+          // _inputFormatters = [_mask];
           break;
 
-        case TextFieldType.cardCvv:
+        case TextFieldMaskType.search: // ! Terminar
+          _keyboardType = TextInputType.text;
+          _textInputAction = TextInputAction.search;
+          // textInputAction: TextInputAction.done, // Nos filtros, é usado done, pq ao digitar, ele já pesquisa automaticamente, já em outros lugares, deve ser serach, pois só pesquisará quando pressionar
+          // icon: controller.text.isNotEmpty
+          //   ? const Icon(Icons.close, color: Colors.grey,)
+          //   : const Icon(Icons.search, color: Colors.grey,),
+          // onPressedSuffix: controller.text.isNotEmpty ? (){
+          //   controller.clear();
+          //   pesquisar(categoria, controller.text);
+          // } : null,
+          break;
+
+        case TextFieldMaskType.cardNumber:
+          assert(controller is MaskedTextController);
           _keyboardType = TextInputType.phone;
-          final _mask = OwMaskedFormatter.cardCvv(initialText: controller?.text); // initialText: controller?.text ?? ""
-          _inputFormatters = [_mask];
+          controller.updateMask(MaskType.cardNumber);
+          // final _mask = OwMaskedFormatter.cardNumber(initialText: controller?.text); // initialText: controller?.text ?? ""
+          // _inputFormatters = [_mask];
           break;
 
-        case TextFieldType.cardDateYY:
+        case TextFieldMaskType.cardCvv:
+          assert(controller is MaskedTextController);
           _keyboardType = TextInputType.phone;
-          final _mask = OwMaskedFormatter.cardDateYY(initialText: controller?.text); // initialText: controller?.text ?? ""
-          _inputFormatters = [_mask];
+          controller.updateMask(MaskType.cardCvv);
+          // final _mask = OwMaskedFormatter.cardCvv(initialText: controller?.text); // initialText: controller?.text ?? ""
+          // _inputFormatters = [_mask];
           break;
 
-        case TextFieldType.cardDateYYYY:
+        case TextFieldMaskType.cardDateYY:
+          assert(controller is MaskedTextController);
           _keyboardType = TextInputType.phone;
-          final _mask = OwMaskedFormatter.cardDateYYYY(initialText: controller?.text); // initialText: controller?.text ?? ""
-          _inputFormatters = [_mask];
+          controller.updateMask(MaskType.cardDateYY);
+          // final _mask = OwMaskedFormatter.cardDateYY(initialText: controller?.text); // initialText: controller?.text ?? ""
+          // _inputFormatters = [_mask];
           break;
 
-        case TextFieldType.date:
-          _keyboardType = TextInputType.datetime; // ! Ver se esse datetime fica bom
-          final _mask = OwMaskedFormatter.date(initialText: controller?.text); // initialText: controller?.text ?? ""
-          _inputFormatters = [_mask];
-          break;
-
-        case TextFieldType.cpf:
+        case TextFieldMaskType.cardDateYYYY:
+          assert(controller is MaskedTextController);
           _keyboardType = TextInputType.phone;
-          final _mask = OwMaskedFormatter.cpf(initialText: controller?.text); // initialText: controller?.text ?? ""
-          _inputFormatters = [_mask];
+          controller.updateMask(MaskType.cardDateYYYY);
+          // final _mask = OwMaskedFormatter.cardDateYYYY(initialText: controller?.text); // initialText: controller?.text ?? ""
+          // _inputFormatters = [_mask];
           break;
 
-        case TextFieldType.cnpj:
+        case TextFieldMaskType.date:
+          assert(controller is MaskedTextController);
+          _keyboardType = TextInputType.datetime;
+          controller.updateMask(MaskType.date);
+          // final _mask = OwMaskedFormatter.date(initialText: controller?.text); // initialText: controller?.text ?? ""
+          // _inputFormatters = [_mask];
+          break;
+
+        case TextFieldMaskType.cpf:
+          assert(controller is MaskedTextController);
           _keyboardType = TextInputType.phone;
-          final _mask = OwMaskedFormatter.cnpj(initialText: controller?.text); // initialText: controller?.text ?? ""
-          _inputFormatters = [_mask];
+          controller.updateMask(MaskType.cpf);
+          // final _mask = OwMaskedFormatter.cpf(initialText: controller?.text); // initialText: controller?.text ?? ""
+          // _inputFormatters = [_mask];
+          break;
+
+        case TextFieldMaskType.cnpj:
+          assert(controller is MaskedTextController);
+          _keyboardType = TextInputType.phone;
+          controller.updateMask(MaskType.cnpj);
+          // final _mask = OwMaskedFormatter.cnpj(initialText: controller?.text); // initialText: controller?.text ?? ""
+          // _inputFormatters = [_mask];
           break;
         
-        case TextFieldType.cpf_cnpj:
-          if(!(controller is MaskedTextController)) { // ! Ver se vai dar certo (se der, separar exceção em outra classe)
-            // !(controller is TextEditingController) ||
-            // !(controller is MoneyMaskedTextController)
-            throw ArgumentError.value(
-              controller,
-              "controller is not MaskedTextController", // Name
-              "Invalid controller: The controller needs to be instantiated as MaskedTextController class", // Message
-            );
-          } else {
-            MaskTextInputFormatter _maskFormatter;
-            if(controller?.text?.length == MaskType.cpf.length) {
-              _maskFormatter = OwMaskedFormatter.cpf(initialText: controller?.text); // initialText: controller?.text ?? ""
-            } else {
-              _maskFormatter = OwMaskedFormatter.cnpj(initialText: controller?.text); // initialText: controller?.text ?? ""
+        case TextFieldMaskType.cpfCnpj:
+          assert(controller is MaskedTextController);
+          _keyboardType = TextInputType.phone;
+          String _cpfMask = MaskType.cpf + "0";
+          _changeMask = () {
+            if(controller.text.length <= MaskType.cpf.length && controller.mask != _cpfMask) {
+              controller.updateMask(_cpfMask);
+            } else if(controller.text.length > MaskType.cpf.length && controller.mask != MaskType.cnpj) {
+              controller.updateMask(MaskType.cnpj);
             }
-            _inputFormatters = [_maskFormatter];
-            _changeMask = () {
-              int _position = controller?.selection?.baseOffset;
-              String _text = _maskFormatter.getUnmaskedText();
-              String _mask = _maskFormatter.getMask();
-              if(_text.length > 10 && _mask != MaskType.cpf) {
-                _maskFormatter.updateMask(mask: MaskType.cpf, filter: FilterMask.number);
-                // controller.updateMask(MaskType.cpf); // ! Descomentar
-                controller.selection = TextSelection.fromPosition(TextPosition(offset: _position));
-              } else if(_text.length <= 10 && _mask != MaskType.cnpj) {
-                _maskFormatter.updateMask(mask: MaskType.cnpj, filter: FilterMask.number);
-                // controller.updateMask(MaskType.cnpj); // ! Descomentar
-                controller.selection = TextSelection.fromPosition(TextPosition(offset: _position));
-              }
-            };
+          };
+          _changeMask();
+          // if(!(controller is MaskedTextController)) {
+          //   throw ArgumentError.value(
+          //     controller,
+          //     "controller is not MaskedTextController", // Name
+          //     "Invalid controller: The controller needs to be instantiated as MaskedTextController class", // Message
+          //   );
+          // } 
+          // MaskTextInputFormatter _maskFormatter;
+          // if(controller?.text?.length == MaskType.cpf.length) { // ! E se controller?.text for null ?
+          //   _maskFormatter = OwMaskedFormatter.cpf(initialText: controller?.text); // initialText: controller?.text ?? ""
+          // } else {
+          //   _maskFormatter = OwMaskedFormatter.cnpj(initialText: controller?.text); // initialText: controller?.text ?? ""
+          // }
+          // _inputFormatters = [_maskFormatter];
+          // _changeMask = () {
+          //   int _position = controller?.selection?.baseOffset;
+          //   String _text = _maskFormatter.getUnmaskedText();
+          //   String _mask = _maskFormatter.getMask();
+          //   if(_text.length > 10 && _mask != MaskType.cpf) {
+          //     _maskFormatter.updateMask(mask: MaskType.cpf, filter: FilterMask.number);
+          //     controller.updateMask(MaskType.cpf);
+          //     controller.selection = TextSelection.fromPosition(TextPosition(offset: _position));
+          //   } else if(_text.length <= 10 && _mask != MaskType.cnpj) {
+          //     _maskFormatter.updateMask(mask: MaskType.cnpj, filter: FilterMask.number);
+          //     controller.updateMask(MaskType.cnpj);
+          //     controller.selection = TextSelection.fromPosition(TextPosition(offset: _position));
+          //   }
+          // };
+          break;
+
+        case TextFieldMaskType.landlineCell:
+          assert(controller is MaskedTextController);
+          _keyboardType = TextInputType.phone;
+          String _landlineMask = MaskType.phones(10) + "0";
+          _changeMask = () {
+            if(controller.text.length <= MaskType.phones(10).length && controller.mask != _landlineMask) {
+              controller.updateMask(_landlineMask);
+            } else if(controller.text.length > MaskType.phones(10).length && controller.mask != MaskType.phones(11)) {
+              controller.updateMask(MaskType.phones(11));
+            }
+          };
+          _changeMask();
+          // if(!(controller is MaskedTextController)) {
+          //   throw ArgumentError.value(
+          //     controller,
+          //     "controller is not MaskedTextController", // Name
+          //     "Invalid controller: The controller needs to be instantiated as MaskedTextController class", // Message
+          //   );
+          // } 
+          // var maskFormatter = OwMaskedFormatter.phones(11, initialText: controller?.text);
+          // // _inputFormatters = [maskFormatter];
+          // _changeMask = () {
+          //   int position = controller?.selection?.baseOffset;
+          //   String text = maskFormatter.getUnmaskedText();
+          //   String mask = maskFormatter.getMask();
+          //   if(text.length >= 11 && mask != '(00) 00000-0000') {
+          //     maskFormatter.updateMask(mask: '(00) 00000-0000', filter: { "0": RegExp(r'[0-9]') });
+          //     controller.updateMask('(00) 00000-0000');
+          //     controller.selection = TextSelection.fromPosition(TextPosition(offset: position));
+          //   } else if(text.length <= 10 && mask != '(00) 0000-00000') {
+          //     maskFormatter.updateMask(mask: '(00) 0000-00000', filter: { "0": RegExp(r'[0-9]') });
+          //     controller.updateMask('(00) 0000-00000');
+          //     controller.selection = TextSelection.fromPosition(TextPosition(offset: position));
+          //   }
+          // };
+          // // MaskTextInputFormatter _maskFormatter;
+          // // if(controller?.text?.length == MaskType.phones(10).length) { // ! E se controller?.text for null ?????
+          // //   _maskFormatter = OwMaskedFormatter.phones(10, initialText: controller?.text); // initialText: controller?.text ?? ""
+          // // } else {
+          // //   _maskFormatter = OwMaskedFormatter.phones(11, initialText: controller?.text); // initialText: controller?.text ?? ""
+          // // }
+          // // _inputFormatters = [_maskFormatter];
+          // // _changeMask = () {
+          // //   int _position = controller?.selection?.baseOffset;
+          // //   String _text = _maskFormatter.getUnmaskedText();
+          // //   String _mask = _maskFormatter.getMask();
+          // //   if(_text.length > 10 && _mask != MaskType.phones(10)) {
+          // //     _maskFormatter.updateMask(mask: MaskType.phones(10), filter: FilterMask.number);
+          // //     controller.updateMask(MaskType.cpf); // ! Descomentar
+          // //     controller.selection = TextSelection.fromPosition(TextPosition(offset: _position));
+          // //   } else if(_text.length <= 10 && _mask != MaskType.phones(11)) {
+          // //     _maskFormatter.updateMask(mask: MaskType.phones(11), filter: FilterMask.number);
+          // //     controller.updateMask(MaskType.cnpj); // ! Descomentar
+          // //     controller.selection = TextSelection.fromPosition(TextPosition(offset: _position));
+          // //   }
+          // };
+          break;
+          
+        case TextFieldMaskType.phones:
+          assert(controller is MaskedTextController);
+          _keyboardType = TextInputType.phone;
+          if(fieldType.numbersQuantity != null) {
+            final _mask = OwMaskedFormatter.phones(
+              fieldType.numbersQuantity,
+              initialText: controller?.text, // initialText: controller?.text ?? ""
+            );
+            _inputFormatters = [_mask];
+          } else {
+            // ! Terminar
           }
           break;
-          
-        case TextFieldType.phone8:
-          _keyboardType = TextInputType.phone;
-          final _mask = OwMaskedFormatter.phone8(initialText: controller?.text); // initialText: controller?.text ?? ""
-          _inputFormatters = [_mask];
-          break;
-          
-        case TextFieldType.phone9:
-          _keyboardType = TextInputType.phone;
-          final _mask = OwMaskedFormatter.phone9(initialText: controller?.text); // initialText: controller?.text ?? ""
-          _inputFormatters = [_mask];
-          break;
-          
-        case TextFieldType.phone10:
-          _keyboardType = TextInputType.phone;
-          final _mask = OwMaskedFormatter.phone10(initialText: controller?.text); // initialText: controller?.text ?? ""
-          _inputFormatters = [_mask];
-          break;
-          
-        case TextFieldType.phone11:
-          _keyboardType = TextInputType.phone;
-          final _mask = OwMaskedFormatter.phone11(initialText: controller?.text); // initialText: controller?.text ?? ""
-          _inputFormatters = [_mask];
-          break;
-          
-        case TextFieldType.phone12:
-          _keyboardType = TextInputType.phone;
-          final _mask = OwMaskedFormatter.phone12(initialText: controller?.text); // initialText: controller?.text ?? ""
-          _inputFormatters = [_mask];
-          break;
-          
-        case TextFieldType.phone13:
-          _keyboardType = TextInputType.phone;
-          final _mask = OwMaskedFormatter.phone13(initialText: controller?.text); // initialText: controller?.text ?? ""
-          _inputFormatters = [_mask];
-          break;
-          
-        case TextFieldType.phone8_9: // ! Finalizar
-        case TextFieldType.phone8_10:
-        case TextFieldType.phone8_11:
-        case TextFieldType.phone8_12:
-        case TextFieldType.phone8_13:
 
-        case TextFieldType.phone9_10:
-        case TextFieldType.phone9_11:
-        case TextFieldType.phone9_12:
-        case TextFieldType.phone9_13:
-        
-        case TextFieldType.phone10_11:
-        case TextFieldType.phone10_12:
-        case TextFieldType.phone10_13:
+        case TextFieldMaskType.money:
+          assert(controller is MoneyMaskedTextController);
+          // _hintText = "0,00";
+          // _prefixText = "R\$ ";
+          _keyboardType = TextInputType.phone;
+          break;
 
-        case TextFieldType.phone11_12:
-        case TextFieldType.phone11_13:
-        
-        case TextFieldType.phone12_13:
+        case TextFieldMaskType.integer:
+          break;
 
-        case TextFieldType.currency:
-        case TextFieldType.integer:
+        case TextFieldMaskType.chat:
+          break;
 
+        default:
+          break;
       }
     }
   }
 
   void defineFocusNode(BuildContext context) {
-    _nextFocusNode = nextFocusNode;
-    if(focusNodeList != null && focusNodeList.length > focusNodeIndex + 1) {
-      _nextFocusNode = _nextFocusNode ?? focusNodeList[focusNodeIndex + 1];
-    }
     _focusNode = focusNode;
+    _nextFocusNode = nextFocusNode;
+
     if(focusNodeList != null && focusNodeList.length > focusNodeIndex) {
       _focusNode = _focusNode ?? focusNodeList[focusNodeIndex];
+    }
+    if(focusNodeList != null && focusNodeList.length > focusNodeIndex + 1) {
+      _nextFocusNode = _nextFocusNode ?? focusNodeList[focusNodeIndex + 1];
     }
 
     if(_nextFocusNode != null) {
       _textInputAction = TextInputAction.next;
-      _goToNextFocusNode = () {
-        FocusScope.of(context).requestFocus(_nextFocusNode);
-      };
+      if(automaticFocusWithFocusNodeList) {
+        _goToNextFocusNode = () {
+          FocusScope.of(context).requestFocus(_nextFocusNode); // ! Passar para classe FN
+        };
+      }
     } else {
       _textInputAction = TextInputAction.done;
-      if(unfocusIfNoNextFocusNode) {
+      if(unfocusIfNoNextFocusNode && automaticFocusWithFocusNodeList) {
         _goToNextFocusNode = () {
-          FocusScope.of(context).unfocus();
+          FocusScope.of(context).unfocus(); // ! Passar para classe FN
         };
       }
     }
@@ -681,6 +734,12 @@ class OwTextField extends StatelessWidget {
     });
   }
 }
+
+
+
+
+
+
 
 
 
@@ -726,4 +785,16 @@ class CurrencyInputFormatter extends TextInputFormatter {
             selection: new TextSelection.collapsed(offset: newText.length));
     }
 }
+*/
+
+
+/*
+DV (conta banco)
+
+final _regExpMeiFancyName = RegExp(r'^[a-zA-Z0-9]+');
+
+inputFormatters: [
+  UpperCaseTextFormatter(),
+  FilteringTextInputFormatter.allow(_regExpMeiFancyName),
+],
 */

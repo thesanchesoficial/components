@@ -2,7 +2,7 @@ import 'package:components_venver/src/functions/f.dart';
 import 'package:components_venver/src/settings/variable.dart';
 import 'package:flutter/material.dart';
 
-class OwScrollbar extends StatelessWidget {
+class OwScrollbar extends StatelessWidget { // ! Tirar espaçamento direito do Scroll
   final bool showScrollbar;
   final ScrollController scrollController;
   final double scrollbarThicknessWeb;
@@ -119,7 +119,10 @@ class OwScrollbar extends StatelessWidget {
 class MyBehavior extends ScrollBehavior {
   @override
   Widget buildViewportChrome(
-      BuildContext context, Widget child, AxisDirection axisDirection) {
+    BuildContext context, 
+    Widget child, 
+    AxisDirection axisDirection,  
+  ) {
     return child;
   }
 }

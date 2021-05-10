@@ -18,3 +18,6 @@ export 'package:components_venver/src/material/components/widgets/w_scrollbar2.d
 export 'package:components_venver/src/material/components/widgets/w_progress_bar.dart';
 export 'package:components_venver/src/material/components/widgets/w_page_view.dart';
 export 'package:components_venver/src/material/components/widgets/w_grid.dart';
+
+
+export 'package:components_venver/src/material/components/widgets/text_field_type/masked_text.dart';

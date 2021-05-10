@@ -944,4 +944,15 @@ class OwFormat {
     }
     return "${inferiorLimit.inMinutes} ${minuteWord.substring(0, 3)} - ${superiorLimit.inMinutes} ${minuteWord.substring(0, 3)}";
   }
+
+  // TODO: Make comments
+  static String uriToText(String uri) {
+    if(uri == null) {
+      return "";
+    } else if(uri.contains("%")) {
+      return Uri.decodeFull(uri);
+    } else {
+      return uri;
+    }
+  }
 }

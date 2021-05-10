@@ -1,213 +1,10 @@
-// import 'package:flutter/gestures.dart';
-// import 'package:flutter/material.dart';
-// import 'package:page_view_indicators/page_view_indicators.dart';
-
-// // https://pub.dev/packages/page_view_indicators & https://pub.dev/packages/loop_page_view/example (see also https://pub.dev/packages/expandable_page_view)
-// class OwPageView extends StatelessWidget {
-//   final bool loop;
-//   final double height;
-//   final bool pageSnapping; // Allows to scroll to the center of the widget
-//   final PageController controller;
-//   final List<Widget> children;
-//   final ScrollPhysics physics;
-//   final bool reverse;
-
-//   // const OwPageView({
-//   OwPageView({
-//     Key key,
-//     this.loop,
-//     this.height = 300,
-//     this.pageSnapping = true,
-//     this.controller,
-//     @required this.children,
-//     this.reverse = false,
-//     this.physics = const BouncingScrollPhysics(),
-//   }) : super(key: key);
-
-//   final _currentPageNotifier = ValueNotifier<int>(0);
-
-//   @override
-//   Widget build(BuildContext context) {
-//     List<Widget> _children = _centeredWidgets();
-//     return Container(
-//       height: height,
-//       child: Column(
-//         children: [
-//           PageView.builder(
-//             key: key,
-//             reverse: reverse,
-//             controller: controller,
-//             physics: physics,
-//             dragStartBehavior: DragStartBehavior.down,
-//             pageSnapping: pageSnapping,
-//             allowImplicitScrolling: true,
-//             itemCount: _children.length,
-//             itemBuilder: (context, index) {
-//               return Center(
-//                 child: _children[index],
-//               );
-//             },
-//             onPageChanged: (int index) {
-//               _currentPageNotifier.value = index;
-//             },
-//           ),
-//           // CirclePageIndicator(
-//           //   size: 16.0,
-//           //   selectedSize: 18.0,
-//           //   itemCount: children.length,
-//           //   currentPageNotifier: _currentPageNotifier,
-//           // ),
-
-//           // PageView.builder(
-//           //   key: key,
-//           //   itemBuilder: (context, index) {
-//           //     bool active = index == currentPage;
-//           //     return _children[index];
-//           //   },
-//           //   itemCount: _children.length,
-//           //   reverse: reverse,
-//           //   controller: controller,
-//           //   children: _children,
-//           //   physics: physics,
-//           //   dragStartBehavior: DragStartBehavior.down,
-//           //   pageSnapping: pageSnapping,
-//           //   allowImplicitScrolling: true,
-//           // ),
-//         ],
-//       ),
-//     );
-//   }
-
-//   List<Widget> _centeredWidgets() {
-//     List<Widget> _children = [];
-//     children?.forEach((element) {
-//       _children.add(Center(child: element));
-//     });
-//     return _children;
-//   }
-
-
-//   // Widget frontPage({image, title, isActive}) {
-//   //   double paddingTop = isActive ? 100 : 150;
-//   //   double blur = isActive ? 30 : 0;
-//   //   double offset = isActive ? 20 : 0;
-//   //   return AnimatedPadding(
-//   //     duration: Duration(milliseconds: 400),
-//   //     padding: EdgeInsets.only(top: paddingTop, right: 30),
-//   //     child: Column(
-//   //       mainAxisAlignment: MainAxisAlignment.spaceAround,
-//   //       children: <Widget>[
-//   //         Expanded(
-//   //           flex: 2,
-//   //           child: AnimatedContainer(
-//   //             duration: Duration(milliseconds: 400),
-//   //             decoration: BoxDecoration(
-//   //               image: DecorationImage(
-//   //                   image: AssetImage(image), fit: BoxFit.cover),
-//   //               borderRadius: BorderRadius.circular(30),
-//   //               boxShadow: [
-//   //                 BoxShadow(
-//   //                   color: Colors.black87,
-//   //                   blurRadius: blur,
-//   //                   offset: Offset(offset, offset),
-//   //                 ),
-//   //               ],
-//   //             ),
-//   //           ),
-//   //         ),
-//   //         Expanded(
-//   //           flex: 1,
-//   //           child: Padding(
-//   //             padding: EdgeInsets.only(top: 30),
-//   //             child: Column(
-//   //               children: <Widget>[
-//   //                 FadeAnimation(
-//   //                   delay: 1.5,
-//   //                   child: Text(
-//   //                     title,
-//   //                     style: TextStyle(
-//   //                       color: Colors.white,
-//   //                       fontSize: 25,
-//   //                       fontWeight: FontWeight.bold,
-//   //                     ),
-//   //                   ),
-//   //                 ),
-//   //                 SizedBox(
-//   //                   height: 10,
-//   //                 ),
-//   //                 FadeAnimation(
-//   //                   delay: 2,
-//   //                   child: Text(
-//   //                     "Action + Adventure",
-//   //                     style: TextStyle(
-//   //                       color: Colors.white,
-//   //                       fontSize: 16,
-//   //                       fontWeight: FontWeight.w400,
-//   //                     ),
-//   //                   ),
-//   //                 ),
-//   //                 SizedBox(
-//   //                   height: 10,
-//   //                 ),
-//   //                 FadeAnimation(
-//   //                   delay: 2.5,
-//   //                   child: Text(
-//   //                     "4.0",
-//   //                     style: TextStyle(
-//   //                       color: Colors.white,
-//   //                       fontSize: 20,
-//   //                       fontWeight: FontWeight.w500,
-//   //                     ),
-//   //                   ),
-//   //                 ),
-//   //                 SizedBox(height: 10),
-//   //                 FadeAnimation(
-//   //                   delay: 3,
-//   //                   child: Row(
-//   //                     mainAxisAlignment: MainAxisAlignment.center,
-//   //                     children: <Widget>[
-//   //                       Icon(
-//   //                         Icons.star,
-//   //                         color: Colors.white,
-//   //                         size: 20,
-//   //                       ),
-//   //                       Icon(
-//   //                         Icons.star,
-//   //                         color: Colors.white,
-//   //                         size: 20,
-//   //                       ),
-//   //                       Icon(
-//   //                         Icons.star,
-//   //                         color: Colors.white,
-//   //                         size: 20,
-//   //                       ),
-//   //                       Icon(
-//   //                         Icons.star_border,
-//   //                         color: Colors.white,
-//   //                         size: 20,
-//   //                       ),
-//   //                       Icon(
-//   //                         Icons.star_border,
-//   //                         color: Colors.white,
-//   //                         size: 20,
-//   //                       ),
-//   //                     ],
-//   //                   ),
-//   //                 )
-//   //               ],
-//   //             ),
-//   //           ),
-//   //         ),
-//   //       ],
-//   //     ),
-//   //   );
-//   // }
-// }
-
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:loop_page_view/loop_page_view.dart';
 import 'package:page_view_indicators/page_view_indicators.dart';
+import 'package:carousel_slider/carousel_slider.dart';
+
+export 'package:loop_page_view/loop_page_view.dart';
 
 enum PageIndicator {
   none,
@@ -245,6 +42,16 @@ class OwPageView extends StatefulWidget {
   final LoopPageController loopController;
   final bool loop;
 
+  final CarouselController carouselController;
+  final bool carousel;
+  final bool infiniteScroll;
+  final Duration autoPlayInterval;
+  final bool autoPlay;
+  final Duration autoPlayAnimationDuration;
+  final Curve autoPlayCurve;
+  final int initialCarouselPage;
+  final double aspectRatio;
+
   /// Define the action while touch the step dot (if not 'none', needs a controller)
   final IndicatorDotTouch stepPageDotTouch;
   final bool stepPageIndicator;
@@ -265,10 +72,8 @@ class OwPageView extends StatefulWidget {
     Key key,
     @required this.children,
     @required this.height,
-    this.loop = false,
     this.pageSnapping = true,
     this.controller,
-    this.loopController,
     this.reverse = false,
     this.physics = const BouncingScrollPhysics(),
     this.pageIndicator = PageIndicator.stackBottom,
@@ -284,13 +89,103 @@ class OwPageView extends StatefulWidget {
     this.indicatorWidgetSpacing = 10,
     this.stackGradient,
     this.centeredChildren = true,
-    this.stepPageDotTouch = IndicatorDotTouch.goToOnlyCheckedPage,
+    this.stepPageDotTouch = IndicatorDotTouch.goToPage,
     this.stepPageIndicator = false,
     this.previousStep,
     this.selectedStep,
     this.nextStep,
     this.onDotIndicatorSelected,
-  })  : assert(!loop || !stepPageIndicator),
+  })  : this.loop = false,
+        this.loopController = null,
+        this.carousel = false,
+        this.infiniteScroll = null,
+        this.autoPlayInterval = null,
+        this.autoPlay = null,
+        this.autoPlayAnimationDuration = null,
+        this.autoPlayCurve = null,
+        this.carouselController = null,
+        this.initialCarouselPage = null,
+        this.aspectRatio = null,
+        super(key: key);
+
+  const OwPageView.loop({
+    Key key,
+    @required this.children,
+    @required this.height,
+    this.pageSnapping = true,
+    this.loopController,
+    this.reverse = false,
+    this.physics = const BouncingScrollPhysics(),
+    this.pageIndicator = PageIndicator.stackBottom,
+    this.padding,
+    this.dotSize = 12,
+    this.selectedDotSize = 14,
+    this.dotBorderColor,
+    this.dotBorderWidth = 0,
+    this.dotSpacing = 8,
+    this.selectedDotBorderColor,
+    this.selectedDotColor,
+    this.dotColor,
+    this.indicatorWidgetSpacing = 10,
+    this.stackGradient,
+    this.centeredChildren = true,
+    this.onDotIndicatorSelected,
+  })  : this.controller = null,
+        this.loop = true,
+        this.stepPageIndicator = false,
+        this.stepPageDotTouch = IndicatorDotTouch.none,
+        this.previousStep = null,
+        this.selectedStep = null,
+        this.nextStep = null,
+        this.carousel = false,
+        this.infiniteScroll = null,
+        this.autoPlayInterval = null,
+        this.autoPlay = null,
+        this.autoPlayAnimationDuration = null,
+        this.autoPlayCurve = null,
+        this.carouselController = null,
+        this.initialCarouselPage = null,
+        this.aspectRatio = null,
+        super(key: key);
+
+  const OwPageView.carousel({
+    Key key,
+    @required this.children,
+    @required this.height,
+    this.carouselController,
+    this.pageSnapping = true,
+    this.reverse = false,
+    this.physics = const BouncingScrollPhysics(),
+    this.pageIndicator = PageIndicator.stackBottom,
+    this.padding,
+    this.dotSize = 12,
+    this.selectedDotSize = 14,
+    this.dotBorderColor,
+    this.dotBorderWidth = 0,
+    this.dotSpacing = 8,
+    this.selectedDotBorderColor,
+    this.selectedDotColor,
+    this.dotColor,
+    this.indicatorWidgetSpacing = 10,
+    this.stackGradient,
+    this.centeredChildren = true,
+    this.onDotIndicatorSelected,
+    this.infiniteScroll = true,
+    this.autoPlayInterval = const Duration(seconds: 5),
+    this.autoPlay = true,
+    this.autoPlayAnimationDuration = const Duration(milliseconds: 800),
+    this.autoPlayCurve = Curves.fastOutSlowIn,
+    this.initialCarouselPage = 0,
+    this.aspectRatio = 1.64,
+  })  : this.controller = null,
+        this.loop = false,
+        this.stepPageIndicator = false,
+        this.stepPageDotTouch = IndicatorDotTouch.none,
+        this.previousStep = null,
+        this.selectedStep = null,
+        this.nextStep = null,
+        this.carousel = true,
+        this.loopController = null,
         super(key: key);
 
   @override
@@ -298,10 +193,13 @@ class OwPageView extends StatefulWidget {
 }
 
 class _OwPageViewState extends State<OwPageView> {
-  final _currentPageNotifier = ValueNotifier<int>(0);
+
+  ValueNotifier<int> _currentPageNotifier;
 
   @override
   Widget build(BuildContext context) {
+    _currentPageNotifier = _initializeCurrentPageNotifier();
+    
     return Container(
       key: widget.key,
       padding: widget.padding,
@@ -368,39 +266,60 @@ class _OwPageViewState extends State<OwPageView> {
       ? _centeredWidgets()
       : widget.children;
     
-    return Container(
-      child: widget.loop
-        ? LoopPageView.builder(
+    if(widget.loop) {
+      return LoopPageView.builder(
+        reverse: widget.reverse,
+        controller: widget.loopController,
+        physics: widget.physics,
+        dragStartBehavior: DragStartBehavior.down,
+        pageSnapping: widget.pageSnapping,
+        allowImplicitScrolling: true,
+        itemCount: _children.length,
+        itemBuilder: (context, index) {
+          return _children[index];
+        },
+        onPageChanged: (index) {
+          _currentPageNotifier.value = index;
+        },
+      );
+    } else if(widget.carousel) {
+      return CarouselSlider(
+        items: _children,
+        carouselController: widget.carouselController,
+        options: CarouselOptions(
+          height: widget.height,
+          aspectRatio: widget.aspectRatio,
+          initialPage: widget.initialCarouselPage,
+          enableInfiniteScroll: widget.infiniteScroll,
           reverse: widget.reverse,
-          controller: widget.loopController,
-          physics: widget.physics,
-          dragStartBehavior: DragStartBehavior.down,
-          pageSnapping: widget.pageSnapping,
-          allowImplicitScrolling: true,
-          itemCount: _children.length,
-          itemBuilder: (context, index) {
-            return _children[index];
-          },
-          onPageChanged: (index) {
+          autoPlay: widget.autoPlay,
+          autoPlayInterval: widget.autoPlayInterval,
+          autoPlayAnimationDuration: widget.autoPlayAnimationDuration,
+          autoPlayCurve: widget.autoPlayCurve,
+          // enlargeCenterPage: true,
+          scrollDirection: Axis.horizontal,
+          onPageChanged: (index, reason) {
             _currentPageNotifier.value = index;
-          },
+          }
         )
-        : PageView.builder(
-          controller: widget.controller,
-          reverse: widget.reverse,
-          physics: widget.physics,
-          dragStartBehavior: DragStartBehavior.down,
-          pageSnapping: widget.pageSnapping,
-          allowImplicitScrolling: true,
-          itemCount: _children.length,
-          itemBuilder: (context, index) {
-            return _children[index];
-          },
-          onPageChanged: (index) {
-            _currentPageNotifier.value = index;
-          },
-        ),
-    );
+      );
+    } else {
+      return PageView.builder(
+        controller: widget.controller,
+        reverse: widget.reverse,
+        physics: widget.physics,
+        dragStartBehavior: DragStartBehavior.down,
+        pageSnapping: widget.pageSnapping,
+        allowImplicitScrolling: true,
+        itemCount: _children.length,
+        itemBuilder: (context, index) {
+          return _children[index];
+        },
+        onPageChanged: (index) {
+          _currentPageNotifier.value = index;
+        },
+      );
+    }
   }
 
   Widget _pageIndicator() {
@@ -413,9 +332,9 @@ class _OwPageViewState extends State<OwPageView> {
         currentPageNotifier: _currentPageNotifier,
         size: widget.dotSize,
         stepColor: widget.dotColor,
-        previousStep: null,
-        selectedStep: null,
-        nextStep: null,
+        previousStep: widget.previousStep,
+        selectedStep: widget.selectedStep,
+        nextStep: widget.nextStep,
         stepSpacing: widget.dotSpacing,
         onPageSelected: (index) {
           if(widget.onDotIndicatorSelected != null) {
@@ -424,7 +343,7 @@ class _OwPageViewState extends State<OwPageView> {
           
           if(widget.stepPageDotTouch != IndicatorDotTouch.none) {
             bool _goToPage = false;
-            if(widget.stepPageDotTouch == IndicatorDotTouch.goToOnlyCheckedPage) {
+            if(widget.stepPageDotTouch == IndicatorDotTouch.goToPage) {
               _goToPage = true;
             } else if(_currentPageNotifier.value > index) {
               _goToPage = true;
@@ -486,6 +405,13 @@ class _OwPageViewState extends State<OwPageView> {
       _children.add(Center(child: element));
     });
     return _children;
+  }
+
+  
+  ValueNotifier<int> _initializeCurrentPageNotifier() {
+    return ValueNotifier<int>(
+      widget.controller?.initialPage ?? widget.loopController?.initialScrollOffset?.toInt() ?? 0,
+    );
   }
 }
 

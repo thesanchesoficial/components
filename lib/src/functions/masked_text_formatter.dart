@@ -21,6 +21,22 @@ class OwMaskedFormatter {
     );
   }
 
+  static MaskTextInputFormatter cpfCnpj({String initialText}) {
+    if(initialText == null || initialText.length <= MaskType.cpf.length) {
+      return MaskTextInputFormatter(
+        mask: MaskType.cpf,
+        filter: FilterMask.number,
+        initialText: initialText,
+      );
+    } else {
+      return MaskTextInputFormatter(
+        mask: MaskType.cnpj,
+        filter: FilterMask.number,
+        initialText: initialText,
+      );
+    }
+  }
+
   static MaskTextInputFormatter date({String initialText}) {
     return MaskTextInputFormatter(
       mask: MaskType.date,
@@ -29,53 +45,61 @@ class OwMaskedFormatter {
     );
   }
 
-  static MaskTextInputFormatter phone8({String initialText}) {
+  static MaskTextInputFormatter cep({String initialText}) {
     return MaskTextInputFormatter(
-      mask: MaskType.phone8,
+      mask: MaskType.cep,
       filter: FilterMask.number,
       initialText: initialText,
     );
   }
 
-  static MaskTextInputFormatter phone9({String initialText}) {
+  static MaskTextInputFormatter phones(int numbersQuantity, {String initialText}) {
     return MaskTextInputFormatter(
-      mask: MaskType.phone9,
+      mask: MaskType.phones(numbersQuantity),
       filter: FilterMask.number,
       initialText: initialText,
     );
   }
 
-  static MaskTextInputFormatter phone10({String initialText}) {
-    return MaskTextInputFormatter(
-      mask: MaskType.phone10,
-      filter: FilterMask.number,
-      initialText: initialText,
-    );
-  }
+  // static MaskTextInputFormatter phone9({String initialText}) {
+  //   return MaskTextInputFormatter(
+  //     mask: MaskType.phone9,
+  //     filter: FilterMask.number,
+  //     initialText: initialText,
+  //   );
+  // }
 
-  static MaskTextInputFormatter phone11({String initialText}) {
-    return MaskTextInputFormatter(
-      mask: MaskType.phone11,
-      filter: FilterMask.number,
-      initialText: initialText,
-    );
-  }
+  // static MaskTextInputFormatter phone10({String initialText}) {
+  //   return MaskTextInputFormatter(
+  //     mask: MaskType.phone10,
+  //     filter: FilterMask.number,
+  //     initialText: initialText,
+  //   );
+  // }
 
-  static MaskTextInputFormatter phone12({String initialText}) {
-    return MaskTextInputFormatter(
-      mask: MaskType.phone12,
-      filter: FilterMask.number,
-      initialText: initialText,
-    );
-  }
+  // static MaskTextInputFormatter phone11({String initialText}) {
+  //   return MaskTextInputFormatter(
+  //     mask: MaskType.phone11,
+  //     filter: FilterMask.number,
+  //     initialText: initialText,
+  //   );
+  // }
 
-  static MaskTextInputFormatter phone13({String initialText}) {
-    return MaskTextInputFormatter(
-      mask: MaskType.phone13,
-      filter: FilterMask.number,
-      initialText: initialText,
-    );
-  }
+  // static MaskTextInputFormatter phone12({String initialText}) {
+  //   return MaskTextInputFormatter(
+  //     mask: MaskType.phone12,
+  //     filter: FilterMask.number,
+  //     initialText: initialText,
+  //   );
+  // }
+
+  // static MaskTextInputFormatter phone13({String initialText}) {
+  //   return MaskTextInputFormatter(
+  //     mask: MaskType.phone13,
+  //     filter: FilterMask.number,
+  //     initialText: initialText,
+  //   );
+  // }
 
   static MaskTextInputFormatter cardNumber({String initialText}) {
     return MaskTextInputFormatter(
