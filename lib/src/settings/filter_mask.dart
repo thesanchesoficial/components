@@ -13,4 +13,7 @@ class FilterMask {
   static Map<String, RegExp> anyCase = {
     "x": RegExp(r'[a-zA-Z]'),
   };
+  static Map<String, RegExp> numberAndLetter = {
+    "@": RegExp(r'[a-zA-Z0-9]'),
+  };
 }

@@ -1,4 +1,5 @@
 import 'package:components_venver/functions.dart';
+import 'package:components_venver/material.dart';
 import 'package:components_venver/src/settings/filter_mask.dart';
 import 'package:components_venver/src/settings/mask_type.dart';
 import 'package:components_venver/theme/app_theme.dart';
@@ -26,6 +27,37 @@ https://pub.dev/packages/masked_text_input_formatter
 /* // ! Ver sobre enum's
 https://www.educative.io/blog/dart-2-language-features
 */
+
+
+/*  // ! Ver...
+    ScrollbarTheme(
+      data: ScrollbarThemeData(
+        thumbColor: MaterialStateProperty.all(Colors.green),
+        crossAxisMargin: 20, // Largura (interna) clicável da barra (apenas clicável, a barra não fica mais larga)
+        trackBorderColor: MaterialStateProperty.all(Colors.red),
+        trackColor: MaterialStateProperty.all(Colors.orange),
+        mainAxisMargin: 50,
+        minThumbLength: 50,
+      ),
+      child: Scrollbar(child: SingleChildScrollView()),
+    );
+    CupertinoSearchTextField( // import 'package:flutter/cupertino.dart';
+      onChanged: (_) {},
+    );
+*/
+// ? Flutter devtools vscode
+// ? https://github.com/gskinnerTeam/flutter-folio
+// ? https://flutter.dev/docs/development/add-to-app/multiple-flutters (crash reporting)
+// ! https://flutter.dev/docs/development/ui/widgets/cupertino (cupertino widgets)
+// ? https://medium.com/codechai/a-simple-search-bar-in-flutter-f99aed68f523
+// ? https://pub.dev/packages/animated_text_kit
+// ? https://pub.dev/packages/textfield_search
+// ? https://pub.dev/packages/bottom_navy_bar
+// ! https://pub.dev/packages/font_awesome_flutter
+// ? https://pub.dev/packages/flutter_local_notifications
+// ? https://pub.dev/packages/just_audio
+// ? https://stackoverflow.com/questions/66542199/what-is-materialstatepropertycolor (MaterialStateProperty das cores no ScrollbarThemeData)
+
 
 // ignore: must_be_immutable
 class OwTextField extends StatelessWidget {
@@ -169,10 +201,6 @@ class OwTextField extends StatelessWidget {
   })  : this.fieldType = null,
         this.onSaved = null,
         this.validator = null,
-        // assert(
-        //   !(controller is TextEditingController),
-        //   "'controller' is not TextEditingController",
-        // ),
         assert(
           suggestionsList != null, 
           assetMsgSuggestions,
@@ -226,8 +254,8 @@ class OwTextField extends StatelessWidget {
         this.ignoreAccentsOnSuggestion = null,
         this.caseSensitiveOnSuggestion = null,
         // assert(
-        //   !(controller is MaskedTextController),
-        //   "'controller' is not MaskedTextController",
+        //   controller is MaskedTextController || controller is MoneyMaskedTextController,
+        //   "'controller' is not MaskedTextController or MoneyMaskedTextController",
         // ),
         assert(
           (focusNodeList == null && focusNodeIndex == null) || (focusNodeList != null && focusNodeIndex != null), 
@@ -243,6 +271,8 @@ class OwTextField extends StatelessWidget {
   FocusNode _nextFocusNode;
   FocusNode _focusNode;
   Function _changeMask;
+  Widget _suffixIcon;
+  int _minLines, _maxLines;
 
   @override
   Widget build(BuildContext context) {
@@ -265,8 +295,8 @@ class OwTextField extends StatelessWidget {
         inputFormatters: inputFormatters ?? _inputFormatters,
         keyboardType: keyboardType ?? _keyboardType,
         textCapitalization: textCapitalization ?? _textCapitalization,
-        minLines: minLines,
-        maxLines: maxLines,
+        minLines: minLines ?? _minLines,
+        maxLines: maxLines ?? _maxLines,
         maxLengthEnforced: maxLengthEnforced,
         enabled: enabled,
         enableInteractiveSelection: enableInteractiveSelection,
@@ -315,7 +345,7 @@ class OwTextField extends StatelessWidget {
           ),
           suffixText: suffixText,
           prefixText: prefixText,
-          suffixIcon: suffixIcon,
+          suffixIcon: suffixIcon ?? _suffixIcon,
         ),
         onTap: onTap,
         onSaved: onSaved,
@@ -467,12 +497,23 @@ class OwTextField extends StatelessWidget {
           _textCapitalization = TextCapitalization.none;
           break;
 
-        case TextFieldMaskType.password: // ! Ver se dá para melhorar
-          _keyboardType = TextInputType.text; // TextInputType.visiblePassword,
+        case TextFieldMaskType.password: // ? Ver se dá para melhorar
+          _keyboardType = TextInputType.visiblePassword; // Testar, se não, usar TextInputType.text
           _textCapitalization = TextCapitalization.none;
+          // if(obscureText != null) {
+          //   _suffixIcon = OwActivableIcon(
+          //     activated: obscureText, 
+          //     onPressed: () {
+          //     },
+          //   );
+          // }
           break;
 
-        case TextFieldMaskType.multiText: // ! Terminar
+        case TextFieldMaskType.multiText: // ? Ver se dá para melhorar
+          _keyboardType = TextInputType.multiline;
+          _textInputAction = TextInputAction.newline;
+          _minLines = 2;
+          _maxLines = 12;
           break;
 
         case TextFieldMaskType.cep:
@@ -483,7 +524,7 @@ class OwTextField extends StatelessWidget {
           // _inputFormatters = [_mask];
           break;
 
-        case TextFieldMaskType.search: // ! Terminar
+        case TextFieldMaskType.search: // ? Ver se dá para melhorar
           _keyboardType = TextInputType.text;
           _textInputAction = TextInputAction.search;
           // textInputAction: TextInputAction.done, // Nos filtros, é usado done, pq ao digitar, ele já pesquisa automaticamente, já em outros lugares, deve ser serach, pois só pesquisará quando pressionar
@@ -666,20 +707,22 @@ class OwTextField extends StatelessWidget {
           }
           break;
 
-        case TextFieldMaskType.money:
+        case TextFieldMaskType.money: // ? Ver se dá para melhorar
           assert(controller is MoneyMaskedTextController);
           // _hintText = "0,00";
           // _prefixText = "R\$ ";
           _keyboardType = TextInputType.phone;
           break;
 
-        case TextFieldMaskType.integer:
+        case TextFieldMaskType.integer: // ! Finalizar
           break;
 
-        case TextFieldMaskType.chat:
-          break;
-
-        default:
+        case TextFieldMaskType.chat: // ? Ver se dá para melhorar
+          _keyboardType = TextInputType.multiline;
+          _textInputAction = TextInputAction.newline;
+          _minLines = 2;
+          _maxLines = 12;
+          // _suffixIcon = ...;
           break;
       }
     }
@@ -700,14 +743,16 @@ class OwTextField extends StatelessWidget {
       _textInputAction = TextInputAction.next;
       if(automaticFocusWithFocusNodeList) {
         _goToNextFocusNode = () {
-          FocusScope.of(context).requestFocus(_nextFocusNode); // ! Passar para classe FN
+          // FocusScope.of(context).requestFocus(_nextFocusNode);
+          FN.nextFn(context, _nextFocusNode);
         };
       }
     } else {
       _textInputAction = TextInputAction.done;
       if(unfocusIfNoNextFocusNode && automaticFocusWithFocusNodeList) {
         _goToNextFocusNode = () {
-          FocusScope.of(context).unfocus(); // ! Passar para classe FN
+          // FocusScope.of(context).unfocus();
+          FN.unfocusFn(context);
         };
       }
     }

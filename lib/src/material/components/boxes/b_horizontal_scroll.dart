@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 
 import '../widgets/w_progress_bar.dart';
@@ -6,10 +7,11 @@ import '../widgets/w_scrollbar.dart';
 class OwBoxHorizontalScroll extends StatefulWidget {
   final List<Widget> children;
   final EdgeInsets padding;
+  final EdgeInsets scrollPadding;
   final double spacing;
   final ScrollPhysics physics;
   final ScrollController controller;
-  // final double height;
+  final double height;
   // final bool progressBar;
   // final double progressBarHeight;
   // final double progressBarDistance;
@@ -23,9 +25,10 @@ class OwBoxHorizontalScroll extends StatefulWidget {
     this.controller,
     this.children,
     this.padding,
+    this.scrollPadding,
     this.spacing = 10,
     this.physics = const BouncingScrollPhysics(),
-    // this.height,
+    this.height,
     // this.progressBar = false,
     // this.progressBarHeight = 10,
     // this.progressBarDistance = 10,
@@ -44,6 +47,7 @@ class _OwBoxHorizontalScrollState extends State<OwBoxHorizontalScroll> {
   @override
   Widget build(BuildContext context) {
     return Container(
+      height: widget.height,
       padding: widget.padding,
       child: widget.useScrollbar
         ? Scrollbar(
@@ -65,62 +69,88 @@ class _OwBoxHorizontalScrollState extends State<OwBoxHorizontalScroll> {
       controller: widget.controller,
       scrollDirection: Axis.horizontal,
       physics: widget.physics,
-      child: Row(
-        children: _children(),
+      child: Container(
+        padding: widget.scrollPadding,
+        child: Row(
+          children: _children(),
+        ),
       ),
     );
   }
 
-  Widget _progressBar(BuildContext context, ScrollController controller) {
-    double _horizontalPadding = widget.padding?.horizontal ?? 0;
-    double _totalWidth = MediaQuery.of(context).size.width - _horizontalPadding;
-    
-    double _progression = widget.controller.hasClients ? controller.offset / _totalWidth : 0;
-    // double _progress = _totalWidth * (_progression);
-    double _progress = 0;
-
-    double _fillPercent = 0;
-
-    widget.controller.addListener(() {
-      print("setState: ${widget.controller.offset}");
-      
-      // _progress = _totalWidth * (widget.controller.offset / _totalWidth);
-      _fillPercent = widget.controller.offset / widget.controller.position.maxScrollExtent;
-      // _progress = widget.controller.offset;
-      // _fillPercent = _progress / _totalWidth;
-      if(_fillPercent < 0) {
-        _fillPercent = 0;
-      } else if (_fillPercent > 1) {
-        _fillPercent = 1;
-      }
-      // setState(() {});
-      print("_progress: $_progress");
-      print("_fillPercent: $_fillPercent");
-    });
-    
-    return Padding(
-      // padding: EdgeInsets.only(top: widget.progressBarDistance),
-      // child: ClipRRect(
-      //   child: Container(
-      //     height: widget.progressBarHeight,
-      //     width: MediaQuery.of(context).size.width,
-      //     color: Colors.redAccent,
-      //     child: Align(
-      //       alignment: Alignment.centerLeft,
-      //       child: Container(
-      //         height: widget.progressBarHeight,
-      //         width: _progress,
-      //         color: Colors.blue,
-      //       ),
-      //     ),
+  // Color getColor(Set<MaterialState> states) {
+  //   const Set<MaterialState> interactiveStates = <MaterialState>{
+  //     MaterialState.pressed,
+  //     MaterialState.hovered,
+  //     MaterialState.focused,
+  //   };
+  //   if (states.any(interactiveStates.contains)) {
+  //     return Colors.blue;
+  //   }
+  //   return Colors.red;
+  // }
+      // ScrollbarTheme(
+      //   data: ScrollbarThemeData(
+      //     thumbColor: MaterialStateProperty.all(Colors.green), // MaterialStateProperty.resolveWith(getColor),
+      //     crossAxisMargin: 20, // Largura (interna) clicável da barra (apenas clicável, a barra não fica mais larga)
+      //     trackBorderColor: MaterialStateProperty.all(Colors.red), // MaterialStateProperty.resolveWith(getColor),
+      //     trackColor: MaterialStateProperty.all(Colors.orange), // MaterialStateProperty.resolveWith(getColor),
+      //     mainAxisMargin: 50,
+      //     minThumbLength: 50,
       //   ),
-      // ),
-      child: OwProgressBar(
-        animated: false,
-        fillPercent: _fillPercent,
-      ),
-    );
-  }
+      //   child: Scrollbar(),
+      // );
+
+  // Widget _progressBar(BuildContext context, ScrollController controller) {
+  //   double _horizontalPadding = widget.padding?.horizontal ?? 0;
+  //   double _totalWidth = MediaQuery.of(context).size.width - _horizontalPadding;
+    
+  //   double _progression = widget.controller.hasClients ? controller.offset / _totalWidth : 0;
+  //   // double _progress = _totalWidth * (_progression);
+  //   double _progress = 0;
+
+  //   double _fillPercent = 0;
+
+  //   widget.controller.addListener(() {
+  //     print("setState: ${widget.controller.offset}");
+      
+  //     // _progress = _totalWidth * (widget.controller.offset / _totalWidth);
+  //     _fillPercent = widget.controller.offset / widget.controller.position.maxScrollExtent;
+  //     // _progress = widget.controller.offset;
+  //     // _fillPercent = _progress / _totalWidth;
+  //     if(_fillPercent < 0) {
+  //       _fillPercent = 0;
+  //     } else if (_fillPercent > 1) {
+  //       _fillPercent = 1;
+  //     }
+  //     // setState(() {});
+  //     print("_progress: $_progress");
+  //     print("_fillPercent: $_fillPercent");
+  //   });
+    
+    // return Padding(
+    //   padding: EdgeInsets.only(top: widget.progressBarDistance),
+    //   // child: ClipRRect(
+    //   //   child: Container(
+    //   //     height: widget.progressBarHeight,
+    //   //     width: MediaQuery.of(context).size.width,
+    //   //     color: Colors.redAccent,
+    //   //     child: Align(
+    //   //       alignment: Alignment.centerLeft,
+    //   //       child: Container(
+    //   //         height: widget.progressBarHeight,
+    //   //         width: _progress,
+    //   //         color: Colors.blue,
+    //   //       ),
+    //   //     ),
+    //   //   ),
+    //   // ),
+    //   child: OwProgressBar(
+    //     animated: false,
+    //     fillPercent: _fillPercent,
+    //   ),
+    // );
+  // }
 
   List<Widget> _children() {
     List<Widget> result = [];

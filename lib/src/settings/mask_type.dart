@@ -1,5 +1,3 @@
-import 'package:components_venver/src/settings/filter_mask.dart';
-
 class MaskType {
   static const String cpf = "000.000.000-00";
   static const String cnpj = "00.000.000/0000-00";
@@ -32,7 +30,7 @@ class MaskType {
         return s;
       }
     }
-    return "";
+    return ""; // ! throw exception
   }
 }
 
