@@ -7,7 +7,7 @@ import '../widgets/w_scrollbar.dart';
 class OwBoxHorizontalScroll extends StatefulWidget {
   final List<Widget> children;
   final EdgeInsets padding;
-  final EdgeInsets scrollPadding;
+  final EdgeInsets margin;
   final double spacing;
   final ScrollPhysics physics;
   final ScrollController controller;
@@ -25,7 +25,7 @@ class OwBoxHorizontalScroll extends StatefulWidget {
     this.controller,
     this.children,
     this.padding,
-    this.scrollPadding,
+    this.margin,
     this.spacing = 10,
     this.physics = const BouncingScrollPhysics(),
     this.height,
@@ -48,7 +48,7 @@ class _OwBoxHorizontalScrollState extends State<OwBoxHorizontalScroll> {
   Widget build(BuildContext context) {
     return Container(
       height: widget.height,
-      padding: widget.padding,
+      margin: widget.margin,
       child: widget.useScrollbar
         ? Scrollbar(
           controller: widget.controller,
@@ -69,11 +69,9 @@ class _OwBoxHorizontalScrollState extends State<OwBoxHorizontalScroll> {
       controller: widget.controller,
       scrollDirection: Axis.horizontal,
       physics: widget.physics,
-      child: Container(
-        padding: widget.scrollPadding,
-        child: Row(
-          children: _children(),
-        ),
+      padding: widget.padding,
+      child: Row(
+        children: _children(),
       ),
     );
   }
