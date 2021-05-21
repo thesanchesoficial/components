@@ -2,7 +2,7 @@ import 'package:components_venver/src/functions/f.dart';
 import 'package:flutter/material.dart';
 
 // ignore: must_be_immutable
-class OwScrollbar extends StatelessWidget {
+class OwScrollbar extends StatelessWidget { // ! Tentar substituir scrollbar anterior (scrollbar 1) por este scrollbar (scrollbar 2)
   final bool showScrollbar;
   final ScrollController scrollController;
   final double scrollbarThicknessWeb;

@@ -1,16 +1,18 @@
 import 'package:components_venver/functions.dart';
 import 'package:components_venver/material.dart';
-import 'package:components_venver/src/settings/filter_mask.dart';
+// import 'package:components_venver/src/settings/filter_mask.dart';
 import 'package:components_venver/src/settings/mask_type.dart';
 import 'package:components_venver/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
-import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
-
+// import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:components_venver/src/material/components/widgets/text_field_type/text_field_type.dart';
+
 export 'package:components_venver/src/material/components/widgets/text_field_type/text_field_type.dart';
+
+// ! Colocar type com um ícone apagábel (TextField de 'CPF / CNPJ na nota' do carrinho)
 
 // ! VER controllers / formatters
 /*
@@ -27,7 +29,6 @@ https://pub.dev/packages/masked_text_input_formatter
 /* // ! Ver sobre enum's
 https://www.educative.io/blog/dart-2-language-features
 */
-
 
 /*  // ! Ver...
     ScrollbarTheme(
@@ -101,11 +102,14 @@ class OwTextField extends StatelessWidget {
   final int focusNodeIndex;
   final ValueChanged<String> onSuggestionSelected;
   final bool automaticFocusWithFocusNodeList;
+  final bool repeatItemsOnSuggestionList;
   // final VoidCallback onPressedSuffix;
 
   static final String assetMsgFocusNodeList = "If you pass 'focusNodeList', you need to pass its position with 'focusNodeIndex'";
   static final String assetMsgSuggestions = "'suggestionsList', can not be null";
-  // static final BorderRadius borderRadius  = BorderRadius.all(Radius.circular(10));
+  // static final BorderRadius circularBorderRadius  = BorderRadius.all(Radius.circular(10));
+
+  static const String currencySymbol = "R\$ "; // ! Passar pro inicializador
 
   OwTextField({
     Key key,
@@ -149,6 +153,7 @@ class OwTextField extends StatelessWidget {
         this.ignoreAccentsOnSuggestion = null,
         this.caseSensitiveOnSuggestion = null,
         this.onSuggestionSelected = null,
+        this.repeatItemsOnSuggestionList = null,
         // assert(
         //   controller is TextEditingController,
         //   "'controller' is not TextEditingController",
@@ -198,6 +203,7 @@ class OwTextField extends StatelessWidget {
     this.focusNodeIndex,
     this.automaticFocusWithFocusNodeList = true,
     this.onSuggestionSelected,
+    this.repeatItemsOnSuggestionList = false,
   })  : this.fieldType = null,
         this.onSaved = null,
         this.validator = null,
@@ -253,6 +259,7 @@ class OwTextField extends StatelessWidget {
         this.onSuggestionSelected = null,
         this.ignoreAccentsOnSuggestion = null,
         this.caseSensitiveOnSuggestion = null,
+        this.repeatItemsOnSuggestionList = null,
         // assert(
         //   controller is MaskedTextController || controller is MoneyMaskedTextController,
         //   "'controller' is not MaskedTextController or MoneyMaskedTextController",
@@ -270,9 +277,10 @@ class OwTextField extends StatelessWidget {
   TextInputAction _textInputAction = TextInputAction.next;
   FocusNode _nextFocusNode;
   FocusNode _focusNode;
-  Function _changeMask;
+  ValueChanged<String> _changeMask;
   Widget _suffixIcon;
   int _minLines, _maxLines;
+  String _prefixText;
 
   @override
   Widget build(BuildContext context) {
@@ -344,17 +352,17 @@ class OwTextField extends StatelessWidget {
             color: AppTheme.errorColor ?? Colors.red,
           ),
           suffixText: suffixText,
-          prefixText: prefixText,
+          prefixText: prefixText ?? _prefixText,
           suffixIcon: suffixIcon ?? _suffixIcon,
         ),
         onTap: onTap,
         onSaved: onSaved,
-        onChanged: (_) {
+        onChanged: (value) {
           if(onChanged != null) {
-            onChanged(_);
+            onChanged(value);
           }
           if(_changeMask != null) {
-            _changeMask();
+            _changeMask(value);
           }
         },
         // onChanged: onChanged,
@@ -413,7 +421,7 @@ class OwTextField extends StatelessWidget {
               ),
             ),
             enabledBorder: OutlineInputBorder(
-              borderRadius: const BorderRadius.all(Radius.circular(10.0)),
+              borderRadius: const BorderRadius.all(Radius.circular(10)),
               borderSide: BorderSide(
                 color: Theme.of(context).secondaryHeaderColor,
               ),
@@ -486,6 +494,7 @@ class OwTextField extends StatelessWidget {
 
   void changeTextFieldType(BuildContext context) {
     if(fieldType != null) {
+      const String assertNotMaskedTextController = "'controller' is not MaskedTextController";
       switch(fieldType.type) {
         case TextFieldMaskType.name:
           _keyboardType = TextInputType.name;
@@ -517,7 +526,7 @@ class OwTextField extends StatelessWidget {
           break;
 
         case TextFieldMaskType.cep:
-          assert(controller is MaskedTextController);
+          assert(controller is MaskedTextController, assertNotMaskedTextController);
           _keyboardType = TextInputType.phone;
           controller.updateMask(MaskType.cep);
           // var _mask = OwMaskedFormatter.cep(); // initialText: controller?.text ?? ""
@@ -538,7 +547,7 @@ class OwTextField extends StatelessWidget {
           break;
 
         case TextFieldMaskType.cardNumber:
-          assert(controller is MaskedTextController);
+          assert(controller is MaskedTextController, assertNotMaskedTextController);
           _keyboardType = TextInputType.phone;
           controller.updateMask(MaskType.cardNumber);
           // final _mask = OwMaskedFormatter.cardNumber(initialText: controller?.text); // initialText: controller?.text ?? ""
@@ -546,7 +555,7 @@ class OwTextField extends StatelessWidget {
           break;
 
         case TextFieldMaskType.cardCvv:
-          assert(controller is MaskedTextController);
+          assert(controller is MaskedTextController, assertNotMaskedTextController);
           _keyboardType = TextInputType.phone;
           controller.updateMask(MaskType.cardCvv);
           // final _mask = OwMaskedFormatter.cardCvv(initialText: controller?.text); // initialText: controller?.text ?? ""
@@ -554,7 +563,7 @@ class OwTextField extends StatelessWidget {
           break;
 
         case TextFieldMaskType.cardDateYY:
-          assert(controller is MaskedTextController);
+          assert(controller is MaskedTextController, assertNotMaskedTextController);
           _keyboardType = TextInputType.phone;
           controller.updateMask(MaskType.cardDateYY);
           // final _mask = OwMaskedFormatter.cardDateYY(initialText: controller?.text); // initialText: controller?.text ?? ""
@@ -562,7 +571,7 @@ class OwTextField extends StatelessWidget {
           break;
 
         case TextFieldMaskType.cardDateYYYY:
-          assert(controller is MaskedTextController);
+          assert(controller is MaskedTextController, assertNotMaskedTextController);
           _keyboardType = TextInputType.phone;
           controller.updateMask(MaskType.cardDateYYYY);
           // final _mask = OwMaskedFormatter.cardDateYYYY(initialText: controller?.text); // initialText: controller?.text ?? ""
@@ -570,7 +579,7 @@ class OwTextField extends StatelessWidget {
           break;
 
         case TextFieldMaskType.date:
-          assert(controller is MaskedTextController);
+          assert(controller is MaskedTextController, assertNotMaskedTextController);
           _keyboardType = TextInputType.datetime;
           controller.updateMask(MaskType.date);
           // final _mask = OwMaskedFormatter.date(initialText: controller?.text); // initialText: controller?.text ?? ""
@@ -578,7 +587,7 @@ class OwTextField extends StatelessWidget {
           break;
 
         case TextFieldMaskType.cpf:
-          assert(controller is MaskedTextController);
+          assert(controller is MaskedTextController, assertNotMaskedTextController);
           _keyboardType = TextInputType.phone;
           controller.updateMask(MaskType.cpf);
           // final _mask = OwMaskedFormatter.cpf(initialText: controller?.text); // initialText: controller?.text ?? ""
@@ -586,7 +595,7 @@ class OwTextField extends StatelessWidget {
           break;
 
         case TextFieldMaskType.cnpj:
-          assert(controller is MaskedTextController);
+          assert(controller is MaskedTextController, assertNotMaskedTextController);
           _keyboardType = TextInputType.phone;
           controller.updateMask(MaskType.cnpj);
           // final _mask = OwMaskedFormatter.cnpj(initialText: controller?.text); // initialText: controller?.text ?? ""
@@ -594,17 +603,17 @@ class OwTextField extends StatelessWidget {
           break;
         
         case TextFieldMaskType.cpfCnpj:
-          assert(controller is MaskedTextController);
+          assert(controller is MaskedTextController, assertNotMaskedTextController);
           _keyboardType = TextInputType.phone;
           String _cpfMask = MaskType.cpf + "0";
-          _changeMask = () {
+          _changeMask = (_) {
             if(controller.text.length <= MaskType.cpf.length && controller.mask != _cpfMask) {
               controller.updateMask(_cpfMask);
             } else if(controller.text.length > MaskType.cpf.length && controller.mask != MaskType.cnpj) {
               controller.updateMask(MaskType.cnpj);
             }
           };
-          _changeMask();
+          _changeMask(controller.text);
           // if(!(controller is MaskedTextController)) {
           //   throw ArgumentError.value(
           //     controller,
@@ -613,7 +622,7 @@ class OwTextField extends StatelessWidget {
           //   );
           // } 
           // MaskTextInputFormatter _maskFormatter;
-          // if(controller?.text?.length == MaskType.cpf.length) { // ! E se controller?.text for null ?
+          // if(controller?.text?.length == MaskType.cpf.length) { // ? E se controller?.text for null ?
           //   _maskFormatter = OwMaskedFormatter.cpf(initialText: controller?.text); // initialText: controller?.text ?? ""
           // } else {
           //   _maskFormatter = OwMaskedFormatter.cnpj(initialText: controller?.text); // initialText: controller?.text ?? ""
@@ -636,17 +645,17 @@ class OwTextField extends StatelessWidget {
           break;
 
         case TextFieldMaskType.landlineCell:
-          assert(controller is MaskedTextController);
+          assert(controller is MaskedTextController, assertNotMaskedTextController);
           _keyboardType = TextInputType.phone;
           String _landlineMask = MaskType.phones(10) + "0";
-          _changeMask = () {
+          _changeMask = (_) {
             if(controller.text.length <= MaskType.phones(10).length && controller.mask != _landlineMask) {
               controller.updateMask(_landlineMask);
             } else if(controller.text.length > MaskType.phones(10).length && controller.mask != MaskType.phones(11)) {
               controller.updateMask(MaskType.phones(11));
             }
           };
-          _changeMask();
+          _changeMask(controller.text);
           // if(!(controller is MaskedTextController)) {
           //   throw ArgumentError.value(
           //     controller,
@@ -694,27 +703,59 @@ class OwTextField extends StatelessWidget {
           break;
           
         case TextFieldMaskType.phones:
-          assert(controller is MaskedTextController);
+          assert(controller is MaskedTextController, assertNotMaskedTextController);
           _keyboardType = TextInputType.phone;
           if(fieldType.numbersQuantity != null) {
-            final _mask = OwMaskedFormatter.phones(
-              fieldType.numbersQuantity,
-              initialText: controller?.text, // initialText: controller?.text ?? ""
-            );
-            _inputFormatters = [_mask];
+            controller.updateMask(MaskType.phones(fieldType.numbersQuantity));
+            // final _mask = OwMaskedFormatter.phones(
+            //   fieldType.numbersQuantity,
+            //   initialText: controller?.text, // initialText: controller?.text ?? ""
+            // );
+            // _inputFormatters = [_mask];
           } else {
             // ! Terminar
           }
           break;
 
         case TextFieldMaskType.money: // ? Ver se dá para melhorar
-          assert(controller is MoneyMaskedTextController);
+          // assert(controller is MoneyMaskedTextController);
           // _hintText = "0,00";
-          // _prefixText = "R\$ ";
+          _prefixText = currencySymbol;
           _keyboardType = TextInputType.phone;
           break;
 
-        case TextFieldMaskType.integer: // ! Finalizar
+        case TextFieldMaskType.integer: // ? Melhorar: Talvez colocar pra ter um número inteiro máximo que pode ser digitado (ex: até 9926)
+          assert(controller is MaskedTextController, assertNotMaskedTextController);
+          _keyboardType = TextInputType.phone;
+          int zerosQuantity = fieldType.minNumbersQuantity;
+          bool minMaxEqual = fieldType.minNumbersQuantity == fieldType.maxNumbersQuantity;
+          controller.updateMask(MaskType.integer(
+            minMaxEqual
+              ? fieldType.maxNumbersQuantity + 1
+              : fieldType.maxNumbersQuantity
+          ));
+          _changeMask = (value) {
+            int integer = int.tryParse(controller.text);
+            if(integer != null && integer != 0) {
+              int i = 0;
+              for(; i < value.length; i++) {
+                if(value[i] != "0") {
+                  break;
+                }
+              }
+              controller.updateText(value.substring(i));
+            } else if(integer == 0) {
+              controller.updateText("0" * zerosQuantity);
+            }
+            if(controller.text.length < zerosQuantity) {
+              controller.updateText("0" * (zerosQuantity - controller.text.length) + controller.text);
+            }
+
+            if(minMaxEqual) {
+              controller.updateText(controller.text.substring(0, fieldType.minNumbersQuantity));
+            }
+          };
+          _changeMask(controller.text);
           break;
 
         case TextFieldMaskType.chat: // ? Ver se dá para melhorar
@@ -763,8 +804,8 @@ class OwTextField extends StatelessWidget {
     if(suggestionsList != null && suggestionsList.isNotEmpty) {
       suggestions = suggestionsList;
     }
-
-    return suggestions.where((element) {
+    
+    var result = suggestions.where((element) {
       String item = element.toString();
       String word = string.toString();
       if(!caseSensitiveOnSuggestion) {
@@ -777,6 +818,10 @@ class OwTextField extends StatelessWidget {
       }
       return item.contains(word);
     });
+
+    return repeatItemsOnSuggestionList
+      ? result
+      : result.toSet().toList();
   }
 }
 

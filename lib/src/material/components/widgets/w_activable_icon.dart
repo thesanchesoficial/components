@@ -5,10 +5,11 @@ enum IconType {
   visiblePassword,
   search,
   sendChat,
+  erasableText,
 }
 
 // ignore: must_be_immutable
-class OwActivableIcon extends StatelessWidget {
+class OwActivableIcon extends StatelessWidget { // ! Adicionar ícone de X pra limpar texto (como no 'CPF / CNPJ na nota' do carrinho)
   final bool activated;
   final IconData activatedIcon;
   final IconData inactivatedIcon;
@@ -17,6 +18,7 @@ class OwActivableIcon extends StatelessWidget {
   final Color iconColor;
   final IconType iconType;
   final TextEditingController controller;
+  final bool hideInactivatedIcon;
 
   OwActivableIcon({
     Key key,
@@ -26,6 +28,7 @@ class OwActivableIcon extends StatelessWidget {
     this.onPressedInactive,
     this.activated = true,
     this.iconColor,
+    this.hideInactivatedIcon = false,
   }): this.controller = null,
       this.iconType = null,
       super(key: key);
@@ -40,27 +43,58 @@ class OwActivableIcon extends StatelessWidget {
     this.activatedIcon,
     this.inactivatedIcon,
     this.iconColor,
+    this.hideInactivatedIcon = false,
   }): super(key: key);
 
   IconData _activatedIcon;
   IconData _inactivatedIcon;
+  bool _activated;
+  bool _hideInactivatedIcon;
   
   @override
   Widget build(BuildContext context) {
-    assertValidate();
     defineIcons();
     
     return IconButton(
-      onPressed: activated
+      onPressed: activated ?? _activated
         ? onPressed
         : onPressedInactive,
-      icon: Icon(
-        activated
-          ? activatedIcon ?? _activatedIcon
-          : inactivatedIcon ?? _inactivatedIcon,
-        color: iconColor ?? Theme.of(context).accentColor,
-      ),
+      icon: (hideInactivatedIcon && _hideInactivatedIcon) && !(activated ?? _activated) // ! Testar
+        ? Icon(
+          activated ?? _activated
+            ? activatedIcon ?? _activatedIcon
+            : inactivatedIcon ?? _inactivatedIcon,
+          color: iconColor ?? Theme.of(context).accentColor,
+        )
+        : const SizedBox(),
     );
+  }
+
+  void defineIcons() {
+    assertValidate();
+    switch (iconType) {
+      case IconType.search:
+        _activated = controller.text.isNotEmpty;
+        _hideInactivatedIcon = _activated;
+        _activatedIcon = Icons.search_outlined;
+        _inactivatedIcon = Icons.close_outlined;
+        break;
+      case IconType.sendChat:
+        _activated = controller.text.isNotEmpty;
+        _hideInactivatedIcon = _activated;
+        _activatedIcon = EvaIcons.paperPlaneOutline;
+        break;
+      case IconType.visiblePassword:
+        _activatedIcon = Icons.visibility_outlined;
+        _inactivatedIcon = Icons.visibility_off_outlined;
+        break;
+      case IconType.erasableText: // ! Terminar
+        _activated = controller.text.isNotEmpty;
+        _hideInactivatedIcon = _activated;
+        _activatedIcon = Icons.cancel;
+        // _inactivatedIcon = Icons.visibility_off_outlined; // ?
+        break;
+    }
   }
 
   void assertValidate() {
@@ -73,21 +107,8 @@ class OwActivableIcon extends StatelessWidget {
       case IconType.visiblePassword:
         assert(activated != null);
         break;
-    }
-  }
-
-  void defineIcons() {
-    switch (iconType) {
-      case IconType.search:
-        _activatedIcon = Icons.search_outlined;
-        _inactivatedIcon = Icons.close_outlined;
-        break;
-      case IconType.sendChat:
-        _activatedIcon = EvaIcons.paperPlaneOutline;
-        break;
-      case IconType.visiblePassword:
-        _activatedIcon = Icons.visibility_outlined;
-        _inactivatedIcon = Icons.visibility_off_outlined;
+      case IconType.erasableText:
+        assert(activated != null);
         break;
     }
   }

@@ -24,13 +24,19 @@ class MaskType {
   ];
 
   static String phones(int numbersQuantity) {
-    for(String s in _phones) {
-      int numbersQuantityInPhones = s.replaceAll(RegExp(r'[^0-9]'), "").length;
+    assert(_phones.isNotEmpty, "To use this method, the '_phones' list can not be empty");
+    for(String phone in _phones) {
+      int numbersQuantityInPhones = phone.replaceAll(RegExp(r'[^0-9]'), "").length;
       if(numbersQuantity == numbersQuantityInPhones) {
-        return s;
+        return phone;
       }
     }
     return ""; // ! throw exception
+  }
+
+  static String integer([int placesQuantity = 9]) {
+    assert(placesQuantity != null && placesQuantity > 0);
+    return "0" * placesQuantity;
   }
 }
 

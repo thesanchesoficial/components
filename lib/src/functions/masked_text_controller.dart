@@ -4,8 +4,6 @@ import 'package:flutter_masked_text/flutter_masked_text.dart';
 class OwMaskedController {
   OwMaskedController._();
 
-  static const String currencySymbol = "R\$"; // ! Passar pro inicializador
-
   static MaskedTextController cpf({String text}) {
     return MaskedTextController(
       mask: MaskType.cpf,
@@ -114,7 +112,7 @@ class OwMaskedController {
   static MoneyMaskedTextController money({
     double initialValue = 0.0,
     int precision = 2,
-    String leftSymbol = currencySymbol,
+    String leftSymbol = "",
     String rightSymbol = "",
     String decimalSeparator = ",",
     String thousandSeparator = ".",

@@ -25,7 +25,6 @@ class TextFieldType {
   final int numbersQuantity;
   final int minNumbersQuantity;
   final int maxNumbersQuantity;
-  // final String constructorCalled; // constructorCalled = "phone";
   
   const TextFieldType(
     TextFieldMaskType type,
@@ -58,11 +57,15 @@ class TextFieldType {
       minNumbersQuantity = null, 
       maxNumbersQuantity = null;
   
-  // const TextFieldType.integer({
-  //   int minNumberOfPlaces = 1,
-  //   int maxNumberOfPlaces,
-  // }): assert(minNumberOfPlaces < 0), // Ou assert(minNumberOfPlaces < 1),
-  //     assert(minNumberOfPlaces < maxNumberOfPlaces),
+  const TextFieldType.integer({
+    int zerosQuantity = 1,
+    int maxNumberOfPlaces = 9,
+  }): assert(zerosQuantity > 0),
+      assert(zerosQuantity <= maxNumberOfPlaces),
+      type = TextFieldMaskType.integer,
+      numbersQuantity = null,
+      minNumbersQuantity = zerosQuantity, 
+      maxNumbersQuantity = maxNumberOfPlaces;
 }
 
 class TextFieldTypes {
@@ -76,7 +79,7 @@ class TextFieldTypes {
   static const TextFieldType cardDateYYYY = TextFieldType(TextFieldMaskType.cardDateYYYY);
   static const TextFieldType cardDateYY = TextFieldType(TextFieldMaskType.cardDateYY);
   static const TextFieldType money = TextFieldType(TextFieldMaskType.money);
-  static const TextFieldType integer = TextFieldType(TextFieldMaskType.integer); // ?
+  static const TextFieldType integer = TextFieldType(TextFieldMaskType.integer);
   static const TextFieldType name = TextFieldType(TextFieldMaskType.name);
   static const TextFieldType email = TextFieldType(TextFieldMaskType.email);
   static const TextFieldType password = TextFieldType(TextFieldMaskType.password);

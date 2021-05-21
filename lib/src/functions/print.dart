@@ -3,8 +3,8 @@ import 'package:flutter/foundation.dart';
 
 void p([dynamic string]) {
   if(_isPrintEnabled()) {
-    final ms = DateTime.now().millisecondsSinceEpoch;
-    print("[$ms]: $string");
+    final time = DateTime.now().millisecondsSinceEpoch;
+    print("[$time]: $string");
   }
 }
 
@@ -18,7 +18,20 @@ void pList([List list]) {
     } else {
       p("List = null");
     }
-  } 
+  }
+}
+
+void pMap([Map map]) {
+  if(_isPrintEnabled()) {
+    if(map != null) {
+      p("${map.runtimeType} (length: ${map.length})");
+      map?.forEach((key, value) {
+        print("$key: $value");
+      });
+    } else {
+      p("Map = null");
+    }
+  }
 }
 
 bool _isPrintEnabled() {

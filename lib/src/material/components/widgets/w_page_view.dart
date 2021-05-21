@@ -20,6 +20,7 @@ enum IndicatorDotTouch {
   goToOnlyCheckedPage,
 }
 
+// ! Colocar pra se tiver controller, usar o controller pra mexer nas bolinhas de indicação de página (StepPageIndicator e CirclePageIndicator)
 // ! Deixar passar um filho pro pageIndicator (como por exemplo, exibir as miniaturas das imagens)
 // ! Criar um Builder
 // ! Colocar opção pra desabilitar rolagem (quando dá zoom em uma imagem e arrasta pro lado (no zoom), vai pra próxima imagem)
