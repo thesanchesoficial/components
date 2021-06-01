@@ -1,7 +1,7 @@
 import 'package:components_venver/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 
-class OwButton extends StatelessWidget {
+class OwButton extends StatelessWidget { // ! Testar opção de enviar ícone
   final String labelText;
   final bool autoFocus;
   final bool enable;

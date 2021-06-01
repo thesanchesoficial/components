@@ -454,7 +454,7 @@ class OwFormat {
 
   /// Remove accents and ponctuation from [value]
   ///
-  /// [removedPonctuation] is the characters that will be removed (it can be *null*)
+  /// [removedPonctuation] are the characters that will be removed (it can be *null*)
   /// 
   /// [removeDoubleSpaces] is to remove duplicated spaces
   /// 
@@ -470,6 +470,8 @@ class OwFormat {
     bool useUpperCase = false,
     String invalidReturn = "",
   }) {
+    assert(useLowerCase != null && useUpperCase != null && useLowerCase != useUpperCase);
+
     if(value == null) { // if(!(value is String)) { ... }
       return invalidReturn ?? standardReturnOfNullValue;
     }

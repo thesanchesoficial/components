@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class OwDropdown extends StatelessWidget {
+class OwDropdown extends StatelessWidget { // ! Adicionar autoFocus (lista de focusNode)
   final String value;
   final bool isExpanded;
   final String labelText;

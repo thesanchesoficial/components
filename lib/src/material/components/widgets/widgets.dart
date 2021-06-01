@@ -17,7 +17,8 @@ export 'package:components_venver/src/material/components/widgets/w_two_floating
 export 'package:components_venver/src/material/components/widgets/w_scrollbar2.dart';
 export 'package:components_venver/src/material/components/widgets/w_progress_bar.dart';
 export 'package:components_venver/src/material/components/widgets/w_page_view.dart';
+export 'package:components_venver/src/material/components/widgets/w_page_list_view.dart';
+export 'package:components_venver/src/material/components/widgets/w_pagination.dart';
 export 'package:components_venver/src/material/components/widgets/w_grid.dart';
-
 
 export 'package:components_venver/src/material/components/widgets/text_field_type/masked_text.dart';

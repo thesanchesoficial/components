@@ -1,15 +1,52 @@
 import 'package:components_venver/src/settings/variable.dart';
 import 'package:flutter/foundation.dart';
 
-void p([dynamic string]) {
-  if(_isPrintEnabled()) {
-    final time = DateTime.now().millisecondsSinceEpoch;
-    print("[$time]: $string");
+class ShowPrintOn {
+  final bool android;
+  final bool fuchsia;
+  final bool ios;
+  final bool linux;
+  final bool mac;
+  final bool web;
+  final bool windows;
+
+  ShowPrintOn({
+    this.android = false,
+    this.fuchsia = false,
+    this.ios = false,
+    this.linux = false,
+    this.mac = false,
+    this.web = false,
+    this.windows = false,
+  });
+
+  bool showOnThisDevice() {
+    // if(this.android && ) return true;
+    // if(this.ios && ) return true;
+    if(this.web && kIsWeb) return true;
+    // if(this.windows && ) return true;
+    // if(this.mac && ) return true;
+    // if(this.linux && ) return true;
+    // if(this.fuchsia && ) return true;
+    return false;
   }
 }
 
-void pList([List list]) {
-  if(_isPrintEnabled()) {
+void p([dynamic object, ShowPrintOn showPrintOn]) {
+  if(object is List) {
+    pList(object, showPrintOn);
+  } else if(object is Map) {
+    pMap(object, showPrintOn);
+  } else
+
+  if(_isPrintEnabled(showPrintOn)) {
+    final time = DateTime.now().millisecondsSinceEpoch;
+    print("[$time]: $object");
+  }
+}
+
+void pList([List list, ShowPrintOn showPrintOn]) {
+  if(_isPrintEnabled(showPrintOn)) {
     if(list != null) {
       p("${list.runtimeType} (length: ${list.length})");
       for(int i = 0; i < list.length; i++) {
@@ -21,8 +58,8 @@ void pList([List list]) {
   }
 }
 
-void pMap([Map map]) {
-  if(_isPrintEnabled()) {
+void pMap([Map map, ShowPrintOn showPrintOn]) {
+  if(_isPrintEnabled(showPrintOn)) {
     if(map != null) {
       p("${map.runtimeType} (length: ${map.length})");
       map?.forEach((key, value) {
@@ -34,6 +71,7 @@ void pMap([Map map]) {
   }
 }
 
-bool _isPrintEnabled() {
-  return !kReleaseMode && !hidePrintApplication;
+bool _isPrintEnabled([ShowPrintOn showPrintOn]) {
+  bool showOnDevice = showPrintOn?.showOnThisDevice() ?? true;
+  return !kReleaseMode && !hidePrintApplication && showOnDevice;
 }
