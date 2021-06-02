@@ -20,5 +20,3 @@ export 'package:components_venver/src/material/components/widgets/w_page_view.da
 export 'package:components_venver/src/material/components/widgets/w_page_list_view.dart';
 export 'package:components_venver/src/material/components/widgets/w_pagination.dart';
 export 'package:components_venver/src/material/components/widgets/w_grid.dart';
-
-export 'package:components_venver/src/material/components/widgets/text_field_type/masked_text.dart';

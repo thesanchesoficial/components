@@ -25,9 +25,39 @@ class F {
           list1.add(element2);
         }
       });
-      return list1 ?? [];
+      return list1;
     } catch (e) {
       return [];
     }
   }
+
+  /*
+  void func(Function f, Duration d, {TempFunction tempFunction, int times, bool awaitFunction = true}) async {
+    if(times == null || times > 0) {
+      
+      await Future.delayed(d);
+      if(awaitFunction) {
+        await f();
+      } else {
+        f();
+      }
+      if(times == null) {
+        func(f, d);
+      } else {
+        func(f, d, times: times - 1, awaitFunction: awaitFunction);
+      }
+    }
+  }
+
+class TempFunction {
+  int times;
+  bool awaitFunction;
+  void Function() dispose;
+  
+  TempFunction({
+    this.times,
+    this.awaitFunction,
+  });
+}
+  */
 }

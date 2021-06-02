@@ -107,7 +107,7 @@ class OwGrid extends StatefulWidget { // * class OwGrid<T> extends StatelessWidg
     this.topWidget,
     this.horizontalSeparatorWidget,
     this.verticalSeparatorWidget,
-  }) :this.children = null,
+  }): this.children = null,
       this.controller = null,
       this.maxLength = null,
       this.loadingWidget = null,
@@ -123,9 +123,10 @@ class OwGrid extends StatefulWidget { // * class OwGrid<T> extends StatelessWidg
 
   OwGrid.pagination({
     Key key,
-    @required this.itemBuilder,
-    @required this.itemCount,
     @required this.loadMore,
+    this.itemBuilder,
+    this.itemCount,
+    this.children,
     this.controller,
     this.maxLength,
     this.loadingWidget,
@@ -154,7 +155,9 @@ class OwGrid extends StatefulWidget { // * class OwGrid<T> extends StatelessWidg
     this.pixelsLengthBeforeCallLoadMore = 0,
     this.horizontalSeparatorWidget,
     this.verticalSeparatorWidget,
-  }) :this.children = null,
+  }): assert(itemBuilder == null ? true : itemCount != null, "If you are using 'itemBuilder', needs the 'itemCount'"),
+      assert(maxLength == null ? true : itemCount != null, "To use 'maxLength', needs the 'itemCount'"),
+      assert(children == null || itemBuilder == null, "You can not use 'children' and 'itemBuilder' at the same time"),
       this.usePagination = true,
       super(key: key);
 
