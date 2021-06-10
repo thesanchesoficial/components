@@ -1,7 +1,9 @@
+import 'dart:io';
+
 import 'package:components_venver/src/settings/variable.dart';
 import 'package:flutter/foundation.dart';
 
-class ShowPrintOn {
+class ShowPrintOn { // ! Mover para models
   final bool android;
   final bool fuchsia;
   final bool ios;
@@ -21,23 +23,23 @@ class ShowPrintOn {
   });
 
   bool showOnThisDevice() {
-    // if(this.android && ) return true;
-    // if(this.ios && ) return true;
+    if(this.android && Platform.isAndroid) return true;
+    if(this.ios && Platform.isIOS) return true;
     if(this.web && kIsWeb) return true;
-    // if(this.windows && ) return true;
-    // if(this.mac && ) return true;
-    // if(this.linux && ) return true;
-    // if(this.fuchsia && ) return true;
+    if(this.windows && Platform.isWindows) return true;
+    if(this.mac && Platform.isMacOS) return true;
+    if(this.linux && Platform.isLinux) return true;
+    if(this.fuchsia && Platform.isFuchsia) return true;
     return false;
   }
 }
 
 void p([dynamic object, ShowPrintOn showPrintOn]) {
-  if(object is List) {
-    pList(object, showPrintOn);
-  } else if(object is Map) {
-    pMap(object, showPrintOn);
-  } else
+  // if(object is List) {
+  //   pList(object, showPrintOn);
+  // } else if(object is Map) {
+  //   pMap(object, showPrintOn);
+  // } else
 
   if(_isPrintEnabled(showPrintOn)) {
     final time = DateTime.now().millisecondsSinceEpoch;

@@ -9,6 +9,33 @@ https://medium.com/flutter/slivers-demystified-6ff68ab0296f
 https://fine2find.com/working-with-slivers-in-flutter/
 */
 
+ // ? Na paginação, colocar uma página de erro (caso dê erro no primeiro retorno, e uma página de itens vazios (caso retorne vazio)); colocar página de loading inicial
+ // ! pub.dev/packages/flutter_pagewise (Paginação com List, Grid, Sliver e SliverGrid)
+ // * Ver também: https://pub.dev/packages/lazy_load_scrollview
+/*
+! Ver para Sliver Scrolls
+CustomScrollView(
+  slivers: [
+    PagewiseSliverList(
+      pageSize: 10, // for example,
+      pageFuture: this._pageFuture, // some function that fetches the page
+      itemBuilder: (context, entry, index) {
+        return Column(
+          children: [
+            Text(entry['title']),
+            ListView(
+              primary: false,
+              shrinkWrap: true,
+              children: entry['ids'].map((id) => Text(id)).toList()
+            )
+          ]
+        );
+      }
+    )
+  ]
+)
+*/
+
 class OwGrid extends StatefulWidget { // * class OwGrid<T> extends StatelessWidget { // final List<T> typedList;
   final List<Widget> children;
   final EdgeInsetsGeometry padding;
@@ -44,7 +71,7 @@ class OwGrid extends StatefulWidget { // * class OwGrid<T> extends StatelessWidg
   final bool usePagination;
   final bool loadingAndTryWidgetsAboveBottomWidget;
   final bool useTryAgainWidget;
-  final double pixelsLengthBeforeCallLoadMore;
+  final double loadMoreOffsetFromBottom;
   // ? Talvez colocar um axis direction
   
   OwGrid({
@@ -69,7 +96,7 @@ class OwGrid extends StatefulWidget { // * class OwGrid<T> extends StatelessWidg
     this.topWidget,
     this.horizontalSeparatorWidget,
     this.verticalSeparatorWidget,
-  }) :this.controller = null,
+  }): this.controller = null,
       this.maxLength = null,
       this.loadingWidget = null,
       this.loadMore = null,
@@ -81,7 +108,7 @@ class OwGrid extends StatefulWidget { // * class OwGrid<T> extends StatelessWidg
       this.itemCount = null,
       this.usePagination = false,
       this.loadingAndTryWidgetsAboveBottomWidget = null,
-      this.pixelsLengthBeforeCallLoadMore = null,
+      this.loadMoreOffsetFromBottom = null,
       super(key: key);
 
   OwGrid.builder({
@@ -118,7 +145,7 @@ class OwGrid extends StatefulWidget { // * class OwGrid<T> extends StatelessWidg
       this.useTryAgainWidget = null,
       this.usePagination = false,
       this.loadingAndTryWidgetsAboveBottomWidget = null,
-      this.pixelsLengthBeforeCallLoadMore = null,
+      this.loadMoreOffsetFromBottom = null,
       super(key: key);
 
   OwGrid.pagination({
@@ -152,7 +179,7 @@ class OwGrid extends StatefulWidget { // * class OwGrid<T> extends StatelessWidg
     this.bottomWidget,
     this.topWidget,
     this.loadingAndTryWidgetsAboveBottomWidget = true,
-    this.pixelsLengthBeforeCallLoadMore = 0,
+    this.loadMoreOffsetFromBottom = 0,
     this.horizontalSeparatorWidget,
     this.verticalSeparatorWidget,
   }): assert(itemBuilder == null ? true : itemCount != null, "If you are using 'itemBuilder', needs the 'itemCount'"),
@@ -441,7 +468,7 @@ class _OwGridState extends State<OwGrid> {
   }
 
   void _callFuncion([bool tryAgainCall = false]) async {
-    double maxScroll = _scrollController.position.maxScrollExtent - widget.pixelsLengthBeforeCallLoadMore;
+    double maxScroll = _scrollController.position.maxScrollExtent - widget.loadMoreOffsetFromBottom;
     maxScroll = maxScroll < 0 ? 0 : maxScroll;
     if(
       widget.loadMore != null && 
@@ -452,9 +479,11 @@ class _OwGridState extends State<OwGrid> {
       _showLoading = true;
       _showTryAgain = false;
       setState(() {});
-      if(!widget.useStackLoading && !tryAgainCall && widget.pixelsLengthBeforeCallLoadMore == 0) {
+      if(!widget.useStackLoading && !tryAgainCall && widget.loadMoreOffsetFromBottom == 0) {
         // await Future.delayed(const Duration(milliseconds: 100));
-        _scrollController.animateTo(maxScroll + 70, duration: const Duration(milliseconds: 200), curve: Curves.easeInSine);
+        SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+          _scrollController.animateTo(maxScroll + 70, duration: const Duration(milliseconds: 200), curve: Curves.easeInSine);
+        });
       }
       var result = await widget.loadMore();
       _showLoading = false;

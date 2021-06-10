@@ -1,5 +1,6 @@
 import 'package:components_venver/functions.dart';
 import 'package:components_venver/material.dart';
+import 'package:components_venver/src/settings/init.dart';
 // import 'package:components_venver/src/settings/filter_mask.dart';
 import 'package:components_venver/src/settings/mask_type.dart';
 import 'package:components_venver/theme/app_theme.dart';
@@ -75,6 +76,11 @@ return Center(
 */
 
 // ! Colocar pro tipo de dinheiro não ter como mover o cursor
+// ! Colocar pro tipo number ter 2 setinhas (incremento e decremento e um atributo STEP (como no dropdown))
+// ! Colocar pro tipo date ter um ícone com um datePicker
+// ! Colocar pro tipo time ter um ícone com um seletor de horário (tipo o seletor de cronômetro do Honor)
+// ! Colocar pro tipo dateTime ter um ícone com um seletor data e hora
+// ! Colocar uma opção (ou um widget) pra ter um Switch para habilitar/desabilitar o TextField (como no 'CPF / CNPJ' do carrinho)
 
 // ignore: must_be_immutable
 class OwTextField extends StatelessWidget {
@@ -121,11 +127,11 @@ class OwTextField extends StatelessWidget {
   final bool repeatItemsOnSuggestionList;
   // final VoidCallback onPressedSuffix;
 
+  static const Color errorColor = Colors.red;
+
   static const String assertMsgFocusNodeList = "If you pass 'focusNodeList', you need to pass its position with 'focusNodeIndex'";
   static const String assertMsgSuggestions = "'suggestionsList', can not be null";
   // static const BorderRadius circularBorderRadius  = BorderRadius.all(Radius.circular(10));
-
-  static const String currencySymbol = "R\$ "; // ! Passar pro inicializador
 
   OwTextField({
     Key key,
@@ -360,12 +366,12 @@ class OwTextField extends StatelessWidget {
           ),
           errorBorder: const UnderlineInputBorder(
             borderRadius: const BorderRadius.all(Radius.circular(10)),
-            borderSide: const BorderSide(color: AppTheme.errorColor ?? Colors.red),
+            borderSide: const BorderSide(color: AppTheme.errorColor ?? errorColor),
           ),
           helperText: helperText,
           helperMaxLines: 3,
           errorStyle: const TextStyle(
-            color: AppTheme.errorColor ?? Colors.red,
+            color: AppTheme.errorColor ?? errorColor,
           ),
           suffixText: suffixText,
           prefixText: prefixText ?? _prefixText,
@@ -452,13 +458,13 @@ class OwTextField extends StatelessWidget {
             errorBorder: const UnderlineInputBorder(
               borderRadius: BorderRadius.all(Radius.circular(10)),
               borderSide: BorderSide(
-                color: AppTheme.errorColor ?? Colors.red,
+                color: AppTheme.errorColor ?? errorColor,
               ),
             ),
             helperText: helperText,
             helperMaxLines: 3,
             errorStyle: const TextStyle(
-              color: AppTheme.errorColor ?? Colors.red,
+              color: AppTheme.errorColor ?? errorColor,
             ),
             suffixText: suffixText,
             prefixText: prefixText,
@@ -594,12 +600,24 @@ class OwTextField extends StatelessWidget {
           // _inputFormatters = [_mask];
           break;
 
-        case TextFieldMaskType.date:
+        case TextFieldMaskType.date: // ? Talvez um ícone pra abrir um datePick
           assert(controller is MaskedTextController, assertMsgMaskedTextController);
           _keyboardType = TextInputType.datetime;
           controller.updateMask(MaskType.date);
           // final _mask = OwMaskedFormatter.date(initialText: controller?.text); // initialText: controller?.text ?? ""
           // _inputFormatters = [_mask];
+          break;
+
+        case TextFieldMaskType.dateTime: // ? Talvez um ícone pra abrir um datePick
+          assert(controller is MaskedTextController, assertMsgMaskedTextController);
+          _keyboardType = TextInputType.datetime;
+          controller.updateMask(fieldType.mask ?? MaskType.dateTime);
+          break;
+
+        case TextFieldMaskType.time: // ? Talvez um ícone pra abrir tipo um datePick de horário
+          assert(controller is MaskedTextController, assertMsgMaskedTextController);
+          _keyboardType = TextInputType.datetime;
+          controller.updateMask(MaskType.time);
           break;
 
         case TextFieldMaskType.cpf:
@@ -721,8 +739,8 @@ class OwTextField extends StatelessWidget {
         case TextFieldMaskType.phones:
           assert(controller is MaskedTextController, assertMsgMaskedTextController);
           _keyboardType = TextInputType.phone;
-          if(fieldType.numbersQuantity != null) {
-            controller.updateMask(MaskType.phones(fieldType.numbersQuantity));
+          if(fieldType.quantity != null) {
+            controller.updateMask(MaskType.phones(fieldType.quantity));
             // final _mask = OwMaskedFormatter.phones(
             //   fieldType.numbersQuantity,
             //   initialText: controller?.text, // initialText: controller?.text ?? ""
@@ -736,19 +754,19 @@ class OwTextField extends StatelessWidget {
         case TextFieldMaskType.money: // ? Ver se dá para melhorar
           // assert(controller is MoneyMaskedTextController);
           // _hintText = "0,00";
-          _prefixText = currencySymbol;
+          _prefixText = StandardConfig.currencySymbol + " ";
           _keyboardType = TextInputType.phone;
           break;
 
         case TextFieldMaskType.integer: // ? Melhorar: Talvez colocar pra ter um número inteiro máximo que pode ser digitado (ex: até 9926)
           assert(controller is MaskedTextController, assertMsgMaskedTextController);
           _keyboardType = TextInputType.phone;
-          int zerosQuantity = fieldType.minNumbersQuantity;
-          bool minMaxEqual = fieldType.minNumbersQuantity == fieldType.maxNumbersQuantity;
+          int zerosQuantity = fieldType.min;
+          bool minMaxEqual = fieldType.min == fieldType.max;
           controller.updateMask(MaskType.integer(
             minMaxEqual
-              ? fieldType.maxNumbersQuantity + 1
-              : fieldType.maxNumbersQuantity
+              ? fieldType.max + 1
+              : fieldType.max
           ));
           _changeMask = (value) {
             int integer = int.tryParse(controller.text);
@@ -770,10 +788,15 @@ class OwTextField extends StatelessWidget {
             }
 
             if(minMaxEqual) {
-              controller.updateText(controller.text.substring(0, fieldType.minNumbersQuantity));
+              controller.updateText(controller.text.substring(0, fieldType.min));
             }
           };
           _changeMask(controller.text);
+          break;
+
+        case TextFieldMaskType.decimal:
+          assert(controller is MoneyMaskedTextController);
+          _keyboardType = TextInputType.phone;
           break;
 
         case TextFieldMaskType.chat: // ? Ver se dá para melhorar

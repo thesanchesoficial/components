@@ -61,46 +61,6 @@ class OwMaskedFormatter {
     );
   }
 
-  // static MaskTextInputFormatter phone9({String initialText}) {
-  //   return MaskTextInputFormatter(
-  //     mask: MaskType.phone9,
-  //     filter: FilterMask.number,
-  //     initialText: initialText,
-  //   );
-  // }
-
-  // static MaskTextInputFormatter phone10({String initialText}) {
-  //   return MaskTextInputFormatter(
-  //     mask: MaskType.phone10,
-  //     filter: FilterMask.number,
-  //     initialText: initialText,
-  //   );
-  // }
-
-  // static MaskTextInputFormatter phone11({String initialText}) {
-  //   return MaskTextInputFormatter(
-  //     mask: MaskType.phone11,
-  //     filter: FilterMask.number,
-  //     initialText: initialText,
-  //   );
-  // }
-
-  // static MaskTextInputFormatter phone12({String initialText}) {
-  //   return MaskTextInputFormatter(
-  //     mask: MaskType.phone12,
-  //     filter: FilterMask.number,
-  //     initialText: initialText,
-  //   );
-  // }
-
-  // static MaskTextInputFormatter phone13({String initialText}) {
-  //   return MaskTextInputFormatter(
-  //     mask: MaskType.phone13,
-  //     filter: FilterMask.number,
-  //     initialText: initialText,
-  //   );
-  // }
-
   static MaskTextInputFormatter cardNumber({String initialText}) {
     return MaskTextInputFormatter(
       mask: MaskType.cardNumber,
@@ -133,7 +93,7 @@ class OwMaskedFormatter {
     );
   }
 
-  static MaskTextInputFormatter numbers(int numbersQuantity, {String initialText}) {
+  static MaskTextInputFormatter integer(int numbersQuantity, {String initialText}) {
     return MaskTextInputFormatter(
       mask: "0" * numbersQuantity,
       filter: FilterMask.number,

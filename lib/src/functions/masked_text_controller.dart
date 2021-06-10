@@ -24,41 +24,6 @@ class OwMaskedController {
       text: text,
     );
   }
-
-  // static MaskedTextController phone9({String text}) {
-  //   return MaskedTextController(
-  //     mask: MaskType.phone9,
-  //     text: text,
-  //   );
-  // }
-
-  // static MaskedTextController phone10({String text}) {
-  //   return MaskedTextController(
-  //     mask: MaskType.phone10,
-  //     text: text,
-  //   );
-  // }
-
-  // static MaskedTextController phone11({String text}) {
-  //   return MaskedTextController(
-  //     mask: MaskType.phone11,
-  //     text: text,
-  //   );
-  // }
-
-  // static MaskedTextController phone12({String text}) {
-  //   return MaskedTextController(
-  //     mask: MaskType.phone12,
-  //     text: text,
-  //   );
-  // }
-
-  // static MaskedTextController phone13({String text}) {
-  //   return MaskedTextController(
-  //     mask: MaskType.phone13,
-  //     text: text,
-  //   );
-  // }
   
   static MaskedTextController cardNumber({String text}) {
     return MaskedTextController(
@@ -102,7 +67,7 @@ class OwMaskedController {
     );
   }
 
-  static MaskedTextController numbers(int numbersQuantity, {String text}) {
+  static MaskedTextController integer(int numbersQuantity, {String text}) {
     return MaskedTextController(
       mask: "0" * numbersQuantity,
       text: text,
