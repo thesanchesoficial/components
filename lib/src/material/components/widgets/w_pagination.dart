@@ -172,9 +172,11 @@ class _OwPaginationState extends State<OwPagination> {
     {bool addBottomWidget = true, 
     bool addTryAgainWidget = true,
   }) {
-    List<Widget> _children = [
-      widget.topWidget,
-    ];
+    List<Widget> _children = [];
+
+    if(widget.topWidget != null) {
+      _children.add(widget.topWidget);
+    }
 
     if(widget.childPadding != null) {
       _children.add(Padding(
