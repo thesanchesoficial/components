@@ -219,6 +219,7 @@ class _OwPaginationState extends State<OwPagination> {
   void _callFuncion([bool tryAgainCall = false]) async {
     double maxScroll = _scrollController.position.maxScrollExtent - widget.loadMoreOffsetFromBottom;
     maxScroll = maxScroll < 0 ? 0 : maxScroll;
+    print("_showLoading: $_showLoading");
     if(
       widget.loadMore != null && 
       ((!_showTryAgain && _scrollController.offset >= maxScroll) || (_showTryAgain && tryAgainCall)) &&
