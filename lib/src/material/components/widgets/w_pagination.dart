@@ -21,6 +21,7 @@ class OwPagination extends StatefulWidget { // ! Falta a tela de loading inicial
   final Widget bottomWidget;
   final Widget sliverAppBar;
   final bool onlyUseTryAgainToLoadMore;
+  final bool shrinkWrap;
   // final double width;
 
   const OwPagination({
@@ -44,9 +45,11 @@ class OwPagination extends StatefulWidget { // ! Falta a tela de loading inicial
     this.bottomWidget,
     this.sliverAppBar,
     this.onlyUseTryAgainToLoadMore = false,
+    this.shrinkWrap = false,
     // this.width,
   }): assert(child != null),
       assert(onlyUseTryAgainToLoadMore ? useTryAgainWidget : true, "'useTryAgainWidget' needs to be true if you are using 'onlyUseTryAgainToLoadMore'"),
+      assert(shrinkWrap ? controller != null : true, "If you are usig 'shrinkWrap' as true, you need to pass the 'controller'"),
       super(key: key);
 
   @override
@@ -94,6 +97,7 @@ class _OwPaginationState extends State<OwPagination> {
       return CustomScrollView(
         controller: _scrollController,
         physics: widget.physics,
+        shrinkWrap: widget.shrinkWrap,
         slivers: [
           widget.sliverAppBar,
           SliverToBoxAdapter(
@@ -102,11 +106,15 @@ class _OwPaginationState extends State<OwPagination> {
         ],
       );
     } else {
-      return SingleChildScrollView(
-        controller: _scrollController,
-        physics: widget.physics,
-        child: _container(context),
-      );
+      if(widget.shrinkWrap) {
+        return _container(context);
+      } else {
+        return SingleChildScrollView(
+          controller: _scrollController,
+          physics: widget.physics,
+          child: _container(context),
+        );
+      }
     }
   }
 
