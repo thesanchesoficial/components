@@ -2,12 +2,12 @@ library components;
 
 export 'w_activable_icon.dart';
 export 'w_appbar.dart';
+export 'w_auto_form.dart';
 export 'w_button.dart';
 export 'w_data_table.dart';
 export 'w_date_picker.dart';
 export 'w_dropdown.dart';
 export 'w_floating_button.dart';
-export 'w_form.dart';
 export 'w_generic_button.dart';
 export 'w_grid.dart';
 export 'w_icon.dart';
