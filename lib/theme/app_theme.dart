@@ -2,20 +2,36 @@ import 'package:flutter/material.dart';
 
 class AppTheme {
   static final Color error = Colors.red;
-  static final Color verdeVenver = Color(0xff12aa4b); // Color(0xFF0fbf4f); // Color(0xFF2DB300); // Color(0xff007a55);
+  static final Color verdeVenver = Color(0xff12aa4b);
+
+  static final MaterialColor myGreen = const MaterialColor(
+    0xff12aa4b,
+    const {
+      50 : const Color(0xFF36443B),
+      100 : const Color(0xFF4BE285),
+      200 : const Color(0xFF49DB81),
+      300 : const Color(0xFF31D16E),
+      400 : const Color(0xFF1BBD59),
+      500 : const Color(0xff12aa4b),
+      600 : const Color(0xFF14A049),
+      700 : const Color(0xFF0C9942),
+      800 : const Color(0xFF0A8B3C),
+      900 : const Color(0xFF078638)
+    }
+  );
 
   static final SliderThemeData sliderTheme = SliderThemeData(
     activeTrackColor: verdeVenver,
     inactiveTrackColor: verdeVenver.withOpacity(0.2),
     trackShape: RoundedRectSliderTrackShape(),
     trackHeight: 4,
-    overlayShape: RoundSliderOverlayShape(overlayRadius: 28.0),
+    overlayShape: RoundSliderOverlayShape(overlayRadius: 28),
     tickMarkShape: RoundSliderTickMarkShape(),
     overlayColor: verdeVenver.withOpacity(0.2),
     thumbShape: RoundSliderThumbShape(enabledThumbRadius: 5),
     thumbColor: verdeVenver,
     valueIndicatorShape: PaddleSliderValueIndicatorShape(),
-    valueIndicatorTextStyle: TextStyle(color: Colors.white,),
+    valueIndicatorTextStyle: TextStyle(color: Colors.white),
     activeTickMarkColor: Colors.black,
     disabledActiveTickMarkColor: Colors.black,
     inactiveTickMarkColor: Colors.black.withOpacity(0.2),
@@ -23,6 +39,7 @@ class AppTheme {
   );
 
   static final ThemeData lightTheme = ThemeData(
+    primarySwatch: myGreen,
     toggleableActiveColor: verdeVenver,
     unselectedWidgetColor: verdeVenver,
     backgroundColor: Color(0xffffffff),
@@ -49,6 +66,7 @@ class AppTheme {
   );
 
   static final ThemeData darkTheme = ThemeData(
+    primarySwatch: myGreen,
     toggleableActiveColor: verdeVenver,
     unselectedWidgetColor: verdeVenver,
     backgroundColor: Color(0xff1b1b1b),
@@ -81,6 +99,4 @@ class AppTheme {
       ),
     ),
   );
-
-  static const Color errorColor = Color.fromARGB(0xFF, 239, 83, 80);
 }

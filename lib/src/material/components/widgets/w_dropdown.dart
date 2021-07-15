@@ -1,6 +1,5 @@
 import 'package:components_venver/src/settings/init.dart';
 import 'package:components_venver/src/utils/helpers/dorpdown_type.dart';
-import 'package:components_venver/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 
 // ignore: must_be_immutable
@@ -98,7 +97,7 @@ class OwDropdown extends StatelessWidget { // ! Adicionar autoFocus (lista de fo
             borderRadius: const BorderRadius.all(Radius.circular(10)),
             borderSide: BorderSide(color: Theme.of(context).secondaryHeaderColor)),
           enabledBorder: OutlineInputBorder(
-            borderRadius: const BorderRadius.all(Radius.circular(10.0)),
+            borderRadius: const BorderRadius.all(Radius.circular(10)),
             borderSide: BorderSide(color: Theme.of(context).secondaryHeaderColor),
           ),
           contentPadding: const EdgeInsets.only(
@@ -112,9 +111,9 @@ class OwDropdown extends StatelessWidget { // ! Adicionar autoFocus (lista de fo
           ),
           errorBorder: UnderlineInputBorder(
             borderRadius: const BorderRadius.all(Radius.circular(10)),
-            borderSide: BorderSide(color: AppTheme.errorColor ?? errorColor),
+            borderSide: BorderSide(color: Theme.of(context).errorColor),
           ),
-          errorStyle: TextStyle(color: AppTheme.errorColor ?? errorColor),
+          errorStyle: TextStyle(color: Theme.of(context).errorColor),
         ),
         value: value,
         onChanged: enabled

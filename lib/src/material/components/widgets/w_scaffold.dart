@@ -51,9 +51,7 @@ class OwScaffold extends StatelessWidget {
     bool _showScrollbar = showScrollbar ?? isWebApplication;
     return onWillPop != null
       ? WillPopScope(
-        key: onWillPop != null
-          ? key
-          : null,
+        key: key,
         onWillPop: onWillPop,
         child: _scaffold(_showScrollbar),
       )

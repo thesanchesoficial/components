@@ -72,7 +72,7 @@ class OwPageView extends StatefulWidget {
   const OwPageView({
     Key key,
     @required this.children,
-    @required this.height,
+    this.height,
     this.pageSnapping = true,
     this.controller,
     this.reverse = false,
@@ -112,7 +112,7 @@ class OwPageView extends StatefulWidget {
   const OwPageView.loop({
     Key key,
     @required this.children,
-    @required this.height,
+    this.height,
     this.pageSnapping = true,
     this.loopController,
     this.reverse = false,
@@ -152,7 +152,7 @@ class OwPageView extends StatefulWidget {
   const OwPageView.carousel({
     Key key,
     @required this.children,
-    @required this.height,
+    this.height,
     this.carouselController,
     this.pageSnapping = true,
     this.reverse = false,
@@ -415,6 +415,3 @@ class _OwPageViewState extends State<OwPageView> {
     );
   }
 }
-
-
-

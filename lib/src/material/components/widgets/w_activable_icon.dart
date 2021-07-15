@@ -6,6 +6,7 @@ enum IconType {
   search,
   sendChat,
   erasableText,
+  // datePicker, // ! Inserir
 }
 
 // ignore: must_be_immutable
@@ -94,6 +95,8 @@ class OwActivableIcon extends StatelessWidget { // ! Adicionar ícone de X pra l
         _activatedIcon = Icons.cancel;
         // _inactivatedIcon = Icons.visibility_off_outlined; // ?
         break;
+      // case IconType.datePicker: // ! Terminar
+      //   break;
     }
   }
 
@@ -110,6 +113,8 @@ class OwActivableIcon extends StatelessWidget { // ! Adicionar ícone de X pra l
       case IconType.erasableText:
         assert(activated != null);
         break;
+      // case IconType.datePicker:
+      //   break;
     }
   }
 }

@@ -62,16 +62,16 @@ class OwFormat {
 
   /// Only trim
   ///
-  /// If it's not valid, the return can be the same [value] if [returnValue] is true, or [invalidReturn] if [returnValue] is false
+  /// If it's not valid, the return can be the same [value] if [returnValueAsInvalid] is true, or [invalidReturn] if [returnValue] is false
   static String trim(
     String value, 
     String invalidReturn,
-    {bool returnValue = false,
+    {bool returnValueAsInvalid = false,
   }) {
     if(OwValidate.text(value)) {
       return value.toString().trim();
     } else {
-      if(returnValue) {
+      if(returnValueAsInvalid) {
         return value.toString();
       } else {
         return invalidReturn ?? standardReturnOfNullValue;
@@ -81,66 +81,66 @@ class OwFormat {
 
   /// Only trim
   ///
-  /// If it's not valid, the return can be the same [value] if [returnValue] is true, or [invalidReturnName] if [returnValue] is false
+  /// If it's not valid, the return can be the same [value] if [returnValueAsInvalid] is true, or [invalidReturnName] if [returnValue] is false
   static String name(
     String value, 
-    {bool returnValue = false,
+    {bool returnValueAsInvalid = false,
   }) {
     return trim(
       value, 
       invalidReturnName, 
-      returnValue: returnValue,
+      returnValueAsInvalid: returnValueAsInvalid,
     );
   }
 
   /// Only trim
   ///
-  /// If it's not valid, the return can be the same [value] if [returnValue] is true, or [invalidReturnUrl] if [returnValue] is false
+  /// If it's not valid, the return can be the same [value] if [returnValueAsInvalid] is true, or [invalidReturnUrl] if [returnValue] is false
   static String url(
     String value, 
-    {bool returnValue = false,
+    {bool returnValueAsInvalid = false,
   }) {
     return trim(
       value, 
       invalidReturnUrl, 
-      returnValue: returnValue,
+      returnValueAsInvalid: returnValueAsInvalid,
     );
   }
 
   /// Only trim
   ///
-  /// If it's not valid, the return can be the same [value] if [returnValue] is true, or [invalidReturnDescription] if [returnValue] is false
+  /// If it's not valid, the return can be the same [value] if [returnValueAsInvalid] is true, or [invalidReturnDescription] if [returnValue] is false
   static String description(
     String value, 
-    {bool returnValue = false,
+    {bool returnValueAsInvalid = false,
   }) {
     return trim(
       value, 
       invalidReturnDescription, 
-      returnValue: returnValue,
+      returnValueAsInvalid: returnValueAsInvalid,
     );
   }
 
   /// Only trim
   ///
-  /// If it's not valid, the return can be the same [value] if [returnValue] is true, or [invalidReturnEmail] if [returnValue] is false
+  /// If it's not valid, the return can be the same [value] if [returnValueAsInvalid] is true, or [invalidReturnEmail] if [returnValue] is false
   static String email(
     String value, 
-    {bool returnValue = false,
+    {bool returnValueAsInvalid = false,
   }) {
     return trim(
       value, 
       invalidReturnEmail, 
-      returnValue: returnValue,
+      returnValueAsInvalid: returnValueAsInvalid,
     );
   }
 
   /// Verify the quantity of numbers (ignoring others characters) and insert into the mask according to [phoneNumberMasks]
   ///
-  /// If it's not valid, the return can be the same [value] if [returnValue] is true, or [invalidReturnPhoneNumber] if [returnValue] is false
+  /// If it's not valid, the return can be the same [value] if [returnValueAsInvalid] is true, or [invalidReturnPhoneNumber] if [returnValueAsInvalid] is false
   static String phoneNumber(
     String value, 
-    {bool returnValue = false,
+    {bool returnValueAsInvalid = false,
   }) {
     String valueNumbers = value.toString().replaceAll(
       RegExp(r'[^0-9]'), 
@@ -161,7 +161,7 @@ class OwFormat {
         }
       });
     }
-    if(returnValue) {
+    if(returnValueAsInvalid) {
       return value.toString();
     } else {
       return invalidReturnPhoneNumber ?? standardReturnOfNullValue;
@@ -172,10 +172,10 @@ class OwFormat {
   /// 
   /// Verify the quantity of numbers (ignoring others characters) and insert into according to the mask
   ///
-  /// If it's not valid, the return can be the same [value] if [returnValue] is true, or [invalidReturnCpfCnpj] if [returnValue] is false
+  /// If it's not valid, the return can be the same [value] if [returnValueAsInvalid] is true, or [invalidReturnCpfCnpj] if [returnValueAsInvalid] is false
   static String cpfCnpj(
     String value, 
-    {bool returnValue = false,
+    {bool returnValueAsInvalid = false,
   }) {
     String valueNumbers = value.toString().replaceAll(
       RegExp(r'[^0-9]'), 
@@ -187,7 +187,7 @@ class OwFormat {
     } else if(valueNumbers.length == 14) {
       mask = cnpjMask;
     } else {
-      if(returnValue) {
+      if(returnValueAsInvalid) {
         return value.toString();
       } else {
         return invalidReturnCpfCnpj ?? standardReturnOfNullValue;
@@ -204,10 +204,10 @@ class OwFormat {
   ///
   /// Verify the quantity of numbers (ignoring others characters) and insert into according to the mask
   ///
-  /// If it's not valid, the return can be the same [value] if [returnValue] is true, or [invalidReturnCpf] if [returnValue] is false
+  /// If it's not valid, the return can be the same [value] if [returnValueAsInvalid] is true, or [invalidReturnCpf] if [returnValueAsInvalid] is false
   static String cpf(
     String value, 
-    {bool returnValue = false,
+    {bool returnValueAsInvalid = false,
   }) {
     String valueNumbers = value.toString().replaceAll(
       RegExp(r'[^0-9]'), 
@@ -220,7 +220,7 @@ class OwFormat {
       );
       return result.text;
     } else {
-      if(returnValue) {
+      if(returnValueAsInvalid) {
         return value.toString();
       } else {
         return invalidReturnCpf ?? standardReturnOfNullValue;
@@ -232,10 +232,10 @@ class OwFormat {
   ///
   /// Verify the quantity of numbers (ignoring others characters) and insert into according to the mask
   ///
-  /// If it's not valid, the return can be the same [value] if [returnValue] is true, or [invalidReturnCnpj] if [returnValue] is false
+  /// If it's not valid, the return can be the same [value] if [returnValueAsInvalid] is true, or [invalidReturnCnpj] if [returnValueAsInvalid] is false
   static String cnpj(
     String value, 
-    {bool returnValue = false,
+    {bool returnValueAsInvalid = false,
   }) {
     String valueNumbers = value.toString().replaceAll(
       RegExp(r'[^0-9]'), 
@@ -248,7 +248,7 @@ class OwFormat {
       );
       return result.text;
     } else {
-      if(returnValue) {
+      if(returnValueAsInvalid) {
         return value.toString();
       } else {
         return invalidReturnCnpj ?? standardReturnOfNullValue;
@@ -466,12 +466,10 @@ class OwFormat {
     {String removedPonctuation = ",.!?;:()[]{}}",
     bool removeDoubleSpaces = true,
     bool useTrim = true,
-    bool useLowerCase = true,
-    bool useUpperCase = false,
+    bool useLowerCase,
+    bool useUpperCase,
     String invalidReturn = "",
   }) {
-    assert(useLowerCase != null && useUpperCase != null && useLowerCase != useUpperCase);
-
     if(value == null) { // if(!(value is String)) { ... }
       return invalidReturn ?? standardReturnOfNullValue;
     }
@@ -480,9 +478,9 @@ class OwFormat {
       value = value.trim();
     }
 
-    if(useLowerCase) {
+    if(useLowerCase == true) {
       value = value.toLowerCase();
-    } else if(useUpperCase) {
+    } else if(useUpperCase == true) {
       value = value.toUpperCase();
     }
 

@@ -1,7 +1,42 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
-class OwPagination extends StatefulWidget { // ! Falta a tela de loading inicial (não sei como fazer isso) (acho que é um bool pra só usar o try again) (e também um scroll pra usar na web))
+// ! Ver: https://pub.dev/packages/pull_to_refresh
+/*
+? Ver Slivers
+https://stackoverflow.com/questions/50617231/flutter-sliverlist-sliverchildbuilderdelegate-supply-initial-index-or-allow
+https://medium.com/flutter/slivers-demystified-6ff68ab0296f
+https://fine2find.com/working-with-slivers-in-flutter/
+*/
+
+ // ? Na paginação, colocar uma página de erro (caso dê erro no primeiro retorno, e uma página de itens vazios (caso retorne vazio)); colocar página de loading inicial
+ // ! pub.dev/packages/flutter_pagewise (Paginação com List, Grid, Sliver e SliverGrid)
+ // * Ver também: https://pub.dev/packages/lazy_load_scrollview
+/*
+! Ver para Sliver Scrolls
+CustomScrollView(
+  slivers: [
+    PagewiseSliverList(
+      pageSize: 10, // for example,
+      pageFuture: this._pageFuture, // some function that fetches the page
+      itemBuilder: (context, entry, index) {
+        return Column(
+          children: [
+            Text(entry['title']),
+            ListView(
+              primary: false,
+              shrinkWrap: true,
+              children: entry['ids'].map((id) => Text(id)).toList()
+            )
+          ]
+        );
+      }
+    )
+  ]
+)
+*/
+
+class OwPagination extends StatefulWidget { // ! Falta a tela de loading inicial (não sei como fazer isso) (e também um scroll pra usar na web))
   final Widget child;
   final EdgeInsetsGeometry childPadding;
   final BoxConstraints constraints;
@@ -13,14 +48,12 @@ class OwPagination extends StatefulWidget { // ! Falta a tela de loading inicial
   final bool useStackLoading;
   final ScrollPhysics physics;
   final Widget tryAgainWidget;
-  final bool usePagination;
   final bool loadingAndTryWidgetsAboveBottomWidget;
   final bool useTryAgainWidget;
   final double loadMoreOffsetFromBottom;
-  final Widget topWidget;
   final Widget bottomWidget;
   final Widget sliverAppBar;
-  final bool onlyUseTryAgainToLoadMore;
+  final bool onlyUseButtonToLoadMore;
   final bool shrinkWrap;
   // final double width;
 
@@ -37,19 +70,17 @@ class OwPagination extends StatefulWidget { // ! Falta a tela de loading inicial
     this.useStackLoading = false,
     this.physics = const BouncingScrollPhysics(parent: const AlwaysScrollableScrollPhysics()),
     this.tryAgainWidget,
-    this.usePagination,
     this.loadingAndTryWidgetsAboveBottomWidget = true,
     this.useTryAgainWidget = true,
     this.loadMoreOffsetFromBottom = 0,
-    this.topWidget,
     this.bottomWidget,
     this.sliverAppBar,
-    this.onlyUseTryAgainToLoadMore = false,
+    this.onlyUseButtonToLoadMore = false,
     this.shrinkWrap = false,
     // this.width,
   }): assert(child != null),
-      assert(onlyUseTryAgainToLoadMore ? useTryAgainWidget : true, "'useTryAgainWidget' needs to be true if you are using 'onlyUseTryAgainToLoadMore'"),
-      assert(shrinkWrap ? controller != null : true, "If you are usig 'shrinkWrap' as true, you need to pass the 'controller'"),
+      assert(onlyUseButtonToLoadMore ? useTryAgainWidget : true, "'useTryAgainWidget' needs to be true if you are using 'onlyUseButtonToLoadMore'"),
+      assert(shrinkWrap ? controller != null : true, "If you are usig 'shrinkWrap' as true, you need to pass the 'controller'"), // ! Acho que além do controller não ser null, onRefresh não pode ser passado
       super(key: key);
 
   @override
@@ -60,16 +91,21 @@ class _OwPaginationState extends State<OwPagination> {
   ScrollController _scrollController;
   bool _showLoading = false;
   bool _showTryAgain = false;
+  void Function() updateState;
 
   @override
   void initState() { 
     super.initState();
     _scrollController = widget.controller ?? ScrollController();
-    if(widget.onlyUseTryAgainToLoadMore) {
+    if(widget.onlyUseButtonToLoadMore) {
       _showTryAgain = true;
     } else {
-      _scrollController?.addListener(_callFuncion);
+      if(!_scrollController.hasListeners) {
+        _scrollController?.addListener(_callFuncion);
+      }
     }
+
+    updateState = () => setState(() {});
   }
   
   @override
@@ -78,10 +114,10 @@ class _OwPaginationState extends State<OwPagination> {
       return RefreshIndicator(
         onRefresh: () async {
           await widget.onRefresh();
-          if(!widget.onlyUseTryAgainToLoadMore) {
+          if(!widget.onlyUseButtonToLoadMore) {
             _showTryAgain = false;
             SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
-              setState(() {});
+              updateState();
             });
           }
         },
@@ -182,9 +218,9 @@ class _OwPaginationState extends State<OwPagination> {
   }) {
     List<Widget> _children = [];
 
-    if(widget.topWidget != null) {
-      _children.add(widget.topWidget);
-    }
+    // if(widget.topWidget != null) {
+    //   _children.add(widget.topWidget);
+    // }
 
     if(widget.childPadding != null) {
       _children.add(Padding(
@@ -217,30 +253,37 @@ class _OwPaginationState extends State<OwPagination> {
   }
 
   void _callFuncion([bool tryAgainCall = false]) async {
-    double maxScroll = _scrollController.position.maxScrollExtent - widget.loadMoreOffsetFromBottom;
-    maxScroll = maxScroll < 0 ? 0 : maxScroll;
     if(
+      !_showLoading &&
       widget.loadMore != null && 
-      ((!_showTryAgain && _scrollController.offset >= maxScroll) || (_showTryAgain && tryAgainCall)) &&
-      widget.callLoadMore &&
-      !_showLoading
+      widget.callLoadMore
     ) {
-      _showLoading = true;
-      _showTryAgain = false;
-      setState(() {});
-      if(!widget.useStackLoading && !tryAgainCall && widget.loadMoreOffsetFromBottom == 0) {
-        // await Future.delayed(const Duration(milliseconds: 100));
+      double maxScroll = _scrollController.position.maxScrollExtent - widget.loadMoreOffsetFromBottom;
+      maxScroll = maxScroll < 0 ? 0 : maxScroll;
+      
+      if(
+        (!_showTryAgain && _scrollController.offset >= maxScroll) || 
+        (_showTryAgain && tryAgainCall)
+      ) {
+        _showLoading = true;
+        _showTryAgain = false;
         SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
-          _scrollController.animateTo(maxScroll + 70, duration: const Duration(milliseconds: 200), curve: Curves.easeInSine);
+          updateState();
         });
-      }
-      var result = await widget.loadMore();
-      _showLoading = false;
-      if(widget.useTryAgainWidget) {
-        if(widget.onlyUseTryAgainToLoadMore) {
-          _showTryAgain = true;
-        } else {
-          _showTryAgain = result == false;
+        if(!widget.useStackLoading && !tryAgainCall && widget.loadMoreOffsetFromBottom == 0) {
+          // await Future.delayed(const Duration(milliseconds: 100));
+          SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+            _scrollController.animateTo(maxScroll + 70, duration: const Duration(milliseconds: 200), curve: Curves.easeInSine);
+          });
+        }
+        var result = await widget.loadMore();
+        _showLoading = false;
+        if(widget.useTryAgainWidget) {
+          if(widget.onlyUseButtonToLoadMore) {
+            _showTryAgain = true;
+          } else {
+            _showTryAgain = result == false;
+          }
         }
       }
     }

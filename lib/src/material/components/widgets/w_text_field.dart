@@ -1,18 +1,16 @@
 import 'package:components_venver/functions.dart';
-import 'package:components_venver/material.dart';
 import 'package:components_venver/src/settings/init.dart';
 // import 'package:components_venver/src/settings/filter_mask.dart';
 import 'package:components_venver/src/settings/mask_type.dart';
-import 'package:components_venver/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 // import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
-import 'package:components_venver/src/utils/helpers/text_field_type.dart';
 
 export 'package:components_venver/src/utils/helpers/text_field_type.dart';
 
+// ! Resolver problema do minLines (se colocar 10 por exemplo, surge um assert falando sobre o maxLines, e não deveria (FildType: multiline))
 // ! Colocar type com um ícone apagável (TextField de 'CPF / CNPJ na nota' do carrinho)
 
 // ! VER controllers / formatters
@@ -119,18 +117,19 @@ class OwTextField extends StatelessWidget {
   final bool ignoreAccentsOnSuggestion;
   final bool caseSensitiveOnSuggestion;
   final TextFieldType fieldType;
+  final bool updateMask;
   final bool unfocusIfNoNextFocusNode;
   final List<FocusNode> focusNodeList;
   final int focusNodeIndex;
   final ValueChanged<String> onSuggestionSelected;
   final bool automaticFocusWithFocusNodeList;
   final bool repeatItemsOnSuggestionList;
+  final Widget suggestionListTileTrailing;
+  final double radius;
+  final InputDecoration decoration;
   // final VoidCallback onPressedSuffix;
 
-  static const Color errorColor = Colors.red;
-
-  static const String assertMsgFocusNodeList = "If you pass 'focusNodeList', you need to pass its position with 'focusNodeIndex'";
-  static const String assertMsgSuggestions = "'suggestionsList', can not be null";
+  static const String assertMsgFocusNodeList = "If you are using 'focusNodeList', you need to pass its position with 'focusNodeIndex'";
   // static const BorderRadius circularBorderRadius  = BorderRadius.all(Radius.circular(10));
 
   OwTextField({
@@ -144,7 +143,7 @@ class OwTextField extends StatelessWidget {
     this.keyboardType,
     this.textInputAction,
     this.textCapitalization = TextCapitalization.sentences,
-    this.obscureText = false,
+    this.obscureText,
     this.readOnly = false,
     this.autofocus = false,
     this.enabled = true,
@@ -156,7 +155,7 @@ class OwTextField extends StatelessWidget {
     this.counterText,
     this.maxLength,
     this.minLines = 1,
-    this.maxLines = 1,
+    this.maxLines,
     this.margin,
     this.prefixText,
     this.suffixText,
@@ -171,15 +170,21 @@ class OwTextField extends StatelessWidget {
     this.focusNodeList,
     this.focusNodeIndex,
     this.automaticFocusWithFocusNodeList = true,
+    bool updateMaskOnFieldType = true,
+    this.radius = 10,
+    this.decoration,
   }): this.suggestionsList = null,
       this.ignoreAccentsOnSuggestion = null,
       this.caseSensitiveOnSuggestion = null,
       this.onSuggestionSelected = null,
       this.repeatItemsOnSuggestionList = null,
+      this.updateMask = updateMaskOnFieldType,
+      this.suggestionListTileTrailing = null,
       // assert(
       //   controller is TextEditingController,
       //   "'controller' is not TextEditingController",
       // ),
+      assert(radius != null),
       assert(
         (focusNodeList == null && focusNodeIndex == null) || (focusNodeList != null && focusNodeIndex != null), 
         assertMsgFocusNodeList,
@@ -206,7 +211,7 @@ class OwTextField extends StatelessWidget {
     this.counterText,
     this.maxLength,
     this.minLines = 1,
-    this.maxLines = 1,
+    this.maxLines,
     this.margin,
     this.prefixText,
     this.suffixText,
@@ -226,71 +231,21 @@ class OwTextField extends StatelessWidget {
     this.automaticFocusWithFocusNodeList = true,
     this.onSuggestionSelected,
     this.repeatItemsOnSuggestionList = false,
+    this.suggestionListTileTrailing = const Icon(Icons.touch_app_outlined),
+    this.radius = 10,
+    this.decoration,
   }): this.fieldType = null,
       this.onSaved = null,
       this.validator = null,
-      assert(
-        suggestionsList != null, 
-        assertMsgSuggestions,
-      ),
+      this.updateMask = false,
+      assert(suggestionListTileTrailing != null),
+      assert(suggestionsList != null),
+      assert(radius != null),
       assert(
         (focusNodeList == null && focusNodeIndex == null) || (focusNodeList != null && focusNodeIndex != null), 
         assertMsgFocusNodeList,
       ),
       super(key: key);
-
-  // OwTextField.type({
-  //   Key key,
-  //   @required this.fieldType,
-  //   this.controller,
-  //   this.labelText,
-  //   this.hintText,
-  //   this.helperText,
-  //   this.errorText,
-  //   this.keyboardType,
-  //   this.textInputAction,
-  //   this.textCapitalization = TextCapitalization.sentences,
-  //   this.obscureText = false,
-  //   this.readOnly = false,
-  //   this.autofocus = false,
-  //   this.enabled = true,
-  //   this.maxLengthEnforced = true,
-  //   this.onFieldSubmitted,
-  //   this.focusNode,
-  //   this.onChanged,
-  //   this.onTap,
-  //   this.counterText,
-  //   this.maxLength,
-  //   this.minLines = 1,
-  //   this.maxLines = 1,
-  //   this.margin,
-  //   this.prefixText,
-  //   this.suffixText,
-  //   this.nextFocusNode,
-  //   this.enableInteractiveSelection = true,
-  //   this.color,
-  //   this.inputFormatters,
-  //   this.suffixIcon,
-  //   this.onSaved,
-  //   this.validator,
-  //   this.unfocusIfNoNextFocusNode = true,
-  //   this.focusNodeList,
-  //   this.focusNodeIndex,
-  //   this.automaticFocusWithFocusNodeList = true,
-  // })  : this.suggestionsList = null,
-  //       this.onSuggestionSelected = null,
-  //       this.ignoreAccentsOnSuggestion = null,
-  //       this.caseSensitiveOnSuggestion = null,
-  //       this.repeatItemsOnSuggestionList = null,
-  //       // assert(
-  //       //   controller is MaskedTextController || controller is MoneyMaskedTextController,
-  //       //   "'controller' is not MaskedTextController or MoneyMaskedTextController",
-  //       // ),
-  //       assert(
-  //         (focusNodeList == null && focusNodeIndex == null) || (focusNodeList != null && focusNodeIndex != null), 
-  //         assetMsgFocusNodeList,
-  //       ),
-  //       super(key: key);
 
   TextInputType _keyboardType;
   List<TextInputFormatter> _inputFormatters;
@@ -303,23 +258,26 @@ class OwTextField extends StatelessWidget {
   Widget _suffixIcon;
   int _minLines, _maxLines;
   String _prefixText;
+  bool _obscureText = false;
 
   @override
   Widget build(BuildContext context) {
     changeTextFieldType(context);
     defineFocusNode(context);
+    defineMinAndMaxLines();
     
     return Container(
       key: key,
       margin: margin,
       decoration: BoxDecoration(
-        borderRadius: const BorderRadius.all(Radius.circular(10)),
+        borderRadius: BorderRadius.all(Radius.circular(radius)),
       ),
       child: _textField(context),
     );
   }
 
   Widget _textField(BuildContext context) {
+
     if(suggestionsList == null) {
       return TextFormField(
         inputFormatters: inputFormatters ?? _inputFormatters,
@@ -330,64 +288,14 @@ class OwTextField extends StatelessWidget {
         maxLengthEnforced: maxLengthEnforced,
         enabled: enabled,
         enableInteractiveSelection: enableInteractiveSelection,
-        decoration: InputDecoration(
-          filled: true,
-          fillColor: color ?? Theme.of(context).cardColor,
-          labelText: labelText,
-          hintText: hintText,
-          errorText: errorText,
-          counterText: counterText,
-          alignLabelWithHint: false,
-          border: OutlineInputBorder(
-            borderSide: BorderSide(
-              color: Theme.of(context).secondaryHeaderColor,
-              width: 1,
-            ),
-            borderRadius: const BorderRadius.all(Radius.circular(10)),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: const BorderRadius.all(Radius.circular(10)),
-            borderSide: BorderSide(
-              color: Theme.of(context).secondaryHeaderColor,
-            ),
-          ),
-          enabledBorder: OutlineInputBorder(
-            borderRadius: const BorderRadius.all(Radius.circular(10)),
-            borderSide: BorderSide(
-              color: Theme.of(context).secondaryHeaderColor,
-            ),
-          ),
-          contentPadding: const EdgeInsets.symmetric(
-            horizontal: 20, 
-            vertical: 18,
-          ),
-          labelStyle: TextStyle(
-            color: Theme.of(context).primaryTextTheme.bodyText1.color,
-          ),
-          errorBorder: const UnderlineInputBorder(
-            borderRadius: const BorderRadius.all(Radius.circular(10)),
-            borderSide: const BorderSide(color: AppTheme.errorColor ?? errorColor),
-          ),
-          helperText: helperText,
-          helperMaxLines: 3,
-          errorStyle: const TextStyle(
-            color: AppTheme.errorColor ?? errorColor,
-          ),
-          suffixText: suffixText,
-          prefixText: prefixText ?? _prefixText,
-          suffixIcon: suffixIcon ?? _suffixIcon,
-        ),
+        decoration: _defineTextFieldStyle(context),
         onTap: onTap,
         onSaved: onSaved,
-        onChanged: (value) {
-          if(onChanged != null) {
-            onChanged(value);
-          }
-          if(_changeMask != null) {
-            _changeMask(value);
-          }
-        },
         // onChanged: onChanged,
+        onChanged: (value) {
+          onChanged?.call(value);
+          _changeMask?.call(value);
+        },
         maxLength: maxLength,
         readOnly: readOnly,
         validator: validator,
@@ -395,21 +303,17 @@ class OwTextField extends StatelessWidget {
         textInputAction: textInputAction ?? _textInputAction,
         // onFieldSubmitted: onFieldSubmitted,
         onFieldSubmitted: (_) {
-          if(onFieldSubmitted != null) {
-            onFieldSubmitted(_);
-          }
-          if(_goToNextFocusNode != null) {
-            _goToNextFocusNode();
-          }
+          onFieldSubmitted?.call(_);
+          _goToNextFocusNode?.call();
         },
         focusNode: _focusNode,
-        obscureText: obscureText,
+        obscureText: obscureText ?? _obscureText,
         autofocus: autofocus,
       );
     } else {
       return TypeAheadField(
         suggestionsBoxDecoration: SuggestionsBoxDecoration(
-          borderRadius: const BorderRadius.all(Radius.circular(10)),
+          borderRadius: BorderRadius.all(Radius.circular(radius)),
         ),
         textFieldConfiguration: TextFieldConfiguration(
           autofocus: autofocus,
@@ -421,62 +325,10 @@ class OwTextField extends StatelessWidget {
           enabled: enabled,
           maxLengthEnforced: maxLengthEnforced,
           enableInteractiveSelection: enableInteractiveSelection,
-          decoration: InputDecoration(
-            filled: true,
-            fillColor: color ?? Theme.of(context).cardColor,
-            labelText: labelText,
-            hintText: hintText,
-            errorText: errorText,
-            counterText: counterText,
-            alignLabelWithHint: true,
-            border: OutlineInputBorder(
-              borderSide: BorderSide(
-                color: Theme.of(context).secondaryHeaderColor,
-                width: 1,
-              ),
-              borderRadius: const BorderRadius.all(Radius.circular(10)),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: const BorderRadius.all(Radius.circular(10)),
-              borderSide: BorderSide(
-                color: Theme.of(context).secondaryHeaderColor,
-              ),
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: const BorderRadius.all(Radius.circular(10)),
-              borderSide: BorderSide(
-                color: Theme.of(context).secondaryHeaderColor,
-              ),
-            ),
-            contentPadding: const EdgeInsets.symmetric(
-              horizontal: 20, 
-              vertical: 18,
-            ),
-            labelStyle: TextStyle(
-              color: Theme.of(context).primaryTextTheme.bodyText1.color,
-            ),
-            errorBorder: const UnderlineInputBorder(
-              borderRadius: BorderRadius.all(Radius.circular(10)),
-              borderSide: BorderSide(
-                color: AppTheme.errorColor ?? errorColor,
-              ),
-            ),
-            helperText: helperText,
-            helperMaxLines: 3,
-            errorStyle: const TextStyle(
-              color: AppTheme.errorColor ?? errorColor,
-            ),
-            suffixText: suffixText,
-            prefixText: prefixText,
-            suffixIcon: suffixIcon,
-          ),
+          decoration: _defineTypeAheadFieldStyle(context),
           onSubmitted: (_) {
-            if(onFieldSubmitted != null) {
-              onFieldSubmitted(_);
-            }
-            if(_goToNextFocusNode != null) {
-              _goToNextFocusNode();
-            }
+            onFieldSubmitted?.call(_);
+            _goToNextFocusNode?.call();
           },
           focusNode: _focusNode,
           onChanged: onChanged,
@@ -487,7 +339,6 @@ class OwTextField extends StatelessWidget {
           inputFormatters: inputFormatters,
         ),
         suggestionsCallback: (string) {
-          // return await _getSuggestionsList(string);
           return _getSuggestionsList(string);
         },
         noItemsFoundBuilder: (_) {
@@ -499,13 +350,11 @@ class OwTextField extends StatelessWidget {
               suggestion.toString(),
               style: const TextStyle(fontWeight: FontWeight.w500),
             ),
-            trailing: const Icon(Icons.touch_app_outlined),
+            trailing: suggestionListTileTrailing,
           );
         },
         onSuggestionSelected: (suggestion) {
-          if(onSuggestionSelected != null) {
-            onSuggestionSelected(suggestion?.toString());
-          }
+          onSuggestionSelected?.call(suggestion?.toString() ?? "");
           if(controller != null) {
             controller.text = suggestion?.toString() ?? "";
           }
@@ -514,23 +363,126 @@ class OwTextField extends StatelessWidget {
     }
   }
 
+  InputDecoration _defineTextFieldStyle(BuildContext context) {
+    return decoration ?? InputDecoration(
+      filled: true,
+      fillColor: color ?? Theme.of(context).cardColor,
+      labelText: labelText,
+      hintText: hintText,
+      errorText: errorText,
+      counterText: counterText,
+      alignLabelWithHint: false,
+      border: OutlineInputBorder(
+        borderSide: BorderSide(
+          color: Theme.of(context).secondaryHeaderColor,
+          width: 1,
+        ),
+        borderRadius: BorderRadius.all(Radius.circular(radius)),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.all(Radius.circular(radius)),
+        borderSide: BorderSide(
+          color: Theme.of(context).secondaryHeaderColor,
+        ),
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.all(Radius.circular(radius)),
+        borderSide: BorderSide(
+          color: Theme.of(context).secondaryHeaderColor,
+        ),
+      ),
+      contentPadding: EdgeInsets.symmetric(
+        horizontal: 20, 
+        vertical: 18,
+      ),
+      labelStyle: TextStyle(
+        color: Theme.of(context).primaryTextTheme.bodyText1.color,
+      ),
+      errorBorder: UnderlineInputBorder(
+        borderRadius: BorderRadius.all(Radius.circular(radius)),
+        borderSide: BorderSide(color: Theme.of(context).errorColor),
+      ),
+      helperText: helperText,
+      helperMaxLines: 3,
+      errorStyle: TextStyle(
+        color: Theme.of(context).errorColor,
+      ),
+      suffixText: suffixText,
+      prefixText: prefixText ?? _prefixText,
+      suffixIcon: suffixIcon ?? _suffixIcon,
+    );
+  }
+
+  InputDecoration _defineTypeAheadFieldStyle(BuildContext context) {
+    return decoration ?? InputDecoration(
+      filled: true,
+      fillColor: color ?? Theme.of(context).cardColor,
+      labelText: labelText,
+      hintText: hintText,
+      errorText: errorText,
+      counterText: counterText,
+      alignLabelWithHint: true,
+      border: OutlineInputBorder(
+        borderSide: BorderSide(
+          color: Theme.of(context).secondaryHeaderColor,
+          width: 1,
+        ),
+        borderRadius: BorderRadius.all(Radius.circular(radius)),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.all(Radius.circular(radius)),
+        borderSide: BorderSide(
+          color: Theme.of(context).secondaryHeaderColor,
+        ),
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.all(Radius.circular(radius)),
+        borderSide: BorderSide(
+          color: Theme.of(context).secondaryHeaderColor,
+        ),
+      ),
+      contentPadding: EdgeInsets.symmetric(
+        horizontal: 20, 
+        vertical: 18,
+      ),
+      labelStyle: TextStyle(
+        color: Theme.of(context).primaryTextTheme.bodyText1.color,
+      ),
+      errorBorder: UnderlineInputBorder(
+        borderRadius: BorderRadius.all(Radius.circular(radius)),
+        borderSide: BorderSide(
+          color: Theme.of(context).errorColor,
+        ),
+      ),
+      helperText: helperText,
+      helperMaxLines: 3,
+      errorStyle: TextStyle(
+        color: Theme.of(context).errorColor,
+      ),
+      suffixText: suffixText,
+      prefixText: prefixText,
+      suffixIcon: suffixIcon,
+    );
+  }
+
   void changeTextFieldType(BuildContext context) {
     if(fieldType != null) {
       const String assertMsgMaskedTextController = "'controller' is not MaskedTextController";
       switch(fieldType.type) {
-        case TextFieldMaskType.name:
+        case _TextFieldMaskType.name:
           _keyboardType = TextInputType.name;
           _textCapitalization = TextCapitalization.words;
           break;
 
-        case TextFieldMaskType.email:
+        case _TextFieldMaskType.email:
           _keyboardType = TextInputType.emailAddress;
           _textCapitalization = TextCapitalization.none;
           break;
 
-        case TextFieldMaskType.password: // ? Ver se dá para melhorar
-          _keyboardType = TextInputType.visiblePassword; // Testar, se não, usar TextInputType.text
+        case _TextFieldMaskType.password: // ? Ver se dá para melhorar
+          _keyboardType = TextInputType.visiblePassword;
           _textCapitalization = TextCapitalization.none;
+          _obscureText = true;
           // if(obscureText != null) {
           //   _suffixIcon = OwActivableIcon(
           //     activated: obscureText, 
@@ -540,22 +492,23 @@ class OwTextField extends StatelessWidget {
           // }
           break;
 
-        case TextFieldMaskType.multiText: // ? Ver se dá para melhorar
+        case _TextFieldMaskType.multiText: // ? Ver se dá para melhorar
           _keyboardType = TextInputType.multiline;
           _textInputAction = TextInputAction.newline;
           _minLines = 2;
           _maxLines = 12;
           break;
 
-        case TextFieldMaskType.cep:
-          assert(controller is MaskedTextController, assertMsgMaskedTextController);
+        case _TextFieldMaskType.cep:
           _keyboardType = TextInputType.phone;
-          controller.updateMask(MaskType.cep);
+          try{
+            if(updateMask) controller.updateMask(MaskType.cep);
+          } catch (e) {}
           // var _mask = OwMaskedFormatter.cep(); // initialText: controller?.text ?? ""
           // _inputFormatters = [_mask];
           break;
 
-        case TextFieldMaskType.search: // ? Ver se dá para melhorar
+        case _TextFieldMaskType.search: // ? Ver se dá para melhorar
           _keyboardType = TextInputType.text;
           _textInputAction = TextInputAction.search;
           // textInputAction: TextInputAction.done, // Nos filtros, é usado done, pq ao digitar, ele já pesquisa automaticamente, já em outros lugares, deve ser serach, pois só pesquisará quando pressionar
@@ -568,75 +521,84 @@ class OwTextField extends StatelessWidget {
           // } : null,
           break;
 
-        case TextFieldMaskType.cardNumber:
-          assert(controller is MaskedTextController, assertMsgMaskedTextController);
+        case _TextFieldMaskType.cardNumber:
           _keyboardType = TextInputType.phone;
-          controller.updateMask(MaskType.cardNumber);
+          try{
+            if(updateMask) controller.updateMask(MaskType.cardNumber);
+          } catch (e) {}
           // final _mask = OwMaskedFormatter.cardNumber(initialText: controller?.text); // initialText: controller?.text ?? ""
           // _inputFormatters = [_mask];
           break;
 
-        case TextFieldMaskType.cardCvv:
-          assert(controller is MaskedTextController, assertMsgMaskedTextController);
+        case _TextFieldMaskType.cardCvv:
           _keyboardType = TextInputType.phone;
-          controller.updateMask(MaskType.cardCvv);
+          try{
+            if(updateMask) controller.updateMask(MaskType.cardCvv);
+          } catch (e) {}
           // final _mask = OwMaskedFormatter.cardCvv(initialText: controller?.text); // initialText: controller?.text ?? ""
           // _inputFormatters = [_mask];
           break;
 
-        case TextFieldMaskType.cardDateYY:
-          assert(controller is MaskedTextController, assertMsgMaskedTextController);
+        case _TextFieldMaskType.cardDateYY:
           _keyboardType = TextInputType.phone;
-          controller.updateMask(MaskType.cardDateYY);
+          try{
+            if(updateMask) controller.updateMask(MaskType.cardDateYY);
+          } catch (e) {}
           // final _mask = OwMaskedFormatter.cardDateYY(initialText: controller?.text); // initialText: controller?.text ?? ""
           // _inputFormatters = [_mask];
           break;
 
-        case TextFieldMaskType.cardDateYYYY:
-          assert(controller is MaskedTextController, assertMsgMaskedTextController);
+        case _TextFieldMaskType.cardDateYYYY:
           _keyboardType = TextInputType.phone;
-          controller.updateMask(MaskType.cardDateYYYY);
+          try{
+            if(updateMask) controller.updateMask(MaskType.cardDateYYYY);
+          } catch (e) {}
           // final _mask = OwMaskedFormatter.cardDateYYYY(initialText: controller?.text); // initialText: controller?.text ?? ""
           // _inputFormatters = [_mask];
           break;
 
-        case TextFieldMaskType.date: // ? Talvez um ícone pra abrir um datePick
-          assert(controller is MaskedTextController, assertMsgMaskedTextController);
+        case _TextFieldMaskType.date: // ? Talvez um ícone pra abrir um datePick
           _keyboardType = TextInputType.datetime;
-          controller.updateMask(MaskType.date);
+          try{
+            if(updateMask) controller.updateMask(MaskType.date);
+          } catch (e) {}
           // final _mask = OwMaskedFormatter.date(initialText: controller?.text); // initialText: controller?.text ?? ""
           // _inputFormatters = [_mask];
           break;
 
-        case TextFieldMaskType.dateTime: // ? Talvez um ícone pra abrir um datePick
-          assert(controller is MaskedTextController, assertMsgMaskedTextController);
+        case _TextFieldMaskType.dateTime: // ? Talvez um ícone pra abrir um datePick
           _keyboardType = TextInputType.datetime;
-          controller.updateMask(fieldType.mask ?? MaskType.dateTime);
+          try{
+            if(updateMask) controller.updateMask(fieldType?.mask ?? MaskType.dateTime);
+          } catch (e) {}
           break;
 
-        case TextFieldMaskType.time: // ? Talvez um ícone pra abrir tipo um datePick de horário
-          assert(controller is MaskedTextController, assertMsgMaskedTextController);
+        case _TextFieldMaskType.time: // ? Talvez um ícone pra abrir tipo um datePick de horário
           _keyboardType = TextInputType.datetime;
-          controller.updateMask(MaskType.time);
+          try{
+            if(updateMask) controller.updateMask(MaskType.time);
+          } catch (e) {}
           break;
 
-        case TextFieldMaskType.cpf:
-          assert(controller is MaskedTextController, assertMsgMaskedTextController);
+        case _TextFieldMaskType.cpf:
           _keyboardType = TextInputType.phone;
-          controller.updateMask(MaskType.cpf);
+          try{
+            if(updateMask) controller.updateMask(MaskType.cpf);
+          } catch (e) {}
           // final _mask = OwMaskedFormatter.cpf(initialText: controller?.text); // initialText: controller?.text ?? ""
           // _inputFormatters = [_mask];
           break;
 
-        case TextFieldMaskType.cnpj:
-          assert(controller is MaskedTextController, assertMsgMaskedTextController);
+        case _TextFieldMaskType.cnpj:
           _keyboardType = TextInputType.phone;
-          controller.updateMask(MaskType.cnpj);
+          try{
+            if(updateMask) controller.updateMask(MaskType.cnpj);
+          } catch (e) {}
           // final _mask = OwMaskedFormatter.cnpj(initialText: controller?.text); // initialText: controller?.text ?? ""
           // _inputFormatters = [_mask];
           break;
         
-        case TextFieldMaskType.cpfCnpj:
+        case _TextFieldMaskType.cpfCnpj:
           assert(controller is MaskedTextController, assertMsgMaskedTextController);
           _keyboardType = TextInputType.phone;
           String _cpfMask = MaskType.cpf + "0";
@@ -678,7 +640,7 @@ class OwTextField extends StatelessWidget {
           // };
           break;
 
-        case TextFieldMaskType.landlineCell:
+        case _TextFieldMaskType.landlineCell:
           assert(controller is MaskedTextController, assertMsgMaskedTextController);
           _keyboardType = TextInputType.phone;
           String _landlineMask = MaskType.phones(10) + "0";
@@ -736,10 +698,10 @@ class OwTextField extends StatelessWidget {
           // };
           break;
           
-        case TextFieldMaskType.phones:
+        case _TextFieldMaskType.phones:
           assert(controller is MaskedTextController, assertMsgMaskedTextController);
           _keyboardType = TextInputType.phone;
-          if(fieldType.quantity != null) {
+          if(fieldType?.quantity != null) {
             controller.updateMask(MaskType.phones(fieldType.quantity));
             // final _mask = OwMaskedFormatter.phones(
             //   fieldType.numbersQuantity,
@@ -751,22 +713,22 @@ class OwTextField extends StatelessWidget {
           }
           break;
 
-        case TextFieldMaskType.money: // ? Ver se dá para melhorar
+        case _TextFieldMaskType.money: // ? Ver se dá para melhorar
           // assert(controller is MoneyMaskedTextController);
           // _hintText = "0,00";
-          _prefixText = StandardConfig.currencySymbol + " ";
+          _prefixText = fieldType.symbol + " ";
           _keyboardType = TextInputType.phone;
           break;
 
-        case TextFieldMaskType.integer: // ? Melhorar: Talvez colocar pra ter um número inteiro máximo que pode ser digitado (ex: até 9926)
+        case _TextFieldMaskType.integer: // ? Melhorar: Talvez colocar pra ter um número inteiro máximo que pode ser digitado (ex: até 9926)
           assert(controller is MaskedTextController, assertMsgMaskedTextController);
           _keyboardType = TextInputType.phone;
-          int zerosQuantity = fieldType.min;
+          int zerosQuantity = fieldType.min.toInt();
           bool minMaxEqual = fieldType.min == fieldType.max;
           controller.updateMask(MaskType.integer(
             minMaxEqual
-              ? fieldType.max + 1
-              : fieldType.max
+              ? fieldType.max.toInt() + 1
+              : fieldType.max.toInt(),
           ));
           _changeMask = (value) {
             int integer = int.tryParse(controller.text);
@@ -794,12 +756,12 @@ class OwTextField extends StatelessWidget {
           _changeMask(controller.text);
           break;
 
-        case TextFieldMaskType.decimal:
-          assert(controller is MoneyMaskedTextController);
+        case _TextFieldMaskType.decimal:
+          // assert(controller is MoneyMaskedTextController);
           _keyboardType = TextInputType.phone;
           break;
 
-        case TextFieldMaskType.chat: // ? Ver se dá para melhorar
+        case _TextFieldMaskType.chat: // ? Ver se dá para melhorar
           _keyboardType = TextInputType.multiline;
           _textInputAction = TextInputAction.newline;
           _minLines = 2;
@@ -811,15 +773,8 @@ class OwTextField extends StatelessWidget {
   }
 
   void defineFocusNode(BuildContext context) {
-    _focusNode = focusNode;
-    _nextFocusNode = nextFocusNode;
-
-    if(focusNodeList != null && focusNodeList.length > focusNodeIndex) {
-      _focusNode = _focusNode ?? focusNodeList[focusNodeIndex];
-    }
-    if(focusNodeList != null && focusNodeList.length > focusNodeIndex + 1) {
-      _nextFocusNode = _nextFocusNode ?? focusNodeList[focusNodeIndex + 1];
-    }
+    _focusNode = focusNode ?? FN.getFnByList(focusNodeList, focusNodeIndex);
+    _nextFocusNode = nextFocusNode ?? FN.getNextFnByList(focusNodeList, focusNodeIndex);
 
     if(_nextFocusNode != null) {
       _textInputAction = TextInputAction.next;
@@ -840,11 +795,8 @@ class OwTextField extends StatelessWidget {
     }
   }
 
-  Iterable<dynamic> _getSuggestionsList(String string) {
-    List<dynamic> suggestions = [];
-    if(suggestionsList != null && suggestionsList.isNotEmpty) {
-      suggestions = suggestionsList;
-    }
+  List<dynamic> _getSuggestionsList(String string) {
+    List<dynamic> suggestions = suggestionsList ?? [];
     
     var result = suggestions.where((element) {
       String item = element.toString();
@@ -861,9 +813,110 @@ class OwTextField extends StatelessWidget {
     });
 
     return repeatItemsOnSuggestionList
-      ? result
+      ? result.toList()
       : result.toSet().toList();
   }
+
+  void defineMinAndMaxLines() {
+    _minLines = minLines ?? 1;
+    _maxLines = maxLines ?? 1;
+
+    if(_minLines > _maxLines) {
+      _maxLines = _minLines;
+    }
+  }
+}
+
+
+
+enum _TextFieldMaskType {
+  cpf,
+  cnpj,
+  cpfCnpj,
+  date,
+  dateTime,
+  time,
+  cardNumber,
+  cardCvv,
+  cardDateYYYY,
+  cardDateYY,
+  money,
+  integer,
+  decimal,
+  name,
+  email,
+  password,
+  multiText,
+  cep,
+  search,
+  chat,
+  phones,
+  landlineCell,
+}
+
+class TextFieldType {
+  final _TextFieldMaskType type;
+  String mask;
+  int quantity;
+  num min;
+  num max;
+  List<dynamic> list;
+  String symbol;
+  
+  TextFieldType.cpf() : type = _TextFieldMaskType.cpf;
+  TextFieldType.cnpj() : type = _TextFieldMaskType.cnpj;
+  TextFieldType.cpfCnpj() : type = _TextFieldMaskType.cpfCnpj;
+  TextFieldType.date() : type = _TextFieldMaskType.date;
+  TextFieldType.time() : type = _TextFieldMaskType.time;
+  TextFieldType.cardNumber() : type = _TextFieldMaskType.cardNumber;
+  TextFieldType.cardCvv() : type = _TextFieldMaskType.cardCvv;
+  TextFieldType.cardDateYYYY() : type = _TextFieldMaskType.cardDateYYYY;
+  TextFieldType.cardDateYY() : type = _TextFieldMaskType.cardDateYY;
+  TextFieldType.decimal() : type = _TextFieldMaskType.decimal;
+  TextFieldType.name() : type = _TextFieldMaskType.name;
+  TextFieldType.email() : type = _TextFieldMaskType.email;
+  TextFieldType.password() : type = _TextFieldMaskType.password;
+  TextFieldType.multiText() : type = _TextFieldMaskType.multiText;
+  TextFieldType.cep() : type = _TextFieldMaskType.cep;
+  TextFieldType.search() : type = _TextFieldMaskType.search;
+  TextFieldType.chat() : type = _TextFieldMaskType.chat;
+  TextFieldType.landlineCell() : type = _TextFieldMaskType.landlineCell;
+
+  TextFieldType.money({this.symbol = "R\$"}) : type = _TextFieldMaskType.money;
+
+  TextFieldType.phones({
+    int numbersQuantity,
+    int minNumbersPhoneQuantity, 
+    int maxNumbersPhoneQuantity,
+  }): assert(minNumbersPhoneQuantity < maxNumbersPhoneQuantity),
+      assert(numbersQuantity == null || (minNumbersPhoneQuantity == null && maxNumbersPhoneQuantity == null)),
+      type = _TextFieldMaskType.phones, 
+      quantity = numbersQuantity,
+      min = minNumbersPhoneQuantity, 
+      max = maxNumbersPhoneQuantity;
+
+  TextFieldType.integer({
+    int zerosQuantity = 1,
+    int maxNumberOfPlaces = 9,
+  }): assert(zerosQuantity > 0),
+      assert(zerosQuantity <= maxNumberOfPlaces),
+      type = _TextFieldMaskType.integer,
+      min = zerosQuantity, 
+      max = maxNumberOfPlaces;
+
+  // TextFieldType.decimal({
+  //   int zerosQuantity = 1,
+  //   int maxNumberOfPlaces = 9,
+  // }): assert(zerosQuantity > 0),
+  //     assert(zerosQuantity <= maxNumberOfPlaces),
+  //     type = _TextFieldMaskType.integer,
+  //     min = zerosQuantity, 
+  //     max = maxNumberOfPlaces;
+  
+  TextFieldType.dateTime({
+    this.mask = "00/00/0000 00:00:00",
+  }): assert(mask != null),
+      type = _TextFieldMaskType.dateTime;
 }
 
 
@@ -882,17 +935,6 @@ https://stackoverflow.com/questions/50395032/flutter-textfield-with-currency-for
 I just got it working this way, sharing in case someone needs too:
 
 TextField
-
-TextFormField(  
-    //validator: ,  
-    controller: controllerValor,  
-    inputFormatters: [  
-        WhitelistingTextInputFormatter.digitsOnly,
-        // Fit the validating format.
-        //fazer o formater para dinheiro
-        CurrencyInputFormatter()
-    ],
-    keyboardType: TextInputType.number, ...
 
 TextInputFormatter
 

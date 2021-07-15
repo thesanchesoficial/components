@@ -32,4 +32,22 @@ class FN {
   static unfocusFn(BuildContext context) {
     FocusScope.of(context).unfocus();
   }
+
+  /// It uses a FocusNode list and an index to get the FocusNode instance
+  static FocusNode getFnByList(List<FocusNode> focusNodeList, int focusNodeIndex) {
+    if(
+      focusNodeIndex != null &&
+      focusNodeList != null && 
+      focusNodeList.length > focusNodeIndex
+    ) {
+      return focusNodeList[focusNodeIndex];
+    }
+    return null;
+  }
+
+  /// It uses a FocusNode list and an index to get the next FocusNode instance 
+  /// (index + 1)
+  static FocusNode getNextFnByList(List<FocusNode> focusNodeList, int focusNodeIndex) {
+    return getFnByList(focusNodeList, focusNodeIndex + 1);
+  }
 }

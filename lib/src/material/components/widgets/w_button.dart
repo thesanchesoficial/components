@@ -1,13 +1,12 @@
-import 'package:components_venver/theme/app_theme.dart';
+
 import 'package:flutter/material.dart';
 
-class OwButton extends StatelessWidget { // ! Testar opção de enviar ícone
+class OwButton extends StatelessWidget { // ! Testar opção de enviar ícone / Colocar um bool isStretch retornando o botão em um Column(stretch)
   final String labelText;
   final bool autoFocus;
   final bool enable;
   final bool outline;
   final bool secondary;
-  final bool hideRadius;
   final bool mainButton;
   final bool enableFeedback;
   final Function onPressed;
@@ -24,12 +23,14 @@ class OwButton extends StatelessWidget { // ! Testar opção de enviar ícone
   final TextStyle textStyle;
   final IconData leading;
   final IconData trailing;
+  final FocusNode focusNode;
+  final bool absorbedPointer;
+  final bool ignoredPointer;
 
   OwButton({
     Key key,
     this.labelText,
     this.autoFocus = false,
-    this.hideRadius = false,
     this.enable = true,
     this.enableFeedback = false,
     this.onPressed,
@@ -45,17 +46,20 @@ class OwButton extends StatelessWidget { // ! Testar opção de enviar ícone
     this.textStyle,
     this.leading,
     this.trailing,
-  })  : outline = false,
-        mainButton = true,
-        secondary = false,
-        color = AppTheme.verdeVenver,
-        super(key: key);
+    this.focusNode,
+    this.absorbedPointer = false,
+    this.ignoredPointer = false,
+  }): assert(!ignoredPointer || !absorbedPointer),
+      outline = false,
+      mainButton = true,
+      secondary = false,
+      color = null,
+      super(key: key);
 
   OwButton.secondary({
     Key key,
     this.labelText,
     this.autoFocus = false,
-    this.hideRadius = false,
     this.enable = true,
     this.enableFeedback = false,
     this.onPressed,
@@ -72,16 +76,19 @@ class OwButton extends StatelessWidget { // ! Testar opção de enviar ícone
     this.textStyle,
     this.leading,
     this.trailing,
-  })  : outline = false,
-        mainButton = false,
-        secondary = true,
-        super(key: key);
+    this.focusNode,
+    this.absorbedPointer = false,
+    this.ignoredPointer = false,
+  }): assert(!ignoredPointer || !absorbedPointer),
+      outline = false,
+      mainButton = false,
+      secondary = true,
+      super(key: key);
 
   const OwButton.outline({
     Key key,
     this.labelText,
     this.autoFocus = false,
-    this.hideRadius = false,
     this.enable = true,
     this.enableFeedback = false,
     this.onPressed,
@@ -98,24 +105,36 @@ class OwButton extends StatelessWidget { // ! Testar opção de enviar ícone
     this.textStyle,
     this.leading,
     this.trailing,
-  })  : outline = true,
-        mainButton = false,
-        secondary = false,
-        super(key: key);
+    this.focusNode,
+    this.absorbedPointer = false,
+    this.ignoredPointer = false,
+  }): assert(!ignoredPointer || !absorbedPointer),
+      outline = true,
+      mainButton = false,
+      secondary = false,
+      super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    return ignoredPointer
+      ? IgnorePointer(
+        child: _button(context),
+      )
+      : absorbedPointer
+        ? AbsorbPointer(
+          child: _button(context),
+        )
+        : _button(context);
+  }
+
+  Widget _button(BuildContext context) {
     return Container(
       key: key,
       height: height,
       margin: margin,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.all(
-          Radius.circular(
-            hideRadius 
-              ? 0 
-              : radius,
-          ),
+          Radius.circular(radius),
         ),
         color: Colors.transparent,
       ),
@@ -128,7 +147,7 @@ class OwButton extends StatelessWidget { // ! Testar opção de enviar ícone
               fontWeight: FontWeight.bold,
             ),
           )
-          : child,
+          : _getChild(),
         style: ButtonStyle(
           foregroundColor: mainButton
             ? MaterialStateProperty.all(Colors.white)
@@ -141,7 +160,7 @@ class OwButton extends StatelessWidget { // ! Testar opção de enviar ícone
               ? Colors.transparent 
               : secondary
                 ? Theme.of(context).cardColor.withOpacity(.6)
-                : color ?? AppTheme.verdeVenver,
+                : color ?? Theme.of(context).accentColor,
           ),
           elevation: MaterialStateProperty.all(elevation),
           minimumSize: MaterialStateProperty.all(minimumSize),
@@ -149,14 +168,34 @@ class OwButton extends StatelessWidget { // ! Testar opção de enviar ícone
           shape: MaterialStateProperty.all(
             RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(radius),
-              side: BorderSide(color: color ?? AppTheme.verdeVenver),
+              side: BorderSide(color: color ?? Theme.of(context).accentColor),
             ),
           ),
           enableFeedback: enableFeedback,
         ),
         onPressed: enable ? onPressed : null,
         onLongPress: enable ? onLongPressed : null,
+        focusNode: focusNode,
       ),
     );
+  }
+
+  Widget _getChild() {
+    if(leading != null || trailing != null) {
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          leading != null
+            ? Icon(leading)
+            : const SizedBox(),
+          child,
+          trailing != null
+            ? Icon(trailing)
+            : const SizedBox(),
+        ],
+      );
+    } else {
+      return child;
+    }
   }
 }

@@ -14,8 +14,8 @@ class OwIcon extends StatelessWidget {
     this.color, 
     this.size, 
     this.message = "",
-  })  : onPressed = null, 
-        button = false;
+  }): onPressed = null, 
+      button = false;
 
   const OwIcon.button(
     this.icon, 
@@ -24,7 +24,7 @@ class OwIcon extends StatelessWidget {
     this.onPressed, 
     {Key key,
     this.message = "",
-  })  : button = false;
+  }): button = false;
 
   @override
   Widget build(BuildContext context) {
@@ -33,20 +33,20 @@ class OwIcon extends StatelessWidget {
       message: message,
       child: button 
       ? IconButton(
-          onPressed: onPressed,
-          icon: Icon(
-            icon,
-            color: color,
-            size: size,
-            semanticLabel: message,
-          ),
-        )
-      : Icon(
+        onPressed: onPressed,
+        icon: Icon(
           icon,
           color: color,
           size: size,
           semanticLabel: message,
         ),
+      )
+      : Icon(
+        icon,
+        color: color,
+        size: size,
+        semanticLabel: message,
+      ),
     );
   }
 }

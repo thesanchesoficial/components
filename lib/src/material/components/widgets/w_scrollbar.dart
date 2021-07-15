@@ -2,6 +2,7 @@ import 'package:components_venver/src/functions/f.dart';
 import 'package:components_venver/src/settings/variable.dart';
 import 'package:flutter/material.dart';
 
+// ignore: must_be_immutable
 class OwScrollbar extends StatelessWidget { // ! Tirar espaçamento direito do Scroll
   final bool showScrollbar;
   final ScrollController scrollController;
