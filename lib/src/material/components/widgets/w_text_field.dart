@@ -775,26 +775,24 @@ class OwTextField extends StatelessWidget {
   }
 
   void defineFocusNode(BuildContext context) {
-    if(focusNode != null || nextFocusNode != null || focusNodeList != null || focusNodeIndex != null) { // ! Testar mais
-      _focusNode = focusNode ?? FN.getFnByList(focusNodeList, focusNodeIndex);
-      _nextFocusNode = nextFocusNode ?? FN.getNextFnByList(focusNodeList, focusNodeIndex);
+    _focusNode = focusNode ?? FN.getFnByList(focusNodeList, focusNodeIndex);
+    _nextFocusNode = nextFocusNode ?? FN.getNextFnByList(focusNodeList, focusNodeIndex);
 
-      if(_nextFocusNode != null) {
-        _textInputAction = TextInputAction.next;
-        if(automaticFocusWithFocusNodeList) {
-          _goToNextFocusNode = () {
-            // FocusScope.of(context).requestFocus(_nextFocusNode);
-            FN.nextFn(context, _nextFocusNode);
-          };
-        }
-      } else {
-        _textInputAction = TextInputAction.done;
-        if(unfocusIfNoNextFocusNode && automaticFocusWithFocusNodeList) {
-          _goToNextFocusNode = () {
-            // FocusScope.of(context).unfocus();
-            FN.unfocusFn(context);
-          };
-        }
+    if(_nextFocusNode != null) {
+      _textInputAction = TextInputAction.next;
+      if(automaticFocusWithFocusNodeList) {
+        _goToNextFocusNode = () {
+          // FocusScope.of(context).requestFocus(_nextFocusNode);
+          FN.nextFn(context, _nextFocusNode);
+        };
+      }
+    } else {
+      _textInputAction = TextInputAction.done;
+      if(unfocusIfNoNextFocusNode && automaticFocusWithFocusNodeList) {
+        _goToNextFocusNode = () {
+          // FocusScope.of(context).unfocus();
+          FN.unfocusFn(context);
+        };
       }
     }
   }

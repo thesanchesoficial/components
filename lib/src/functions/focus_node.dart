@@ -48,6 +48,10 @@ class FN {
   /// It uses a FocusNode list and an index to get the next FocusNode instance 
   /// (index + 1)
   static FocusNode getNextFnByList(List<FocusNode> focusNodeList, int focusNodeIndex) {
+    if(focusNodeIndex == null) {
+      return null;
+    }
+
     return getFnByList(focusNodeList, focusNodeIndex + 1);
   }
 }
