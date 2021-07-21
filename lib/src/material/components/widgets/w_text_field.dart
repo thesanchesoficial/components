@@ -10,6 +10,8 @@ import 'package:flutter_typeahead/flutter_typeahead.dart';
 
 export 'package:components_venver/src/utils/helpers/text_field_type.dart';
 
+// ! https://pub.dev/packages/easy_mask
+
 // ! Resolver problema do minLines (se colocar 10 por exemplo, surge um assert falando sobre o maxLines, e não deveria (FildType: multiline))
 // ! Colocar type com um ícone apagável (TextField de 'CPF / CNPJ na nota' do carrinho)
 
@@ -773,24 +775,26 @@ class OwTextField extends StatelessWidget {
   }
 
   void defineFocusNode(BuildContext context) {
-    _focusNode = focusNode ?? FN.getFnByList(focusNodeList, focusNodeIndex);
-    _nextFocusNode = nextFocusNode ?? FN.getNextFnByList(focusNodeList, focusNodeIndex);
+    if(focusNode != null || nextFocusNode != null || focusNodeList != null || focusNodeIndex != null) { // ! Testar mais
+      _focusNode = focusNode ?? FN.getFnByList(focusNodeList, focusNodeIndex);
+      _nextFocusNode = nextFocusNode ?? FN.getNextFnByList(focusNodeList, focusNodeIndex);
 
-    if(_nextFocusNode != null) {
-      _textInputAction = TextInputAction.next;
-      if(automaticFocusWithFocusNodeList) {
-        _goToNextFocusNode = () {
-          // FocusScope.of(context).requestFocus(_nextFocusNode);
-          FN.nextFn(context, _nextFocusNode);
-        };
-      }
-    } else {
-      _textInputAction = TextInputAction.done;
-      if(unfocusIfNoNextFocusNode && automaticFocusWithFocusNodeList) {
-        _goToNextFocusNode = () {
-          // FocusScope.of(context).unfocus();
-          FN.unfocusFn(context);
-        };
+      if(_nextFocusNode != null) {
+        _textInputAction = TextInputAction.next;
+        if(automaticFocusWithFocusNodeList) {
+          _goToNextFocusNode = () {
+            // FocusScope.of(context).requestFocus(_nextFocusNode);
+            FN.nextFn(context, _nextFocusNode);
+          };
+        }
+      } else {
+        _textInputAction = TextInputAction.done;
+        if(unfocusIfNoNextFocusNode && automaticFocusWithFocusNodeList) {
+          _goToNextFocusNode = () {
+            // FocusScope.of(context).unfocus();
+            FN.unfocusFn(context);
+          };
+        }
       }
     }
   }

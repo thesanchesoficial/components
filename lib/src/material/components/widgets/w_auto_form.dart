@@ -281,7 +281,7 @@ class FieldConfig {
   FieldConfig({
     this.label,
     this.tooltipLabel,
-    this.usedMapKey,
+    @required this.usedMapKey,
     this.editable = false,
     this.defineWidgetField,
     this.keyboardType,

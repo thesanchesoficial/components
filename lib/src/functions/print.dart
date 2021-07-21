@@ -52,6 +52,7 @@ void pList([List list, ShowPrintOn showPrintOn]) {
     if(list != null) {
       p("${list.runtimeType} (length: ${list.length})");
       for(int i = 0; i < list.length; i++) {
+        if(list[i] is String) list[i] = '"${list[i]}"';
         print("[$i]: ${list[i]}");
       }
     } else {
@@ -65,6 +66,8 @@ void pMap([Map map, ShowPrintOn showPrintOn]) {
     if(map != null) {
       p("${map.runtimeType} (length: ${map.length})");
       map?.forEach((key, value) {
+        if(key is String) key = '"$key"';
+        if(value is String) value = '"$key"';
         print("$key: $value");
       });
     } else {

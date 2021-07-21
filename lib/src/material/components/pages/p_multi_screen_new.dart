@@ -26,12 +26,12 @@ class OwMultiScreen extends StatefulWidget {
   /// The controller that will be used to manipulate the multi screen
   final MultiScreenController controller;
   /// The builder of the first screen (left screen)
-  final Widget Function(BuildContext) buildFirstScreen; // @required
+  final Widget Function(BuildContext) buildScreen1; // @required
   /// The builder of the second screen (right screen)
   /// 
   /// It can not be used Navigator.pop to back from the second page to the first, it will 
   /// be needed to use controller.backToFirstPage()
-  final Widget Function(BuildContext) buildSecondScreen; // @required
+  final Widget Function(BuildContext) buildScreen2; // @required
   /// Default second screen when controller.secondPageData is not defined
   /// 
   /// If it is null and there is not data to the second screen 
@@ -44,7 +44,7 @@ class OwMultiScreen extends StatefulWidget {
   /// The minimum size of each of both screens
   final double minSizeOfEachScreen;
   /// Compare to the screen width to define if it is single or multi screen
-  final double widthSeparator;
+  final double sizeSeparator;
   /// Defines if both screens is resizable
   final bool isResizable;
   /// Background color of the resizable widget (if [isResizable] = true)
@@ -61,21 +61,21 @@ class OwMultiScreen extends StatefulWidget {
   const OwMultiScreen({
     Key key,
     @required this.controller,
-    @required this.buildFirstScreen,
-    @required this.buildSecondScreen,
+    @required this.buildScreen1,
+    @required this.buildScreen2,
     this.emptySecondScreen,
     this.firstPageWidthPercent = 0.3,
     this.startFirstPageWithWidth,
     this.minSizeOfEachScreen = 50,
-    this.widthSeparator = 800,
+    this.sizeSeparator = 800,
     this.isResizable = true,
     this.resizableWidgetBackgroundColor,
     this.resizableTwoBarsColor,
-  }): assert(widthSeparator >= 2 * minSizeOfEachScreen),
+  }): assert(sizeSeparator >= 2 * minSizeOfEachScreen),
       assert(controller != null),
       assert(
-        startFirstPageWithWidth == null ? true : startFirstPageWithWidth <= widthSeparator - 4, // 4 due to the 
-        "'startFirstPageWithWidth' <= 'widthSeparator' - 4 is not true",
+        startFirstPageWithWidth == null ? true : startFirstPageWithWidth <= sizeSeparator - 4, // 4 due to the 
+        "'startFirstPageWithWidth' <= 'sizeSeparator' - 4 is not true",
       ),
       super(key: key);
   
@@ -83,13 +83,9 @@ class OwMultiScreen extends StatefulWidget {
   @override
   _OwMultiScreenState createState() => _OwMultiScreenState(
     controller,
-    buildFirstScreen,
-    buildSecondScreen,
-    emptySecondScreen,
-    firstPageWidthPercent,
-    startFirstPageWithWidth,
-    minSizeOfEachScreen,
-    widthSeparator,
+    buildScreen1,
+    buildScreen2,
+    sizeSeparator,
     isResizable,
     resizableWidgetBackgroundColor,
     resizableTwoBarsColor,
@@ -98,220 +94,187 @@ class OwMultiScreen extends StatefulWidget {
 
 class _OwMultiScreenState extends State<OwMultiScreen> {
   final MultiScreenController controller;
-  final Widget Function(BuildContext) buildFirstScreen; // = (context) => Screen1Test();
-  final Widget Function(BuildContext) buildSecondScreen; // = (context) => Screen2Test(); // key: UniqueKey(), // Usado pra ao mudar de index, resetar o "Incremento" (sem precisar do controller) (erro: rebuilda quando redimenciona a janela)
+  final Widget Function(BuildContext) buildScreen1; // ! Mudar pra buildMainScreen
+  final Widget Function(BuildContext) buildScreen2; // ! Mudar pra buildSecundaryScreen
 
-  final Widget emptySecondScreen;
-  double firstPageWidthPercent;
-  final double startFirstPageWithWidth;
-  final double minSizeOfEachScreen;
-  final double widthSeparator;
+  final double separatorSize;
   final bool isResizable;
   final Color resizableWidgetBackgroundColor;
   final Color resizableTwoBarsColor;
 
-  // double firstPageFixedWidth;
-
-  // ! Erro: Quando sai da tela (botão voltar do chrome) e entra de novo, se tentar chamar uma nova tela na tela 2, gera exceção
-
-  // Variables
-  double _resizableWidgetWidth = 0;
-  double _widthScreen = 0;
-  double _firstScreenWidth = 0;
-  double _secondScreenWidth = 0;
-
-  double _firstPageResizableWidth;
-  double _secondPageResizableWidth;
-
-  bool _firstExec = true;
-
-  var keyOne = GlobalKey<NavigatorState>();
-  var keyTwo = GlobalKey<NavigatorState>();
-
   _OwMultiScreenState(
     this.controller,
-    this.buildFirstScreen, 
-    this.buildSecondScreen,
-    this.emptySecondScreen,
-    this.firstPageWidthPercent,
-    this.startFirstPageWithWidth,
-    this.minSizeOfEachScreen,
-    this.widthSeparator,
+    this.buildScreen1, 
+    this.buildScreen2,
+    this.separatorSize,
     this.isResizable,
     this.resizableWidgetBackgroundColor,
     this.resizableTwoBarsColor,
   );
 
+
+  final Axis direction = Axis.horizontal;
+
+  // ! Erro: Quando sai da tela (botão voltar do chrome) e entra de novo, se tentar chamar uma nova tela na tela 2, gera exceção
+
+  // Variables
+  double _resizableWidgetSize = 8;
+
+  bool _firstExec = true;
+
+  var keyOne = GlobalKey<NavigatorState>();
+  var keyTwo = GlobalKey<NavigatorState>();
+  var keyBoth = GlobalKey<NavigatorState>();
+
+  bool showResizableWidget;
+
   @override
   void initState() { 
     super.initState();
 
-    controller.updateStateF = () => setState(() {});
+    // controller.updateStateF = () => setState(() {});
     controller.isResizing = false;
 
-    controller.setKeyOne = keyOne;
-    controller.setKeyTwo = keyTwo;
+    controller.setNavKey1 = keyOne;
+    controller.setNavKey2 = keyTwo;
 
-    controller.emptySecondScreenWidget = emptySecondScreen ?? const SizedBox();
+    // SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
 
-    SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+    //   keyTwo.currentState.push(MaterialPageRoute(
+    //     builder: (context) => buildScreen2(context) ?? const SizedBox(),
+    //   ));
 
-      // keyOne.currentState.push(MaterialPageRoute(
-      //   builder: (context) => const SizedBox(),
-      // ));
-      
-      // keyOne.currentState.push(MaterialPageRoute(
-      //   builder: (context) => buildFirstScreen(context) ?? const SizedBox(),
-      // ));
-
-      keyTwo.currentState.push(MaterialPageRoute(
-        builder: (context) => WillPopScope(
-          child: emptySecondScreen ?? const SizedBox(),
-          onWillPop: () async {
-            print("pop (emptySecondScreen)");
-            return false;
-          },
-        ),
-      ));
-
-      // keyTwo.currentState.pushAndRemoveUntil(
-      //   MaterialPageRoute(
-      //     builder: (context) => WillPopScope(
-      //       child: emptySecondScreen ?? const SizedBox(),
-      //       onWillPop: () async {
-      //         print("pop (emptySecondScreen)");
-      //         return false;
-      //       },
-      //     ),
-      //   ), 
-      //   (route) => false,
-      // );
-    });
+    //   // keyTwo.currentState.pushAndRemoveUntil(
+    //   //   MaterialPageRoute(
+    //   //     builder: (context) => WillPopScope(
+    //   //       child: emptySecondScreen ?? const SizedBox(),
+    //   //       onWillPop: () async {
+    //   //         print("pop (emptySecondScreen)");
+    //   //         return false;
+    //   //       },
+    //   //     ),
+    //   //   ), 
+    //   //   (route) => false,
+    //   // );
+    // });
   }
-
-  // @override
-  // void dispose() { 
-  //   keyOne.currentState.dispose();
-  //   keyTwo.currentState.dispose();
-  //   super.dispose();
-  // }
 
   @override
   Widget build(BuildContext context) {
-    _execOnBuilder();
+    return AnimatedBuilder(
+      animation: controller,
+      builder: (context, widget) {
+        _execOnBuilder();
+        return _bothScreens();
+      },
+    );
+  }
 
-    return WillPopScope(
-      onWillPop: () async => !await keyOne.currentState.maybePop(),
-      child: Container(
-        child: Row(
+  Widget _bothScreens() {
+    return Stack(
+      children: [
+        Row(
           children: [
-            Container(
-              width: _firstScreenWidth,
-              child: _screen1(),
-            ),
-            isResizable && controller.isShowingBothScreens && !(controller?.isSecondScreenEmpty() == true && emptySecondScreen == null)
-              ? _resizableWidget()
-              : const SizedBox(),
-            Container(
-              width: _secondScreenWidth,
-              child: _screen2(),
-            ),
+            _screen1(),
+            _screen2(),
           ],
         ),
-      ),
+        _resizableWidget(),
+      ],
     );
   }
 
   Widget _screen1() {
-    return Navigator(
-      key: keyOne,
-      onGenerateRoute: (routeSettings) {
-        return MaterialPageRoute(
-          builder: (context) {
-            // return FlatButton(
-            //   onPressed: () {
-            //     keyTwo.currentState.push(MaterialPageRoute(builder: (context) => Scaffold(
-            //       appBar: AppBar(),
-            //       body: Center(child: Text("21732")),
-            //     )));
-            //   }, 
-            //   child: Text("->"),
-            // );
-            return buildFirstScreen(context);
-          }
-        );
-      },
+    return Container(
+      width: controller.mainScreenSize,
+      padding: controller._showResizableWidget
+        ? EdgeInsets.only(right: _resizableWidgetSize / 2)
+        : null,
+      child: Navigator(
+        key: keyOne,
+        onGenerateRoute: (routeSettings) {
+          return MaterialPageRoute(
+            builder: (context) {
+              return buildScreen1?.call(context) ?? const SizedBox();
+            }
+          );
+        },
+      ),
     );
   }
 
   Widget _screen2() {
-    return Navigator(
-      key: keyTwo,
-      onGenerateRoute: (routeSettings) {
-        return MaterialPageRoute(
-          builder: (context) {
-            return WillPopScope(
-              child: emptySecondScreen ?? const SizedBox(),
-              onWillPop: () async {
-                print("try pop screen 2");
-                return false;
-              },
-            );
-            // return controller.isSecondScreenEmpty()
-            //   ? emptySecondScreen ?? const SizedBox()
-            //   : buildSecondScreen(context);
-          }
-        );
-      },
+    return Container(
+      width: controller.secundaryScreenSize,
+      padding: controller._showResizableWidget
+        ? EdgeInsets.only(left: _resizableWidgetSize / 2)
+        : null,
+      child: Navigator(
+        key: keyTwo,
+        onGenerateRoute: (routeSettings) {
+          return MaterialPageRoute(
+            builder: (context) {
+              return buildScreen2?.call(context) ?? const SizedBox();
+            }
+          );
+        },
+      ),
     );
   }
 
   Widget _resizableWidget() { // ! Colocar sombra
-    return MouseRegion(
-      cursor: false //controller.isResizing // ! Corrigir, tá falando que é null, não sei como
-        ? SystemMouseCursors.resizeColumn
-        : MouseCursor.defer,
-      child: Container(
-        color: resizableWidgetBackgroundColor ?? Theme.of(context).scaffoldBackgroundColor,
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Row(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Container(
-                  child: MouseRegion(
-                    cursor: SystemMouseCursors.resizeColumn,
-                    child: Draggable(
-                      child: _resizableIcon(), 
-                      feedback: const SizedBox(),
-                      onDragUpdate: (d) {
-                        if(
-                          d.localPosition.dx >= minSizeOfEachScreen + (_resizableWidgetWidth / 2) && 
-                          d.localPosition.dx < _widthScreen - minSizeOfEachScreen - (_resizableWidgetWidth / 2) + 1
-                        ) {
-                          firstPageWidthPercent = d.localPosition.dx / _widthScreen;
-                          controller.updateState();
-                        }
-                      },
-                      onDragStarted: () {
-                        controller.isResizing = true;
-                        controller.updateState();
-                      },
-                      onDragEnd: (d) {
-                        controller.isResizing = false;
-                        controller.updateState();
-                      },
-                    ),
+    double leftPadding = controller.mainScreenSize - (_resizableWidgetSize / 2);
+    if(leftPadding < 0) {
+      leftPadding = 0;
+    } else if(leftPadding > controller._getTotalSize() - _resizableWidgetSize) {
+      leftPadding = controller._getTotalSize() - _resizableWidgetSize;
+    }
+
+    return controller._showResizableWidget
+      ? Padding(
+        padding: EdgeInsets.only(left: leftPadding),
+        child: Container(
+          width: _resizableWidgetSize,
+          child: MouseRegion(
+            cursor: controller.isResizing
+              ? SystemMouseCursors.resizeColumn
+              : MouseCursor.defer,
+            child: Container(
+              color: resizableWidgetBackgroundColor ?? Theme.of(context).scaffoldBackgroundColor,
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Container(
+                        child: MouseRegion(
+                          cursor: SystemMouseCursors.resizeColumn,
+                          child: Draggable(
+                            child: _resizableIcon(), 
+                            feedback: const SizedBox(),
+                            onDragUpdate: (dragUpdateDetails) {
+                              controller.resizeOnDrag(dragUpdateDetails);
+                            },
+                            onDragStarted: () {
+                              controller.isResizing = true;
+                            },
+                            onDragEnd: (d) {
+                              controller.isResizing = false;
+                            },
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ],
+          ),
         ),
-      ),
-    );
+      )
+      : const SizedBox();
   }
 
   Widget _resizableIcon() {
@@ -323,7 +286,7 @@ class _OwMultiScreenState extends State<OwMultiScreen> {
     return Container(
       color: Colors.transparent,
       padding: const EdgeInsets.symmetric(horizontal: 2),
-      width: _resizableWidgetWidth,
+      width: _resizableWidgetSize,
       height: 20,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -335,130 +298,297 @@ class _OwMultiScreenState extends State<OwMultiScreen> {
     );
   }
 
-  void _execOnBuilder() { // ! Melhorar lógica
+  void _execOnBuilder() {
     controller?.buildListener?.call();
 
-    _widthScreen = MediaQuery.of(context).size.width; // ! Passar pro controller
-
-    _initExecOnBuilder();
-
-    // if(controller?.context == null) {
-    //   controller.context = context;
-    // }
-
-    if(_widthScreen < widthSeparator) {
-      controller.isShowingBothScreens = false;
-    } else {
-      controller.isShowingBothScreens = true;
-    }
-
-    if(
-      controller.isShowingBothScreens && 
-      isResizable && 
-      (!controller.isSecondScreenEmpty() || emptySecondScreen != null)
-    ) {
-      _resizableWidgetWidth = 8;
-    } else {
-      _resizableWidgetWidth = 0;
-    }
-
-    if(
-      _widthScreen * firstPageWidthPercent >= minSizeOfEachScreen && 
-      _widthScreen * (1 - firstPageWidthPercent) < _widthScreen - minSizeOfEachScreen
-    ) {
-      if(_firstPageResizableWidth == null && startFirstPageWithWidth != null) {
-        _firstPageResizableWidth = startFirstPageWithWidth;
-      } else {
-        _firstPageResizableWidth = _widthScreen * firstPageWidthPercent;
-      }
-      _secondPageResizableWidth = _widthScreen * (1 - firstPageWidthPercent);
-    }
-
-    if(_firstPageResizableWidth == null || _secondPageResizableWidth == null) {
-      _firstPageResizableWidth = minSizeOfEachScreen;
-      _secondPageResizableWidth = _widthScreen * (1 - firstPageWidthPercent);
-    }
-
-    _firstScreenWidth = _getFirstPageWidth();
-    if(_firstScreenWidth < 0) { // This is to fix the 4 pixels overflow when 'minSizeOfEachScreen' = 0 and: 'firstPageWidthPercent' = 0 (left overflow) or 1 (right overflow)
-      _firstScreenWidth = 0;
-    } else if(_firstScreenWidth > _widthScreen - _resizableWidgetWidth) {
-      _firstScreenWidth = _widthScreen - _resizableWidgetWidth;
-    }
-    _secondScreenWidth = _getSecondPageWidth();
-
-    controller.firstPageWidth = _firstScreenWidth;
-    controller.secondPageWidth = _secondScreenWidth;
-  }
-
-  void _initExecOnBuilder() {
     if(_firstExec) {
-      controller.context = context; // ! Tentar colocar no initState
-
-      if(startFirstPageWithWidth != null) {
-        firstPageWidthPercent = startFirstPageWithWidth / _widthScreen;
-      }
-
+      controller.startCall(separatorSize, _resizableWidgetSize, context, isResizable, direction);
       _firstExec = false;
     }
-  }
 
-  double _getFirstPageWidth() {
-    if(!controller.isShowingBothScreens) {
-      if(controller.isSecondScreenEmpty()) {
-        return _widthScreen;
-      } else {
-        return 0;
-      }
-    } else {
-      if(controller.isSecondScreenEmpty() == true && emptySecondScreen == null) {
-        return _widthScreen;
-      } else if(isResizable) {
-        return _firstPageResizableWidth - (_resizableWidgetWidth / 2);
-      } else {
-        return startFirstPageWithWidth ?? _firstPageResizableWidth; //firstPageFixedWidth ?? firstPageResizableWidth;
-      }
-    }
-  }
-
-  double _getSecondPageWidth() {
-    if(controller?.isSecondScreenEmpty() == true && emptySecondScreen == null) {
-      return 0;
-    } else if(controller.isShowingBothScreens && isResizable) {
-      return _widthScreen - _firstScreenWidth - _resizableWidgetWidth;
-    } else {
-      return _widthScreen - _firstScreenWidth;
-    }
+    // ! Pra não bugar, e deixar as porcentagens certas (tela1 + tela2 = 1 (sem que o resizableWidget pegue uma parte)), pode tentar 2 coisas:
+    // * 1: totalSize = totalSize - _resizableWidgetSize;
+    // * 2: Usar um Stack com uma linha (tendo as 2 telas) e por cima, o resizable
+    controller.alwaysCalc();
   }
 }
 
+    // _firstScreenWidth = _getFirstPageWidth();
+    // if(_firstScreenWidth < 0) { // This is to fix the 4 pixels overflow when 'minSizeOfEachScreen' = 0 and: 'firstPageSizePercent' = 0 (left overflow) or 1 (right overflow)
+    //   _firstScreenWidth = 0;
+    // } else if(_firstScreenWidth > _sizeScreen - _resizableWidgetSize) {
+    //   _firstScreenWidth = _sizeScreen - _resizableWidgetSize;
+    // }
+    // _secondScreenWidth = _getSecondPageWidth();
 
 
+enum Screen { screen1, screen2 }
+enum DefinedScreen { main, secundary }
+class MultiScreenController extends ChangeNotifier {
+  MultiScreenController({
+    this.mainScreen = Screen.screen1,
+    this.mainScreenStartPercent = 0.3,
+    this.mainScreenStartSize,
+    this.keepScreenSizeWhileResizeWindow,
+    this.mainScreenMinSize = 0,
+    this.secundaryScreenMinSize = 0,
+    bool hideSecundaryScreenWhenShowingBoth = false,
+    bool focusOnSecundaryScreen = false,
+  }): assert(mainScreen != null),
+      assert(mainScreenStartPercent != null || mainScreenStartSize != null),
+      _hideSecundaryScreenWhenShowingBoth = hideSecundaryScreenWhenShowingBoth,
+      _focusOnSecundaryScreen = focusOnSecundaryScreen;
 
-class MultiScreenController { // ! Dá pra colocar o dx do resizable aqui, assim, teria como ver e alterar depois de ter buildado a tela
-  GlobalKey _keyOne;
-  get getKeyOne => this._keyOne;
-  set setKeyOne(GlobalKey keyOne) {
-    if(this._keyOne == null) {
-      this._keyOne = keyOne;
+  GlobalKey _navKeyBoth;
+  get getNavKeyBoth => this._navKeyBoth;
+  set setNavKeyBoth(GlobalKey navKeyBoth) {
+    if(this._navKeyBoth == null) {
+      this._navKeyBoth = navKeyBoth;
     }
   }
 
-  GlobalKey _keyTwo;
-  get getKeyTwo => this._keyTwo;
-  set setKeyTwo(GlobalKey keyTwo) {
-    if(this._keyTwo == null) {
-      this._keyTwo = keyTwo;
+  GlobalKey _navKey1;
+  get getNavKey1 => this._navKey1;
+  set setNavKey1(GlobalKey navKey1) {
+    if(this._navKey1 == null) {
+      this._navKey1 = navKey1;
     }
   }
 
-  Widget _emptySecondScreenWidget;
-  get emptySecondScreenWidget => this._emptySecondScreenWidget;
-  set emptySecondScreenWidget(Widget emptySecondScreenWidget) {
-    if(this._emptySecondScreenWidget == null) {
-      this._emptySecondScreenWidget = emptySecondScreenWidget;
+  GlobalKey _navKey2;
+  get getNavKey2 => this._navKey2;
+  set setNavKey2(GlobalKey navKey2) {
+    if(this._navKey2 == null) {
+      this._navKey2 = navKey2;
     }
   }
+
+  NavigatorState _pageNavigator(
+    GlobalKey key, 
+    {bool pop = false, 
+    bool backToStartScreen = false, 
+    bool updateState = true
+  }) {
+    NavigatorState navigatorState = key.currentState;
+
+    if(backToStartScreen) {
+      navigatorState.popUntil((route) => route.isFirst);
+      // if(key == _navKey2) {
+      //   focusOnSecundaryScreen = true;
+      // }
+    } else if(pop && navigatorState.canPop()) {
+      navigatorState.pop();
+      // if(key == _navKey2) {
+      //   focusOnSecundaryScreen = false;
+      // }
+    }
+
+    if(updateState) {
+      this.updateState();
+    }
+
+    return navigatorState; 
+  }
+
+  NavigatorState mainNavigator(
+    {bool pop = false, 
+    bool backToStartScreen = false,
+    bool updateState = true,
+  }) {
+    return _pageNavigator(_navKey1, pop: pop, backToStartScreen: backToStartScreen, updateState: updateState);
+  }
+
+  NavigatorState secundaryNavigator({
+    bool pop = false, 
+    bool backToStartScreen = false, 
+    bool updateState = true,
+    bool focusOnSecundaryScreen,
+    bool hideSecundaryScreenWhenShowingBoth = false,
+  }) {
+    if(hideSecundaryScreenWhenShowingBoth != null) {
+      this._hideSecundaryScreenWhenShowingBoth = hideSecundaryScreenWhenShowingBoth;
+    }
+    if(backToStartScreen || focusOnSecundaryScreen != null) {
+      this._focusOnSecundaryScreen = focusOnSecundaryScreen ?? false;
+    }
+    return _pageNavigator(_navKey2, pop: pop, backToStartScreen: backToStartScreen);
+  }
+
+  NavigatorState pageNavigatorBoth(
+    {bool pop = false, 
+    bool updateState = true,
+  }) {
+    return _pageNavigator(_navKeyBoth, pop: pop, updateState: updateState);
+  }
+
+  final Screen mainScreen;
+  final double mainScreenStartSize;
+  final double mainScreenStartPercent;
+  bool _hideSecundaryScreenWhenShowingBoth;
+  get hideSecundaryScreenWhenShowingBoth => this._hideSecundaryScreenWhenShowingBoth;
+  set hideSecundaryScreenWhenShowingBoth(bool value) {
+    this._hideSecundaryScreenWhenShowingBoth = value;
+    this.updateState();
+  }
+  bool _focusOnSecundaryScreen;
+  get focusOnSecundaryScreen => this._focusOnSecundaryScreen;
+  set focusOnSecundaryScreen(bool value) {
+    this._focusOnSecundaryScreen = value;
+    this.updateState();
+  }
+  // void changeFocus() => focusOnSecundaryScreen = !focusOnSecundaryScreen;
+
+  double mainScreenPercent;
+  double secundaryScreenPercent;
+  double mainScreenSize;
+  double secundaryScreenSize;
+
+  double totalScreenSize;
+
+  final DefinedScreen keepScreenSizeWhileResizeWindow;
+
+  final double mainScreenMinSize;
+  final double secundaryScreenMinSize;
+
+  // ! Ao inicializar
+  double _separatorSize;
+  double _resizableWidgetSize;
+  Axis _direction;
+  bool _isResizable;
+  bool _showResizableWidget;
+  void startCall(double separatorSize, double resizableWidgetSize, BuildContext context, bool isResizable, Axis direction) {
+    this.context = context;
+    this._separatorSize = separatorSize;
+    this._resizableWidgetSize = resizableWidgetSize;
+    this._isResizable = isResizable;
+    this._direction = direction;
+    
+    double totalSize = _getTotalSize();
+    
+    if(mainScreenStartSize != null) {
+      mainScreenPercent = (mainScreenStartSize + (resizableWidgetSize / 2)) / totalSize;
+    } else {
+      mainScreenPercent = mainScreenStartPercent;
+    }
+
+    if(mainScreenPercent > 1) {
+      mainScreenPercent = 1;
+    }
+  }
+
+  double _getTotalSize() {
+    Size size = MediaQuery.of(this.context).size;
+    if(this._direction == Axis.horizontal) {
+      return size.width;
+    } else {
+      return size.height;
+    }
+  }
+
+  double _mainScreenPercentTemp;
+  double _mainScreenSizeTemp;
+  void alwaysCalc() {
+    // final stopwatch = Stopwatch()..start();
+    // print("alwaysCalc: START");
+    double totalSize = _getTotalSize();
+
+    if(totalSize < _separatorSize) {
+      this.isShowingBothScreens = false;
+
+      if(_mainScreenPercentTemp == null) {
+        _mainScreenPercentTemp = mainScreenPercent;
+        // _mainScreenSizeTemp = mainScreenSize; // ! Verificar nesse caso (se for fixo o Size quando dimencionar)
+      }
+
+      if(focusOnSecundaryScreen) {
+        mainScreenSize = 0;
+        mainScreenPercent = 0;
+        secundaryScreenSize = totalSize;
+        secundaryScreenPercent = 1;
+      } else {
+        mainScreenSize = totalSize;
+        mainScreenPercent = 1;
+        secundaryScreenSize = 0;
+        secundaryScreenPercent = 0;
+      }
+    } else {
+      this.isShowingBothScreens = true;
+
+      if(hideSecundaryScreenWhenShowingBoth) {
+        if(_mainScreenPercentTemp == null) {
+          _mainScreenPercentTemp = mainScreenPercent;
+          // _mainScreenSizeTemp = mainScreenSize; // ! Verificar nesse caso (se for fixo o Size quando dimencionar)
+        }
+        
+        mainScreenSize = totalSize;
+        mainScreenPercent = 1;
+        secundaryScreenSize = 0;
+        secundaryScreenPercent = 0;
+      } else {
+        if(_mainScreenPercentTemp != null) {
+          mainScreenPercent = _mainScreenPercentTemp;
+          // secundaryScreenPercent = 1 - mainScreenPercent;
+          _mainScreenPercentTemp = null;
+        }
+
+        if(keepScreenSizeWhileResizeWindow == DefinedScreen.main) {
+          if(mainScreenSize == null) { // ! Ver se isso resolve
+            mainScreenSize = mainScreenStartSize ?? mainScreenStartPercent * totalSize;
+          }
+          mainScreenPercent = mainScreenSize / totalSize;
+          secundaryScreenPercent = 1 - mainScreenPercent;
+          secundaryScreenSize = secundaryScreenPercent * totalSize;
+        } else if(keepScreenSizeWhileResizeWindow == DefinedScreen.secundary) {
+          if(secundaryScreenSize == null) { // ! Ver se isso tá certo
+            secundaryScreenSize = totalSize - mainScreenStartSize ?? (1 - mainScreenStartPercent) * totalSize;
+          }
+          secundaryScreenPercent = secundaryScreenSize / totalSize;
+          mainScreenPercent = 1 - secundaryScreenPercent;
+          mainScreenSize = mainScreenPercent * totalSize;
+        } else {
+          mainScreenSize = mainScreenPercent * totalSize;
+          secundaryScreenPercent = 1 - mainScreenPercent;
+          secundaryScreenSize = secundaryScreenPercent * totalSize;
+        }
+      }
+    }
+
+    _checkWhetherResizableWidgetIsShown();
+    
+    // print("alwaysCalc: END");
+    // print('doSomething() executed in ${stopwatch.elapsed}');
+  }
+
+  void _checkWhetherResizableWidgetIsShown() {
+    if(!_isResizable || !isShowingBothScreens || hideSecundaryScreenWhenShowingBoth) {
+      _showResizableWidget = false;
+    } else {
+      _showResizableWidget = true;
+    }
+  }
+
+  // Só vai ocultar o resizableWidget se: !isResizable || !isShowingBothScreens || hideSecundaryScreenWhenShowingBoth
+  void resizeOnDrag(DragUpdateDetails dragUpdateDetails) {
+    double totalSize = _getTotalSize();
+    double position;
+    if(_direction == Axis.horizontal) {
+      position = dragUpdateDetails.localPosition.dx;
+    } else {
+      position = dragUpdateDetails.localPosition.dy;
+    }
+
+    if(position >= 0 && position <= _resizableWidgetSize) { // ! Talvez, usar (resizableWidgetSize / 2) pra não dar teleport quando arrastar devagar e minSize = 0
+      mainScreenPercent = 0;
+    } else if(position >= (totalSize - _resizableWidgetSize) && position <= totalSize) {
+      mainScreenPercent = 1;
+    } else if(position >= (mainScreenMinSize + (_resizableWidgetSize / 2)) && position <= (totalSize - secundaryScreenMinSize - (_resizableWidgetSize / 2))) {
+      mainScreenPercent = position / totalSize;
+    }
+    // if(mainScreenSize % 1 == 0)
+    updateState(); // ! Talvez, colocar aquele Ticker que o Jacob mostrou
+  }
+
+  
 
   // bool _isSecondScreenEmpty;
   // bool get isSecondScreenEmpty => this._isSecondScreenEmpty;
@@ -477,29 +607,9 @@ class MultiScreenController { // ! Dá pra colocar o dx do resizable aqui, assim
   /// resizing, just the middle resizable widget)
   bool _isResizing;
   bool get isResizing => this._isResizing;
-  set isResizing(bool value) => this._isResizing = isResizing;
-  
-  /// Defined automatically, do not change
-  void Function() _updateStateF;
-  set updateStateF(void Function() value) { // ! setUpdateState
-    if(this._updateStateF == null) {
-      this._updateStateF = value;
-    }
-  }
-  void updateState() {
-    _updateStateF();
-  }
-
-  /// Do not change
-  dynamic _secondPageData;
-  /// Get the data of the second page
-  dynamic get secondPageData => this._secondPageData;
-  /// Do not change
-  set secondPageData(dynamic value) {
-    if(value != this._secondPageData) {
-      this._secondPageData = value;
-      this.updateState?.call();
-    }
+  set isResizing(bool value) {
+    this._isResizing = value;
+    this.updateState();
   }
 
   /// Check if there is enough space to show both screens at the same time
@@ -507,72 +617,17 @@ class MultiScreenController { // ! Dá pra colocar o dx do resizable aqui, assim
 
   /// The context of the MuiltiScreen widget
   BuildContext context;
-
-  /// The width of the first page (single or multi screen)
-  double firstPageWidth;
-
-  /// The width of the second page (single or multi screen)
-  double secondPageWidth;
-
-  /// Get the total page width (single or multi screen)
-  double getPageWidth() { // Fazer um getWidth pra screen 1 e 2
-    if(context == null) return null;
-    return MediaQuery.of(context).size.width;
-  }
-
-  /// Clear the data of the second screen
-  void clearData() {
-    secondPageData = null;
-  }
-
-  /// Check if the second screen is showing up
-  bool isSecondScreenEmpty() => this._secondPageData == null;
-
-  /// Use this function to 'pop' the second page/screen
-  void backToFirstPage([bool pop = true]) { // ! Talvez usar navigator pushAndRemoveUntil
-    // if(pop) {
-    //   this.secondPageNavigator().pop();
-    // }
-    this.clearData?.call();
-    this.updateState?.call();
-  }
-
-
   
-
-  NavigatorState firstPageNavigator() {
-
-  }
-
-  NavigatorState secondPageNavigator({bool pop = false, bool backToEmptySecondScreen = false}) {
-    NavigatorState navigatorState = _keyTwo.currentState;
-    print("this.isSecondScreenEmpty(): ${this.isSecondScreenEmpty()}");
-    print("secondPageData: $secondPageData");
-    print("canPop: ${navigatorState.canPop()}");
-    // if(pop && this.secondPageData != null) {
-    //   this.backToFirstPage(false);
-    // }
-    if(pop && navigatorState.canPop()) { // ! Tentar isso (não testado ainda)
-      // this.backToFirstPage();
-      navigatorState.pop();
-    }
-
-    if(backToEmptySecondScreen) {
-      navigatorState.pushAndRemoveUntil(
-        MaterialPageRoute(builder: (context) {
-          return this.emptySecondScreenWidget;
-        }),
-        (route) => false,
-      );
-    }
-
-    return navigatorState; 
-  }
-
-  void secondPagePop() {
-    NavigatorState navigatorState = _keyTwo.currentState;
-    if(navigatorState.canPop()) {
-      navigatorState.pop();
-    }
+  /// Defined automatically, do not change
+  // void Function() _updateStateF;
+  // set updateStateF(void Function() value) { // ! setUpdateState
+  //   if(this._updateStateF == null) {
+  //     this._updateStateF = value;
+  //   }
+  // }
+  void updateState() {
+    print("notifyListeners");
+    // _updateStateF();
+    notifyListeners();
   }
 }
