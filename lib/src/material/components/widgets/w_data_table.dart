@@ -24,7 +24,12 @@ class OwDataTable extends StatefulWidget {
   final Color dataRowColor;
   final double horizontalMargin;
   final bool showCheckboxColumn;
+  /// [checked], [row index], [data]
   final void Function(bool, int, dynamic) onRowSelected;
+  /// [data], [row index]
+  final void Function(dynamic, int) onIndexCellTap;
+  /// [data], [row index], [column index]
+  final void Function(dynamic, int, int) onAnyCellTap;
   const OwDataTable({
     Key key,
     @required this.columnFields,
@@ -45,6 +50,8 @@ class OwDataTable extends StatefulWidget {
     this.horizontalMargin,
     this.showCheckboxColumn,
     this.onRowSelected,
+    this.onIndexCellTap,
+    this.onAnyCellTap,
   }) : super(key: key);
   
   @override
@@ -67,6 +74,8 @@ class OwDataTable extends StatefulWidget {
     horizontalMargin,
     showCheckboxColumn,
     onRowSelected,
+    onIndexCellTap,
+    onAnyCellTap,
   );
 }
 
@@ -89,6 +98,8 @@ class _OwDataTableState extends State<OwDataTable> {
   final double horizontalMargin;
   final bool showCheckboxColumn;
   final void Function(bool, int, dynamic) onRowSelected;
+  final void Function(dynamic, int) onIndexCellTap;
+  final void Function(dynamic, int, int) onAnyCellTap;
   _OwDataTableState(
     this.columnFields,
     this.dataTable,
@@ -108,6 +119,8 @@ class _OwDataTableState extends State<OwDataTable> {
     this.horizontalMargin,
     this.showCheckboxColumn,
     this.onRowSelected,
+    this.onIndexCellTap,
+    this.onAnyCellTap,
   );
 
   List<dynamic> _usedMapKeys = [];
@@ -194,14 +207,16 @@ class _OwDataTableState extends State<OwDataTable> {
     }
     dataColumns = dataColumns + List.generate(
       columnFields.length, 
-      (i) => DataColumn(
-        label: columnFields[i].widgetColumn ?? Text(
-          "${columnFields[i].labelColumn}",
-          style: columnFields[i].labelColumnTextStyle,
+      (cIndex) => DataColumn(
+        label: columnFields[cIndex].widgetColumn ?? Text(
+          "${columnFields[cIndex].labelColumn}",
+          style: columnFields[cIndex].labelColumnTextStyle,
         ),
-        tooltip: columnFields[i].tooltipLabelColumn,
-        numeric: columnFields[i].numeric,
-        onSort: columnFields[i].canSortByThisColumn
+        tooltip: columnFields[cIndex].tooltipLabelColumn,
+        numeric: cIndex == 0 && rowIndex
+          ? true
+          : columnFields[cIndex].numeric,
+        onSort: columnFields[cIndex].canSortByThisColumn
           ? (index, ascending) {
             _sortColumnIndex = index;
             _isAscending = ascending;
@@ -249,11 +264,23 @@ class _OwDataTableState extends State<OwDataTable> {
         _defineCellWidget(cells[cIndex], rIndex, cIndex),
         onTap: columnFields[cIndex].onCellTap != null
           ? () => columnFields[cIndex].onCellTap(cells[cIndex], rIndex, cIndex)
-          : null,
+          : onAnyCellTap != null
+            ? () => onAnyCellTap(cells[cIndex], rIndex, cIndex)
+            : null,
       ),
     );
     if(rowIndex) {
-      result.insert(0, DataCell(Text("${rIndex + 1}")));
+      result.insert(0, DataCell(
+        Text(
+          "${rIndex + 1}",
+          textAlign: TextAlign.right,
+        ),
+        onTap: onIndexCellTap != null
+          ? () => onIndexCellTap(dataTable[rIndex], rIndex)
+          : onAnyCellTap != null
+            ? () => onAnyCellTap(dataTable[rIndex], rIndex, 0)
+            : null,
+      ));
     }
     return result;
   }
