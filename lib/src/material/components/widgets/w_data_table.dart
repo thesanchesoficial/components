@@ -217,9 +217,9 @@ class _OwDataTableState extends State<OwDataTable> {
   List<DataRow> _getRows(List<dynamic> rows) {
     return List.generate(
       dataTable.length, 
-      (i) {
+      (ri) {
         List<dynamic> cells = [];
-        Map mapResult = dataTable[i].toMap();
+        Map mapResult = dataTable[ri].toMap();
         _usedMapKeys.forEach((element) {
           cells.add(mapResult[element]);
         });
@@ -227,26 +227,33 @@ class _OwDataTableState extends State<OwDataTable> {
           onSelectChanged: onRowSelected == null
             ? null
             : (value) {
-              onRowSelected(value, i, dataTable[i]);
-              _selectedRows[i] = value;
-              _updateState();
+              onRowSelected(value, ri, dataTable[ri]);
+              if(showCheckboxColumn != false) {
+                _selectedRows[ri] = value;
+                _updateState();
+              }
             },
           selected: onRowSelected == null
             ? false
-            : _selectedRows[i],
-          cells: _getCells(cells, i),
+            : _selectedRows[ri],
+          cells: _getCells(cells, ri),
         );
       },
     );
   }
 
-  List<DataCell> _getCells(List<dynamic> cells, int index) {
+  List<DataCell> _getCells(List<dynamic> cells, int rIndex) {
     List<DataCell> result = List.generate(
       cells.length, 
-      (i) => DataCell(_defineCellWidget(cells[i], index, i)),
+      (cIndex) => DataCell(
+        _defineCellWidget(cells[cIndex], rIndex, cIndex),
+        onTap: columnFields[cIndex].onCellTap != null
+          ? () => columnFields[cIndex].onCellTap(cells[cIndex], rIndex, cIndex)
+          : null,
+      ),
     );
     if(rowIndex) {
-      result.insert(0, DataCell(Text("${index + 1}")));
+      result.insert(0, DataCell(Text("${rIndex + 1}")));
     }
     return result;
   }
@@ -352,6 +359,7 @@ class ColumnField {
   final Color backgroundColor;
   final Widget Function(dynamic, int, int) defineWidgetCell;
   final bool canSortByThisColumn;
+  final void Function(dynamic, int, int) onCellTap;
 
   ColumnField({
     @required this.usedMapKey,
@@ -367,6 +375,7 @@ class ColumnField {
     this.width,
     this.backgroundColor,
     this.canSortByThisColumn = true,
+    this.onCellTap,
   }): assert(labelColumn != null || widgetColumn != null),
       assert(usedMapKey != null);
 }
