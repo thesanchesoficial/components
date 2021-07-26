@@ -232,9 +232,9 @@ class _OwDataTableState extends State<OwDataTable> {
   List<DataRow> _getRows(List<dynamic> rows) {
     return List.generate(
       dataTable.length, 
-      (ri) {
+      (rIndex) {
         List<dynamic> cells = [];
-        Map mapResult = dataTable[ri].toMap();
+        Map mapResult = dataTable[rIndex].toMap();
         _usedMapKeys.forEach((element) {
           cells.add(mapResult[element]);
         });
@@ -242,16 +242,16 @@ class _OwDataTableState extends State<OwDataTable> {
           onSelectChanged: onRowSelected == null
             ? null
             : (value) {
-              onRowSelected(value, ri, dataTable[ri]);
+              onRowSelected(value, rIndex, dataTable[rIndex]);
               if(showCheckboxColumn != false) {
-                _selectedRows[ri] = value;
+                _selectedRows[rIndex] = value;
                 _updateState();
               }
             },
           selected: onRowSelected == null
             ? false
-            : _selectedRows[ri],
-          cells: _getCells(cells, ri),
+            : _selectedRows[rIndex],
+          cells: _getCells(cells, rIndex),
         );
       },
     );
