@@ -57,13 +57,13 @@ class OwMultiScreen extends StatefulWidget {
     Key key,
     @required this.controller,
     this.mainScreen = MainScreen.screen1,
-    @required this.buildMainScreen,
-    @required this.buildSecundaryScreen,
+    @required this.buildMainScreen, // ! Ver se vai tirar required
+    @required this.buildSecundaryScreen, // ! Tirar required
     this.sizeSeparator = 800,
     this.isResizable = true,
     this.resizableWidgetBackgroundColor,
     this.resizableIconColor,
-    this.direction = Axis.vertical,
+    this.direction = Axis.horizontal,
   }): assert(controller != null),
       super(key: key);
   
@@ -126,14 +126,9 @@ class _OwMultiScreenState extends State<OwMultiScreen> {
 
     // controller.updateStateF = () => setState(() {});
     controller.isResizing = false;
-    if(mainScreen == MainScreen.screen1) {
-      controller.setNavKey1 = keyOne;
-      controller.setNavKey2 = keyTwo;
-    } else {
-      controller.setNavKey1 = keyTwo;
-      controller.setNavKey2 = keyOne;
-    }
-    controller._navKeyBoth = keyBoth;
+    controller.setNavKey1 = keyOne;
+    controller.setNavKey2 = keyTwo;
+    controller.setNavKeyBoth = keyBoth;
 
     if(direction == Axis.horizontal) {
       _resizableCursor = SystemMouseCursors.resizeColumn;
@@ -170,21 +165,21 @@ class _OwMultiScreenState extends State<OwMultiScreen> {
     return Stack(
       children: [
         direction == Axis.horizontal
-          ? Row(children: [
-            _screen1(),
-            _screen2(),
-          ])
-          : Column(children: [
-            _screen1(),
-            _screen2(),
-          ]),
+          ? Row(children: _getScreens())
+          : Column(children: _getScreens()),
         _resizableWidget(),
       ],
     );
   }
 
+  List<Widget> _getScreens() {
+    return [
+      _screen1(),
+      _screen2(),
+    ];
+  }
+
   Widget _screen1() {
-    print("controller.mainScreenSize: ${controller.mainScreenSize}");
     return Container(
       width: direction == Axis.horizontal
         ? controller.mainScreenSize
@@ -192,30 +187,38 @@ class _OwMultiScreenState extends State<OwMultiScreen> {
       height: direction == Axis.vertical
         ? controller.mainScreenSize
         : null,
-      padding: controller._showResizableWidget
-        ? direction == Axis.horizontal
-          ? EdgeInsets.only(right: _resizableWidgetSize / 2)
-          : EdgeInsets.only(bottom: _resizableWidgetSize / 2)
-        : null,
-      child: Navigator(
-        key: keyOne,
-        onGenerateRoute: (routeSettings) {
-          return MaterialPageRoute(
-            builder: (context) {
-              if(mainScreen == MainScreen.screen1) {
-                return buildMainScreen?.call(context) ?? const SizedBox();
-              } else {
-                return buildSecundaryScreen?.call(context) ?? const SizedBox();
-              }
-            },
-          );
-        },
-      ),
+      padding: _getScreen1Padding(),
+      child:  mainScreen == MainScreen.screen1
+        ? _mainScreen()
+        : _secundaryScreen(),
     );
   }
 
+  Widget _mainScreen() {
+    return Navigator(
+      key: keyOne,
+      onGenerateRoute: (routeSettings) {
+        return MaterialPageRoute(
+          builder: (context) {
+            return buildMainScreen?.call(context) ?? const SizedBox();
+          },
+        );
+      },
+    );
+  }
+  
+  EdgeInsetsGeometry _getScreen1Padding() {
+    if(controller._showResizableWidget) {
+      if(direction == Axis.horizontal) {
+        return EdgeInsets.only(right: _resizableWidgetSize / 2);
+      } else {
+        return EdgeInsets.only(bottom: _resizableWidgetSize / 2);
+      }
+    }
+    return null;
+  }
+
   Widget _screen2() {
-    print("controller.secundaryScreenSize: ${controller.secundaryScreenSize}");
     return Container(
       width: direction == Axis.horizontal
         ? controller.secundaryScreenSize
@@ -223,26 +226,35 @@ class _OwMultiScreenState extends State<OwMultiScreen> {
       height: direction == Axis.vertical
         ? controller.secundaryScreenSize
         : null,
-      padding: controller._showResizableWidget
-        ? direction == Axis.horizontal
-          ? EdgeInsets.only(left: _resizableWidgetSize / 2)
-          : EdgeInsets.only(top: _resizableWidgetSize / 2)
-        : null,
-      child: Navigator(
-        key: keyTwo,
-        onGenerateRoute: (routeSettings) {
-          return MaterialPageRoute(
-            builder: (context) {
-              if(mainScreen == MainScreen.screen1) {
-                return buildSecundaryScreen?.call(context) ?? const SizedBox();
-              } else {
-                return buildMainScreen?.call(context) ?? const SizedBox();
-              }
-            }
-          );
-        },
-      ),
+      padding: _getScreen2Padding(),
+      child:  mainScreen == MainScreen.screen1
+        ? _secundaryScreen()
+        : _mainScreen(),
     );
+  }
+
+  Widget _secundaryScreen() {
+    return Navigator(
+      key: keyTwo,
+      onGenerateRoute: (routeSettings) {
+        return MaterialPageRoute(
+          builder: (context) {
+            return buildSecundaryScreen?.call(context) ?? const SizedBox();
+          }
+        );
+      },
+    );
+  }
+
+  EdgeInsetsGeometry _getScreen2Padding() {
+    if(controller._showResizableWidget) {
+      if(direction == Axis.horizontal) {
+        return EdgeInsets.only(left: _resizableWidgetSize / 2);
+      } else {
+        return EdgeInsets.only(top: _resizableWidgetSize / 2);
+      }
+    }
+    return null;
   }
 
   Widget _resizableWidget() {
@@ -304,43 +316,45 @@ class _OwMultiScreenState extends State<OwMultiScreen> {
       color: resizableIconColor ?? Theme.of(context).textTheme.headline1.color,
     );
     
-    return Container(
-      child: MouseRegion(
-        cursor: _resizableCursor,
-        child: Draggable(
-          child: Container(
-            color: Colors.transparent,
-            padding: direction == Axis.horizontal
-              ? const EdgeInsets.symmetric(horizontal: 2)
-              : const EdgeInsets.symmetric(vertical: 2),
-            height: direction == Axis.horizontal ? 20 : _resizableWidgetSize,
-            width: direction == Axis.vertical ? 20 : _resizableWidgetSize,
-            child: direction == Axis.horizontal
-              ? Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  barIcon,
-                  barIcon,
-                ],
-              )
-              : Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  barIcon,
-                  barIcon,
-                ],
-              ),
-          ), 
-          feedback: const SizedBox(),
-          onDragUpdate: (dragUpdateDetails) {
-            controller.resizeOnDrag(dragUpdateDetails);
-          },
-          onDragStarted: () {
-            controller.isResizing = true;
-          },
-          onDragEnd: (d) {
-            controller.isResizing = false;
-          },
+    return Center(
+      child: Container(
+        child: MouseRegion(
+          cursor: _resizableCursor,
+          child: Draggable(
+            child: Container(
+              color: Colors.transparent,
+              padding: direction == Axis.horizontal
+                ? const EdgeInsets.symmetric(horizontal: 2)
+                : const EdgeInsets.symmetric(vertical: 2),
+              height: direction == Axis.horizontal ? 20 : _resizableWidgetSize,
+              width: direction == Axis.vertical ? 20 : _resizableWidgetSize,
+              child: direction == Axis.horizontal
+                ? Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    barIcon,
+                    barIcon,
+                  ],
+                )
+                : Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    barIcon,
+                    barIcon,
+                  ],
+                ),
+            ), 
+            feedback: const SizedBox(),
+            onDragUpdate: (dragUpdateDetails) {
+              controller.resizeOnDrag(dragUpdateDetails);
+            },
+            onDragStarted: () {
+              controller.isResizing = true;
+            },
+            onDragEnd: (d) {
+              controller.isResizing = false;
+            },
+          ),
         ),
       ),
     );
@@ -534,6 +548,8 @@ class MultiScreenController extends ChangeNotifier {
 
     if(mainScreenPercent > 1) {
       mainScreenPercent = 1;
+    } else if(mainScreenPercent < 0) {
+      mainScreenPercent = 0;
     }
   }
 
@@ -645,6 +661,7 @@ class MultiScreenController extends ChangeNotifier {
     } else if(position >= (mainScreenMinSize + (_resizableWidgetSize / 2)) && position <= (totalSize - secundaryScreenMinSize - (_resizableWidgetSize / 2))) {
       mainScreenPercent = position / totalSize;
     }
+    mainScreenSize = mainScreenPercent * totalSize;
     // if(mainScreenSize % 1 == 0)
     updateState(); // ! Talvez, colocar aquele Ticker que o Jacob mostrou
   }
