@@ -10,6 +10,8 @@ import 'package:flutter_typeahead/flutter_typeahead.dart';
 
 export 'package:components_venver/src/utils/helpers/text_field_type.dart';
 
+// ! TODO: ALTERAR E TESTAR PARTES DO COMPONENTE
+
 // ! https://pub.dev/packages/easy_mask
 
 // ! Resolver problema do minLines (se colocar 10 por exemplo, surge um assert falando sobre o maxLines, e não deveria (FildType: multiline))
@@ -91,7 +93,7 @@ class OwTextField extends StatelessWidget {
   final Widget suffixIcon;
   final TextInputType keyboardType;
   final TextInputAction textInputAction;
-  final dynamic controller; // TextEditingController
+  final TextEditingController controller;
   final FormFieldValidator<String> validator;
   final ValueChanged<String> onFieldSubmitted;
   final FocusNode focusNode;
@@ -109,6 +111,7 @@ class OwTextField extends StatelessWidget {
   final bool obscureText;
   final bool maxLengthEnforced;
   final bool readOnly;
+  /// If null, it will be [TextCapitalization.sentences]
   final TextCapitalization textCapitalization;
   final String counterText;
   final Color color;
@@ -144,7 +147,7 @@ class OwTextField extends StatelessWidget {
     this.errorText,
     this.keyboardType,
     this.textInputAction,
-    this.textCapitalization = TextCapitalization.sentences,
+    this.textCapitalization,
     this.obscureText,
     this.readOnly = false,
     this.autofocus = false,
@@ -202,7 +205,7 @@ class OwTextField extends StatelessWidget {
     this.errorText,
     this.keyboardType,
     this.textInputAction,
-    this.textCapitalization = TextCapitalization.sentences,
+    this.textCapitalization,
     this.obscureText = false,
     this.enabled = true,
     this.maxLengthEnforced = true,
@@ -284,7 +287,7 @@ class OwTextField extends StatelessWidget {
       return TextFormField(
         inputFormatters: inputFormatters ?? _inputFormatters,
         keyboardType: keyboardType ?? _keyboardType,
-        textCapitalization: textCapitalization ?? _textCapitalization,
+        textCapitalization: textCapitalization ?? _textCapitalization ?? TextCapitalization.sentences,
         minLines: minLines ?? _minLines,
         maxLines: maxLines ?? _maxLines,
         maxLengthEnforced: maxLengthEnforced,
@@ -468,6 +471,14 @@ class OwTextField extends StatelessWidget {
   }
 
   void changeTextFieldType(BuildContext context) {
+    void _updateMask(String mask) {
+      try{
+        if(updateMask) {
+          (controller as MaskedTextController).updateMask(mask);
+        }
+      } catch (e) {}
+    }
+
     if(fieldType != null) {
       const String assertMsgMaskedTextController = "'controller' is not MaskedTextController";
       switch(fieldType.type) {
@@ -503,9 +514,7 @@ class OwTextField extends StatelessWidget {
 
         case _TextFieldMaskType.cep:
           _keyboardType = TextInputType.phone;
-          try{
-            if(updateMask) controller.updateMask(MaskType.cep);
-          } catch (e) {}
+          _updateMask(MaskType.cep);
           // var _mask = OwMaskedFormatter.cep(); // initialText: controller?.text ?? ""
           // _inputFormatters = [_mask];
           break;
@@ -525,77 +534,59 @@ class OwTextField extends StatelessWidget {
 
         case _TextFieldMaskType.cardNumber:
           _keyboardType = TextInputType.phone;
-          try{
-            if(updateMask) controller.updateMask(MaskType.cardNumber);
-          } catch (e) {}
+          _updateMask(MaskType.cardNumber);
           // final _mask = OwMaskedFormatter.cardNumber(initialText: controller?.text); // initialText: controller?.text ?? ""
           // _inputFormatters = [_mask];
           break;
 
         case _TextFieldMaskType.cardCvv:
           _keyboardType = TextInputType.phone;
-          try{
-            if(updateMask) controller.updateMask(MaskType.cardCvv);
-          } catch (e) {}
+          _updateMask(MaskType.cardCvv);
           // final _mask = OwMaskedFormatter.cardCvv(initialText: controller?.text); // initialText: controller?.text ?? ""
           // _inputFormatters = [_mask];
           break;
 
         case _TextFieldMaskType.cardDateYY:
           _keyboardType = TextInputType.phone;
-          try{
-            if(updateMask) controller.updateMask(MaskType.cardDateYY);
-          } catch (e) {}
+          _updateMask(MaskType.cardDateYY);
           // final _mask = OwMaskedFormatter.cardDateYY(initialText: controller?.text); // initialText: controller?.text ?? ""
           // _inputFormatters = [_mask];
           break;
 
         case _TextFieldMaskType.cardDateYYYY:
           _keyboardType = TextInputType.phone;
-          try{
-            if(updateMask) controller.updateMask(MaskType.cardDateYYYY);
-          } catch (e) {}
+          _updateMask(MaskType.cardDateYYYY);
           // final _mask = OwMaskedFormatter.cardDateYYYY(initialText: controller?.text); // initialText: controller?.text ?? ""
           // _inputFormatters = [_mask];
           break;
 
         case _TextFieldMaskType.date: // ? Talvez um ícone pra abrir um datePick
           _keyboardType = TextInputType.datetime;
-          try{
-            if(updateMask) controller.updateMask(MaskType.date);
-          } catch (e) {}
+          _updateMask(MaskType.date);
           // final _mask = OwMaskedFormatter.date(initialText: controller?.text); // initialText: controller?.text ?? ""
           // _inputFormatters = [_mask];
           break;
 
         case _TextFieldMaskType.dateTime: // ? Talvez um ícone pra abrir um datePick
           _keyboardType = TextInputType.datetime;
-          try{
-            if(updateMask) controller.updateMask(fieldType?.mask ?? MaskType.dateTime);
-          } catch (e) {}
+          _updateMask(fieldType?.mask ?? MaskType.dateTime);
           break;
 
         case _TextFieldMaskType.time: // ? Talvez um ícone pra abrir tipo um datePick de horário
           _keyboardType = TextInputType.datetime;
-          try{
-            if(updateMask) controller.updateMask(MaskType.time);
-          } catch (e) {}
+          _updateMask(MaskType.time);
           break;
 
         case _TextFieldMaskType.cpf:
           _keyboardType = TextInputType.phone;
-          try{
-            if(updateMask) controller.updateMask(MaskType.cpf);
-          } catch (e) {}
+          _updateMask(MaskType.cpf);
           // final _mask = OwMaskedFormatter.cpf(initialText: controller?.text); // initialText: controller?.text ?? ""
           // _inputFormatters = [_mask];
           break;
 
         case _TextFieldMaskType.cnpj:
           _keyboardType = TextInputType.phone;
-          try{
-            if(updateMask) controller.updateMask(MaskType.cnpj);
-          } catch (e) {}
+          _updateMask(MaskType.cnpj);
           // final _mask = OwMaskedFormatter.cnpj(initialText: controller?.text); // initialText: controller?.text ?? ""
           // _inputFormatters = [_mask];
           break;
@@ -605,10 +596,16 @@ class OwTextField extends StatelessWidget {
           _keyboardType = TextInputType.phone;
           String _cpfMask = MaskType.cpf + "0";
           _changeMask = (_) {
-            if(controller.text.length <= MaskType.cpf.length && controller.mask != _cpfMask) {
-              controller.updateMask(_cpfMask);
-            } else if(controller.text.length > MaskType.cpf.length && controller.mask != MaskType.cnpj) {
-              controller.updateMask(MaskType.cnpj);
+            if(
+              controller.text.length <= MaskType.cpf.length && 
+              (controller as MaskedTextController).mask != _cpfMask
+            ) {
+              (controller as MaskedTextController).updateMask(_cpfMask);
+            } else if(
+              controller.text.length > MaskType.cpf.length && 
+              (controller as MaskedTextController).mask != MaskType.cnpj
+            ) {
+              (controller as MaskedTextController).updateMask(MaskType.cnpj);
             }
           };
           _changeMask(controller.text);
@@ -647,10 +644,16 @@ class OwTextField extends StatelessWidget {
           _keyboardType = TextInputType.phone;
           String _landlineMask = MaskType.phones(10) + "0";
           _changeMask = (_) {
-            if(controller.text.length <= MaskType.phones(10).length && controller.mask != _landlineMask) {
-              controller.updateMask(_landlineMask);
-            } else if(controller.text.length > MaskType.phones(10).length && controller.mask != MaskType.phones(11)) {
-              controller.updateMask(MaskType.phones(11));
+            if(
+              controller.text.length <= MaskType.phones(10).length && 
+              (controller as MaskedTextController).mask != _landlineMask
+            ) {
+              (controller as MaskedTextController).updateMask(_landlineMask);
+            } else if(
+              controller.text.length > MaskType.phones(10).length && 
+              (controller as MaskedTextController).mask != MaskType.phones(11)
+            ) {
+              (controller as MaskedTextController).updateMask(MaskType.phones(11));
             }
           };
           _changeMask(controller.text);
@@ -704,7 +707,7 @@ class OwTextField extends StatelessWidget {
           assert(controller is MaskedTextController, assertMsgMaskedTextController);
           _keyboardType = TextInputType.phone;
           if(fieldType?.quantity != null) {
-            controller.updateMask(MaskType.phones(fieldType.quantity));
+            (controller as MaskedTextController).updateMask(MaskType.phones(fieldType.quantity));
             // final _mask = OwMaskedFormatter.phones(
             //   fieldType.numbersQuantity,
             //   initialText: controller?.text, // initialText: controller?.text ?? ""
@@ -727,7 +730,7 @@ class OwTextField extends StatelessWidget {
           _keyboardType = TextInputType.phone;
           int zerosQuantity = fieldType.min.toInt();
           bool minMaxEqual = fieldType.min == fieldType.max;
-          controller.updateMask(MaskType.integer(
+          (controller as MaskedTextController).updateMask(MaskType.integer(
             minMaxEqual
               ? fieldType.max.toInt() + 1
               : fieldType.max.toInt(),
@@ -741,18 +744,18 @@ class OwTextField extends StatelessWidget {
                   break;
                 }
               }
-              if(controller.text[0] != 0) {
-                controller.updateText(value.substring(i));
+              if(controller.text[0] != "0") {
+                (controller as MaskedTextController).updateText(value.substring(i));
               }
             } else if(integer == 0) {
-              controller.updateText("0" * zerosQuantity);
+              (controller as MaskedTextController).updateText("0" * zerosQuantity);
             }
             if(controller.text.length < zerosQuantity) {
-              controller.updateText("0" * (zerosQuantity - controller.text.length) + controller.text);
+              (controller as MaskedTextController).updateText("0" * (zerosQuantity - controller.text.length) + controller.text);
             }
 
             if(minMaxEqual) {
-              controller.updateText(controller.text.substring(0, fieldType.min));
+              (controller as MaskedTextController).updateText(controller.text.substring(0, fieldType.min));
             }
           };
           _changeMask(controller.text);

@@ -1,5 +1,23 @@
 import 'package:flutter/material.dart';
 
+/*
+
+Controller
+	Lista<NavKey>
+	Função NavKey: Retorna NavKey, com parâmetros: bool pop, bool popAll, bool hide, 
+		Talvez, nessa função, retornar uma classe, onde nessa classe eu posso ter as funções: 
+			pop(bool hide), popAll(bool hide), hide(), push([Widget widget]), pushNamed([String routeName]), getKey
+
+Lista de Classe
+Classe:
+	final Widget Function(BuildContext context, int screen);
+	final double minSize;
+	final double startSize;
+	final double startPercent;
+	bool hide
+
+*/
+
 // ! TODO: FINALIZAR COMPONENTE
 
 // ! VER: https://pub.dev/packages/layout
@@ -182,10 +200,10 @@ class _OwMultiScreenState extends State<OwMultiScreen> {
   Widget _screen1() {
     return Container(
       width: direction == Axis.horizontal
-        ? controller.mainScreenSize
+        ? controller.screen1Size
         : null,
       height: direction == Axis.vertical
-        ? controller.mainScreenSize
+        ? controller.screen1Size
         : null,
       padding: _getScreen1Padding(),
       child:  mainScreen == MainScreen.screen1
@@ -221,10 +239,10 @@ class _OwMultiScreenState extends State<OwMultiScreen> {
   Widget _screen2() {
     return Container(
       width: direction == Axis.horizontal
-        ? controller.secundaryScreenSize
+        ? controller.screen2Size
         : null,
       height: direction == Axis.vertical
-        ? controller.secundaryScreenSize
+        ? controller.screen2Size
         : null,
       padding: _getScreen2Padding(),
       child:  mainScreen == MainScreen.screen1
@@ -361,7 +379,7 @@ class _OwMultiScreenState extends State<OwMultiScreen> {
   }
 
   double _getResizableWidgetPosition() {
-    double position = controller.mainScreenSize - (_resizableWidgetSize / 2);
+    double position = controller.screen1Size - (_resizableWidgetSize / 2);
     if(position < 0) {
       position = 0;
     } else if(position > controller._getTotalSize() - _resizableWidgetSize) {
@@ -374,7 +392,7 @@ class _OwMultiScreenState extends State<OwMultiScreen> {
     controller?.buildListener?.call();
 
     if(_firstExec) {
-      controller.startCall(separatorSize, _resizableWidgetSize, context, isResizable, direction);
+      controller.startCall(mainScreen, separatorSize, _resizableWidgetSize, context, isResizable, direction);
       _firstExec = false;
     }
 
@@ -512,10 +530,10 @@ class MultiScreenController extends ChangeNotifier {
   }
   // void changeFocus() => focusOnSecundaryScreen = !focusOnSecundaryScreen;
 
-  double mainScreenPercent;
-  double secundaryScreenPercent;
-  double mainScreenSize;
-  double secundaryScreenSize;
+  double screen1Percent;
+  double screen2Percent;
+  double screen1Size;
+  double screen2Size;
 
   double totalScreenSize;
 
@@ -531,25 +549,34 @@ class MultiScreenController extends ChangeNotifier {
   Axis _direction;
   bool _isResizable;
   bool _showResizableWidget;
-  void startCall(double separatorSize, double resizableWidgetSize, BuildContext context, bool isResizable, Axis direction) {
+  MainScreen _mainScreen;
+  void startCall(MainScreen mainScreen, double separatorSize, double resizableWidgetSize, BuildContext context, bool isResizable, Axis direction) {
     this.context = context;
     this._separatorSize = separatorSize;
     this._resizableWidgetSize = resizableWidgetSize;
     this._isResizable = isResizable;
     this._direction = direction;
+    this._mainScreen = mainScreen;
     
     double totalSize = _getTotalSize();
     
+    double screenPercentTemp;
     if(mainScreenStartSize != null) {
-      mainScreenPercent = (mainScreenStartSize + (resizableWidgetSize / 2)) / totalSize;
+      screenPercentTemp = (mainScreenStartSize + (resizableWidgetSize / 2)) / totalSize;
     } else {
-      mainScreenPercent = mainScreenStartPercent;
+      screenPercentTemp = mainScreenStartPercent;
     }
 
-    if(mainScreenPercent > 1) {
-      mainScreenPercent = 1;
-    } else if(mainScreenPercent < 0) {
-      mainScreenPercent = 0;
+    if(screenPercentTemp > 1) {
+      screenPercentTemp = 1;
+    } else if(screenPercentTemp < 0) {
+      screenPercentTemp = 0;
+    }
+
+    if(mainScreen == MainScreen.screen1) {
+      screen1Percent = screenPercentTemp;
+    } else {
+      screen1Percent = 1 - screenPercentTemp;
     }
   }
 
@@ -562,9 +589,9 @@ class MultiScreenController extends ChangeNotifier {
     }
   }
 
-  double _mainScreenPercentTemp;
-  double _mainScreenSizeTemp;
+  double _screen1PercentTemp;
   void alwaysCalc() {
+    print("screen1Percent: $screen1Percent");
     // final stopwatch = Stopwatch()..start();
     // print("alwaysCalc: START");
     double totalSize = _getTotalSize();
@@ -572,68 +599,82 @@ class MultiScreenController extends ChangeNotifier {
     if(totalSize < _separatorSize) {
       this.isShowingBothScreens = false;
 
-      if(_mainScreenPercentTemp == null) {
-        _mainScreenPercentTemp = mainScreenPercent;
-        // _mainScreenSizeTemp = mainScreenSize; // ! Verificar nesse caso (se for fixo o Size quando dimencionar)
+      if(_screen1PercentTemp == null) {
+        _screen1PercentTemp = screen1Percent;
+        // _mainScreenSizeTemp = screen1Size; // ! Verificar nesse caso (se for fixo o Size quando dimencionar)
       }
 
-      if(focusOnSecundaryScreen) {
-        mainScreenSize = 0;
-        mainScreenPercent = 0;
-        secundaryScreenSize = totalSize;
-        secundaryScreenPercent = 1;
+      if(focusOnSecundaryScreen ^ (_mainScreen == MainScreen.screen1)) { // ^ = XOR
+        screen1Size = totalSize;
+        screen1Percent = 1;
+        screen2Size = screen2Percent = 0;
       } else {
-        mainScreenSize = totalSize;
-        mainScreenPercent = 1;
-        secundaryScreenSize = 0;
-        secundaryScreenPercent = 0;
+        screen1Size = screen1Percent = 0;
+        screen2Size = totalSize;
+        screen2Percent = 1;
       }
     } else {
       this.isShowingBothScreens = true;
 
       if(hideSecundaryScreenWhenShowingBoth) {
-        if(_mainScreenPercentTemp == null) {
-          _mainScreenPercentTemp = mainScreenPercent;
+        if(_screen1PercentTemp == null) {
+          _screen1PercentTemp = screen1Percent;
           // _mainScreenSizeTemp = mainScreenSize; // ! Verificar nesse caso (se for fixo o Size quando dimencionar)
         }
         
-        mainScreenSize = totalSize;
-        mainScreenPercent = 1;
-        secundaryScreenSize = 0;
-        secundaryScreenPercent = 0;
+        if(_mainScreen == MainScreen.screen1) {
+          screen1Percent = 1;
+        } else {
+          screen1Percent = 0;
+        }
+        screen2Percent = 1 - screen1Percent;
+        screen1Size = screen1Percent * totalSize;
+        screen2Size = screen2Percent * totalSize;
       } else {
-        if(_mainScreenPercentTemp != null) {
-          mainScreenPercent = _mainScreenPercentTemp;
+        if(_screen1PercentTemp != null) {
+          screen1Percent = _screen1PercentTemp;
+          screen1Size = screen1Percent * totalSize;
           // secundaryScreenPercent = 1 - mainScreenPercent;
-          _mainScreenPercentTemp = null;
+          _screen1PercentTemp = null;
         }
 
-        if(keepScreenSizeWhileResizeWindow == DefinedScreen.main) {
-          if(mainScreenSize == null) { // ! Ver se isso resolve
-            mainScreenSize = mainScreenStartSize ?? mainScreenStartPercent * totalSize;
+        if(keepScreenSizeWhileResizeWindow != null) {
+          if(screen1Size == null || screen2Size == null) {
+            print("screen1Size == null || screen2Size == null (só deve entrar aqui 1 vez)");
+            double mainScreenSizeTemp = mainScreenStartSize ?? mainScreenStartPercent * totalSize; // ! Ver se isso resolve
+            double secundaryScreenSizeTemp; //toalSize - maitnScreenStartSize ?? (1 - mainScreenStartPercent) * totalSize; // ! Ver se isso tá certo
+            if(mainScreenStartSize != null) {
+              secundaryScreenSizeTemp = totalSize - mainScreenStartSize;
+            } else {
+              secundaryScreenSizeTemp = (1 - mainScreenStartPercent) * totalSize;
+            }
+            if(_mainScreen == MainScreen.screen1) {
+              screen1Size ??= mainScreenSizeTemp;
+              screen2Size ??= secundaryScreenSizeTemp;
+            } else {
+              screen2Size ??= mainScreenSizeTemp;
+              screen1Size ??= secundaryScreenSizeTemp;
+            }
           }
-          mainScreenPercent = mainScreenSize / totalSize;
-          secundaryScreenPercent = 1 - mainScreenPercent;
-          secundaryScreenSize = secundaryScreenPercent * totalSize;
-        } else if(keepScreenSizeWhileResizeWindow == DefinedScreen.secundary) {
-          if(secundaryScreenSize == null) { // ! Ver se isso tá certo
-            secundaryScreenSize = totalSize - mainScreenStartSize ?? (1 - mainScreenStartPercent) * totalSize;
+
+          if((keepScreenSizeWhileResizeWindow == DefinedScreen.main) == (_mainScreen == MainScreen.screen1)) {
+            screen1Percent = screen1Size / totalSize;
+            screen2Percent = 1 - screen1Percent;
+            screen2Size = screen2Percent * totalSize;
+          } else {
+            screen2Percent = screen2Size / totalSize;
+            screen1Percent = 1 - screen2Percent;
+            screen1Size = screen1Percent * totalSize;
           }
-          secundaryScreenPercent = secundaryScreenSize / totalSize;
-          mainScreenPercent = 1 - secundaryScreenPercent;
-          mainScreenSize = mainScreenPercent * totalSize;
         } else {
-          mainScreenSize = mainScreenPercent * totalSize;
-          secundaryScreenPercent = 1 - mainScreenPercent;
-          secundaryScreenSize = secundaryScreenPercent * totalSize;
+          screen1Size = screen1Percent * totalSize;
+          screen2Percent = 1 - screen1Percent;
+          screen2Size = screen2Percent * totalSize;
         }
       }
     }
 
     _checkWhetherResizableWidgetIsShown();
-    
-    // print("alwaysCalc: END");
-    // print('doSomething() executed in ${stopwatch.elapsed}');
   }
 
   void _checkWhetherResizableWidgetIsShown() {
@@ -644,7 +685,6 @@ class MultiScreenController extends ChangeNotifier {
     }
   }
 
-  // Só vai ocultar o resizableWidget se: !isResizable || !isShowingBothScreens || hideSecundaryScreenWhenShowingBoth
   void resizeOnDrag(DragUpdateDetails dragUpdateDetails) {
     double totalSize = _getTotalSize();
     double position;
@@ -655,13 +695,24 @@ class MultiScreenController extends ChangeNotifier {
     }
 
     if(position >= 0 && position <= _resizableWidgetSize) { // ! Talvez, usar (resizableWidgetSize / 2) pra não dar teleport quando arrastar devagar e minSize = 0
-      mainScreenPercent = 0;
+      screen1Percent = 0;
     } else if(position >= (totalSize - _resizableWidgetSize) && position <= totalSize) {
-      mainScreenPercent = 1;
-    } else if(position >= (mainScreenMinSize + (_resizableWidgetSize / 2)) && position <= (totalSize - secundaryScreenMinSize - (_resizableWidgetSize / 2))) {
-      mainScreenPercent = position / totalSize;
+      screen1Percent = 1;
+    } else {
+      double screen1MinSizeTemp, screen2MinSizeTemp;
+      print("_mainScreen: $_mainScreen");
+      if(_mainScreen == MainScreen.screen1) {
+        screen1MinSizeTemp = mainScreenMinSize + (_resizableWidgetSize / 2);
+        screen2MinSizeTemp = totalSize - secundaryScreenMinSize - (_resizableWidgetSize / 2);
+      } else {
+        screen1MinSizeTemp = totalSize - secundaryScreenMinSize - (_resizableWidgetSize / 2);
+        screen2MinSizeTemp = mainScreenMinSize + (_resizableWidgetSize / 2);
+      }
+      if(position >= screen1MinSizeTemp && position <= screen2MinSizeTemp) {
+        screen1Percent = position / totalSize;
+      }
     }
-    mainScreenSize = mainScreenPercent * totalSize;
+    screen1Size = screen1Percent * totalSize;
     // if(mainScreenSize % 1 == 0)
     updateState(); // ! Talvez, colocar aquele Ticker que o Jacob mostrou
   }
