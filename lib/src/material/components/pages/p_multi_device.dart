@@ -67,8 +67,8 @@ class _OwMultiDeviceState extends State<OwMultiDevice> { // ! Add orientation de
   }
 }
 
-
-
+// Ao invés de usar o BuilderCase, usar uma lista de widths
+List<double> responsive = [360, 650, 1100]; // watch / mobile / table / desktop
 
 // class DevicesSize {
 //   final double tvWidth;

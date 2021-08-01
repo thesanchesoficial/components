@@ -31,6 +31,16 @@ class F {
     }
   }
 
+  // Testar
+  void nonNullAssert(List<dynamic> objects, [String constructor]) {
+    assert(objects != null);
+    objects.forEach((element) {
+      String assertMessage = "${element.runtimeType} != null is not true";
+      if(constructor != null) assertMessage += " (called by $constructor)";
+      assert(element != null, assertMessage);
+    });
+  }
+
   /*
   void func(Function f, Duration d, {TempFunction tempFunction, int times, bool awaitFunction = true}) async {
     if(times == null || times > 0) {
