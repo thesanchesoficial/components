@@ -1,10 +1,9 @@
-import 'package:components_venver/material.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 
 // ? Ver: https://pub.dev/packages/flutter_layout_grid
 
-class OwGrid extends StatefulWidget { // * class OwGrid<T> extends StatelessWidget { // final List<T> typedList;
+@Deprecated("Use 'OwAdaptativeGrid' instead ('numbersInRowAccordingToWidgth' is now 'layout'; 'layout' is now 'styleOfEachLayout')")
+class OwGrid extends StatefulWidget {
   final List<Widget> children;
   /// Grid padding
   final EdgeInsetsGeometry padding;
@@ -151,6 +150,7 @@ class OwGrid extends StatefulWidget { // * class OwGrid<T> extends StatelessWidg
   _OwGridState createState() => _OwGridState();
 }
 
+// ignore: deprecated_member_use_from_same_package
 class _OwGridState extends State<OwGrid> {
   List<Widget> _children;
   BoxConstraints _constraint;
@@ -354,33 +354,33 @@ class _OwGridState extends State<OwGrid> {
 }
 
 
-class OwGridController extends StatefulWidget {
-  final GridController controller;
-  const OwGridController({
-    Key key,
-    this.controller,
-  }) : super(key: key);
+// class OwGridController extends StatefulWidget {
+//   final GridController controller;
+//   const OwGridController({
+//     Key key,
+//     this.controller,
+//   }) : super(key: key);
 
-  @override
-  _OwGridControllerState createState() => _OwGridControllerState();
-}
+//   @override
+//   _OwGridControllerState createState() => _OwGridControllerState();
+// }
 
-class _OwGridControllerState extends State<OwGridController> {
-  GlobalKey _gridKey = GlobalKey();
+// class _OwGridControllerState extends State<OwGridController> {
+//   GlobalKey _gridKey = GlobalKey();
 
-  @override
-  Widget build(BuildContext context) {
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      final RenderBox render = _gridKey.currentContext.findRenderObject();
-      widget.controller.size = render.size;
-    });
-    return Container(
-      key: _gridKey,
-      height: 0,
-    );
-  }
-}
+//   @override
+//   Widget build(BuildContext context) {
+//     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+//       final RenderBox render = _gridKey.currentContext.findRenderObject();
+//       widget.controller.size = render.size;
+//     });
+//     return Container(
+//       key: _gridKey,
+//       height: 0,
+//     );
+//   }
+// }
 
-class GridController {
-  Size size;
-}
+// class GridController {
+//   Size size;
+// }

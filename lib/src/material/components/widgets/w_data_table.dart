@@ -25,11 +25,11 @@ class OwDataTable extends StatefulWidget {
   final double horizontalMargin;
   final bool showCheckboxColumn;
   /// [checked], [row index], [data]
-  final void Function(bool, int, dynamic) onRowSelected;
+  final void Function(bool check, int rowIndex, dynamic data) onRowSelected;
   /// [data], [row index]
-  final void Function(dynamic, int) onIndexCellTap;
+  final void Function(dynamic data, int rowIndex) onIndexCellTap;
   /// [data], [row index], [column index]
-  final void Function(dynamic, int, int) onAnyCellTap;
+  final void Function(dynamic data, int rowIndex, int columnIndex) onAnyCellTap;
   const OwDataTable({
     Key key,
     @required this.columnFields,

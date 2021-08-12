@@ -48,12 +48,12 @@ class OwMultiScreen extends StatefulWidget {
 
   final MainScreen mainScreen;
   /// The builder of the first screen (left screen)
-  final Widget Function(BuildContext) buildMainScreen; // @required
+  final Widget Function(BuildContext context) buildMainScreen; // @required
   /// The builder of the second screen (right screen)
   /// 
   /// It can not be used Navigator.pop to back from the second page to the first, it will 
   /// be needed to use controller.backToFirstPage()
-  final Widget Function(BuildContext) buildSecundaryScreen;
+  final Widget Function(BuildContext context) buildSecundaryScreen;
   /// Compare to the screen width to define if it is single or multi screen
   final double sizeSeparator;
   /// Defines if both screens is resizable
@@ -153,6 +153,12 @@ class _OwMultiScreenState extends State<OwMultiScreen> {
     } else {
       _resizableCursor = SystemMouseCursors.resizeRow;
     }
+  }
+
+  @override
+  void dispose() { 
+    controller.dispose();
+    super.dispose();
   }
 
   @override
@@ -591,7 +597,7 @@ class MultiScreenController extends ChangeNotifier {
 
   double _screen1PercentTemp;
   void alwaysCalc() {
-    print("screen1Percent: $screen1Percent");
+    // print("screen1Percent: $screen1Percent");
     // final stopwatch = Stopwatch()..start();
     // print("alwaysCalc: START");
     double totalSize = _getTotalSize();
@@ -758,5 +764,12 @@ class MultiScreenController extends ChangeNotifier {
     print("notifyListeners");
     // _updateStateF();
     notifyListeners();
+  }
+
+  void dispose() {
+    super.dispose();
+    this._navKey1 = null;
+    this._navKey2 = null;
+    this._navKeyBoth = null;
   }
 }

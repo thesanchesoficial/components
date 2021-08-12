@@ -25,12 +25,12 @@ class OwMultiScreen extends StatefulWidget {
   /// The controller that will be used to manipulate the multi screen
   final MultiScreenController controller;
   /// The builder of the first screen (left screen)
-  final Widget Function(BuildContext) buildFirstScreen; // @required
+  final Widget Function(BuildContext context) buildFirstScreen; // @required
   /// The builder of the second screen (right screen)
   /// 
   /// It can not be used Navigator.pop to back from the second page to the first, it will 
   /// be needed to use controller.backToFirstPage()
-  final Widget Function(BuildContext) buildSecondScreen; // @required
+  final Widget Function(BuildContext context) buildSecondScreen; // @required
   /// Default second screen when controller.secondPageData is not defined
   /// 
   /// If it is null and there is not data to the second screen 

@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 enum BuilderCase { tv, desktop, tablet, phone, watch }
 
 class OwMultiDevice extends StatefulWidget {
-  final Widget Function(BuildContext) tvBuilder;
-  final Widget Function(BuildContext) desktopBuilder;
-  final Widget Function(BuildContext) tabletBuilder;
-  final Widget Function(BuildContext) phoneBuilder;
-  final Widget Function(BuildContext) watchBuilder;
+  final Widget Function(BuildContext context) tvBuilder;
+  final Widget Function(BuildContext context) desktopBuilder;
+  final Widget Function(BuildContext context) tabletBuilder;
+  final Widget Function(BuildContext context) phoneBuilder;
+  final Widget Function(BuildContext context) watchBuilder;
   final BuilderCase builderCase;
 
   const OwMultiDevice({
@@ -32,11 +32,11 @@ class OwMultiDevice extends StatefulWidget {
 }
 
 class _OwMultiDeviceState extends State<OwMultiDevice> { // ! Add orientation device
-  final Widget Function(BuildContext) tvBuilder;
-  final Widget Function(BuildContext) desktopBuilder;
-  final Widget Function(BuildContext) tabletBuilder;
-  final Widget Function(BuildContext) phoneBuilder;
-  final Widget Function(BuildContext) watchBuilder;
+  final Widget Function(BuildContext context) tvBuilder;
+  final Widget Function(BuildContext context) desktopBuilder;
+  final Widget Function(BuildContext context) tabletBuilder;
+  final Widget Function(BuildContext context) phoneBuilder;
+  final Widget Function(BuildContext context) watchBuilder;
   final BuilderCase builderCase;
 
   _OwMultiDeviceState(

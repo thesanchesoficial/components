@@ -9,9 +9,9 @@ https://medium.com/flutter/slivers-demystified-6ff68ab0296f
 https://fine2find.com/working-with-slivers-in-flutter/
 */
 
- // ? Na paginação, colocar uma página de erro (caso dê erro no primeiro retorno, e uma página de itens vazios (caso retorne vazio)); colocar página de loading inicial
- // ! pub.dev/packages/flutter_pagewise (Paginação com List, Grid, Sliver e SliverGrid)
- // * Ver também: https://pub.dev/packages/lazy_load_scrollview
+// ? Na paginação, colocar uma página de erro (caso dê erro no primeiro retorno, e uma página de itens vazios (caso retorne vazio)); colocar página de loading inicial
+// ! pub.dev/packages/flutter_pagewise (Paginação com List, Grid, Sliver e SliverGrid)
+// * Ver também: https://pub.dev/packages/lazy_load_scrollview
 /*
 ! Ver para Sliver Scrolls
 CustomScrollView(
@@ -36,12 +36,14 @@ CustomScrollView(
 )
 */
 
-class OwPagination extends StatefulWidget { // ! Falta a tela de loading inicial (não sei como fazer isso) (e também um scroll pra usar na web))
+class OwPagination extends StatefulWidget {
+  // ! Falta a tela de loading inicial (não sei como fazer isso) (e também um scroll pra usar na web))
   final Widget child;
-  final EdgeInsetsGeometry childPadding;
+  final EdgeInsetsGeometry padding;
   final BoxConstraints constraints;
   final ScrollController controller;
   final bool callLoadMore;
+  final bool callRefresh;
   final Widget loadingWidget;
   final Future<bool> Function() loadMore;
   final Future<void> Function() onRefresh;
@@ -57,18 +59,21 @@ class OwPagination extends StatefulWidget { // ! Falta a tela de loading inicial
   final bool shrinkWrap;
   // final double width;
 
-  const OwPagination({
+  OwPagination({
     Key key,
     @required this.child,
     @required this.loadMore,
     this.onRefresh,
-    this.childPadding,
+    this.padding,
     this.constraints,
     this.controller,
     this.callLoadMore = true,
+    this.callRefresh = true,
     this.loadingWidget,
     this.useStackLoading = false,
-    this.physics = const BouncingScrollPhysics(parent: const AlwaysScrollableScrollPhysics()),
+    this.physics = const BouncingScrollPhysics(
+      parent: const AlwaysScrollableScrollPhysics(),
+    ),
     this.tryAgainWidget,
     this.loadingAndTryWidgetsAboveBottomWidget = true,
     this.useTryAgainWidget = true,
@@ -78,10 +83,16 @@ class OwPagination extends StatefulWidget { // ! Falta a tela de loading inicial
     this.onlyUseButtonToLoadMore = false,
     this.shrinkWrap = false,
     // this.width,
-  }): assert(child != null),
-      assert(onlyUseButtonToLoadMore ? useTryAgainWidget : true, "'useTryAgainWidget' needs to be true if you are using 'onlyUseButtonToLoadMore'"),
-      assert(shrinkWrap ? controller != null : true, "If you are usig 'shrinkWrap' as true, you need to pass the 'controller'"), // ! Acho que além do controller não ser null, onRefresh não pode ser passado
-      super(key: key);
+  })  : assert(child != null),
+        assert(
+          onlyUseButtonToLoadMore ? useTryAgainWidget : true,
+          "'useTryAgainWidget' needs to be true if you are using 'onlyUseButtonToLoadMore'",
+        ),
+        assert(
+          shrinkWrap ? controller != null : true,
+          "If you are usig 'shrinkWrap' as true, you need to pass the 'controller'",
+        ), // ! Acho que além do controller não ser null, onRefresh não pode ser passado
+        super(key: key);
 
   @override
   _OwPaginationState createState() => _OwPaginationState();
@@ -94,27 +105,25 @@ class _OwPaginationState extends State<OwPagination> {
   void Function() updateState;
 
   @override
-  void initState() { 
+  void initState() {
     super.initState();
     _scrollController = widget.controller ?? ScrollController();
-    if(widget.onlyUseButtonToLoadMore) {
+    if (widget.onlyUseButtonToLoadMore) {
       _showTryAgain = true;
     } else {
-      if(!_scrollController.hasListeners) {
-        _scrollController?.addListener(_callFuncion);
-      }
+      _scrollController?.addListener(_callFuncion);
     }
 
     updateState = () => setState(() {});
   }
-  
+
   @override
   Widget build(BuildContext context) {
-    if(widget.onRefresh != null) {
+    if (widget.onRefresh != null && widget.callRefresh) {
       return RefreshIndicator(
         onRefresh: () async {
           await widget.onRefresh();
-          if(!widget.onlyUseButtonToLoadMore) {
+          if (!widget.onlyUseButtonToLoadMore) {
             _showTryAgain = false;
             SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
               updateState();
@@ -129,7 +138,7 @@ class _OwPaginationState extends State<OwPagination> {
   }
 
   Widget _scroll(BuildContext context) {
-    if(widget.sliverAppBar != null) {
+    if (widget.sliverAppBar != null) {
       return CustomScrollView(
         controller: _scrollController,
         physics: widget.physics,
@@ -142,7 +151,7 @@ class _OwPaginationState extends State<OwPagination> {
         ],
       );
     } else {
-      if(widget.shrinkWrap) {
+      if (widget.shrinkWrap) {
         return _container(context);
       } else {
         return SingleChildScrollView(
@@ -157,27 +166,34 @@ class _OwPaginationState extends State<OwPagination> {
   Widget _container(BuildContext context) {
     List<Widget> _columnWidgets = [];
 
-    if(widget.useStackLoading) {
+    if (widget.useStackLoading) {
       _columnWidgets = widget.loadingAndTryWidgetsAboveBottomWidget == true
-        ? [
-          Stack(
-            alignment: Alignment.bottomCenter,
-            children: _defineChildren(context, addBottomWidget: false, addTryAgainWidget: false),
-          ),
-          _tryAgainWidget(),
-          widget.bottomWidget ?? const SizedBox(),
-        ]
-        : [
-          Stack(
-            alignment: Alignment.bottomCenter,
-            children: _defineChildren(context, addTryAgainWidget: false),
-          ),
-          _tryAgainWidget(),
-        ];
+          ? [
+              Stack(
+                alignment: Alignment.bottomCenter,
+                children: _defineChildren(
+                  context,
+                  addBottomWidget: false,
+                  addTryAgainWidget: false,
+                ),
+              ),
+              _tryAgainWidget(),
+              widget.bottomWidget ?? const SizedBox(),
+            ]
+          : [
+              Stack(
+                alignment: Alignment.bottomCenter,
+                children: _defineChildren(
+                  context,
+                  addTryAgainWidget: false,
+                ),
+              ),
+              _tryAgainWidget(),
+            ];
     } else {
       _columnWidgets = _defineChildren(context);
     }
-    
+
     return Container(
       // alignment: Alignment.topCenter,
       constraints: widget.constraints,
@@ -190,30 +206,35 @@ class _OwPaginationState extends State<OwPagination> {
 
   Widget _loadingWidget() {
     return _showLoading
-      ? widget.loadingWidget ?? Padding(
-        padding: const EdgeInsets.all(8),
-        child: const CircularProgressIndicator(),
-      )
-      : const SizedBox();
+        ? widget.loadingWidget ??
+            Padding(
+              padding: const EdgeInsets.all(8),
+              child: const CircularProgressIndicator(),
+            )
+        : const SizedBox();
   }
 
   Widget _tryAgainWidget() {
     return _showTryAgain
-      ? GestureDetector(
-        child: widget.tryAgainWidget ?? Padding(
-          padding: const EdgeInsets.all(8),
-          child: const Icon(Icons.refresh_outlined, size: 32),
-        ),
-        onTap: () {
-          _callFuncion(true);
-        },
-      )
-      : const SizedBox();
+        ? InkWell(
+            child: widget.tryAgainWidget ??
+                Padding(
+                  padding: const EdgeInsets.all(8),
+                  child: const Icon(
+                    Icons.refresh_outlined,
+                    size: 32,
+                  ),
+                ),
+            onTap: () {
+              _callFuncion(true);
+            },
+          )
+        : const SizedBox();
   }
 
   List<Widget> _defineChildren(
-    BuildContext context, 
-    {bool addBottomWidget = true, 
+    BuildContext context, {
+    bool addBottomWidget = true,
     bool addTryAgainWidget = true,
   }) {
     List<Widget> _children = [];
@@ -222,29 +243,29 @@ class _OwPaginationState extends State<OwPagination> {
     //   _children.add(widget.topWidget);
     // }
 
-    if(widget.childPadding != null) {
+    if (widget.padding != null) {
       _children.add(Padding(
-        padding: widget.childPadding,
+        padding: widget.padding,
         child: widget.child,
       ));
     } else {
       _children.add(widget.child);
     }
 
-    if(widget.loadingAndTryWidgetsAboveBottomWidget) {
+    if (widget.loadingAndTryWidgetsAboveBottomWidget) {
       _children.add(_loadingWidget());
-      if(addTryAgainWidget) {
+      if (addTryAgainWidget) {
         _children.add(_tryAgainWidget());
       }
     }
 
-    if(widget.bottomWidget != null && addBottomWidget) {
+    if (widget.bottomWidget != null && addBottomWidget) {
       _children.add(widget.bottomWidget);
     }
 
-    if(!widget.loadingAndTryWidgetsAboveBottomWidget) {
+    if (!widget.loadingAndTryWidgetsAboveBottomWidget) {
       _children.add(_loadingWidget());
-      if(addTryAgainWidget) {
+      if (addTryAgainWidget) {
         _children.add(_tryAgainWidget());
       }
     }
@@ -253,33 +274,43 @@ class _OwPaginationState extends State<OwPagination> {
   }
 
   void _callFuncion([bool tryAgainCall = false]) async {
-    if(
-      !_showLoading &&
-      widget.loadMore != null && 
-      widget.callLoadMore
-    ) {
-      double maxScroll = _scrollController.position.maxScrollExtent - widget.loadMoreOffsetFromBottom;
+    if (!_showLoading && widget.loadMore != null && widget.callLoadMore) {
+      double maxScroll = _scrollController.position.maxScrollExtent -
+          widget.loadMoreOffsetFromBottom;
       maxScroll = maxScroll < 0 ? 0 : maxScroll;
-      
-      if(
-        (!_showTryAgain && _scrollController.offset >= maxScroll) || 
-        (_showTryAgain && tryAgainCall)
-      ) {
+
+      if ((!_showTryAgain && _scrollController.offset >= maxScroll) ||
+          (_showTryAgain && tryAgainCall)) {
         _showLoading = true;
         _showTryAgain = false;
         SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
           updateState();
         });
-        if(!widget.useStackLoading && !tryAgainCall && widget.loadMoreOffsetFromBottom == 0) {
-          // await Future.delayed(const Duration(milliseconds: 100));
-          SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
-            _scrollController.animateTo(maxScroll + 70, duration: const Duration(milliseconds: 200), curve: Curves.easeInSine);
-          });
-        }
+        // if (!widget.useStackLoading &&
+        //     !tryAgainCall &&
+        //     widget.loadMoreOffsetFromBottom == 0) {
+        //   // await Future.delayed(const Duration(milliseconds: 100));
+        //   SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+        //     _scrollController.animateTo(
+        //       maxScroll + 70,
+        //       duration: const Duration(milliseconds: 200),
+        //       curve: Curves.easeInSine,
+        //     );
+        //   });
+        // }
         var result = await widget.loadMore();
         _showLoading = false;
-        if(widget.useTryAgainWidget) {
-          if(widget.onlyUseButtonToLoadMore) {
+        if (result == true &&
+            _scrollController.offset ==
+                _scrollController.position.maxScrollExtent) {
+          _scrollController.animateTo(
+            maxScroll - 1,
+            duration: const Duration(milliseconds: 50),
+            curve: Curves.easeInSine,
+          );
+        }
+        if (widget.useTryAgainWidget) {
+          if (widget.onlyUseButtonToLoadMore) {
             _showTryAgain = true;
           } else {
             _showTryAgain = result == false;
@@ -289,3 +320,61 @@ class _OwPaginationState extends State<OwPagination> {
     }
   }
 }
+
+// class OwPaginationController extends ChangeNotifier {
+//   final ScrollController controller;
+//   bool callLoadMore;
+//   final Future<bool> Function() loadMore;
+//   final Future<void> Function() onRefresh;
+//   final double loadMoreOffsetFromBottom;
+//   final bool onlyUseButtonToLoadMore;
+
+//   OwPaginationController({
+//     this.controller,
+//     this.callLoadMore = true,
+//     @required this.loadMore,
+//     @required this.onRefresh,
+//     @required this.loadMoreOffsetFromBottom,
+//     @required this.onlyUseButtonToLoadMore,
+//   });
+
+//   void callFunctionLoadMore([bool tryAgainCall = false]) async {
+//     if(
+//       !_showLoading &&
+//       loadMore != null &&
+//       callLoadMore
+//     ) {
+//       double maxScroll = controller.position.maxScrollExtent - loadMoreOffsetFromBottom;
+//       maxScroll = maxScroll < 0 ? 0 : maxScroll;
+
+//       if(
+//         (!_showTryAgain && controller.offset >= maxScroll) ||
+//         (_showTryAgain && tryAgainCall)
+//       ) {
+//         _showLoading = true;
+//         _showTryAgain = false;
+//         SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+//           this.updateState();
+//         });
+//         if(!widget.useStackLoading && !tryAgainCall && loadMoreOffsetFromBottom == 0) {
+//           // await Future.delayed(const Duration(milliseconds: 100));
+//           SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+//             _scrollController.animateTo(maxScroll + 70, duration: const Duration(milliseconds: 200), curve: Curves.easeInSine);
+//           });
+//         }
+//         var result = await loadMore();
+//         _showLoading = false;
+//         controller.jumpTo(maxScroll - 1);
+//         if(widget.useTryAgainWidget) {
+//           if(widget.onlyUseButtonToLoadMore) {
+//             _showTryAgain = true;
+//           } else {
+//             _showTryAgain = result == false;
+//           }
+//         }
+//       }
+//     }
+//   }
+
+//   void updateState() => notifyListeners();
+// }

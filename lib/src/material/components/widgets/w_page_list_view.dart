@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 class OwPageListView extends StatefulWidget { // ! APAGAR (usar OwGrid)
   final ScrollController controller;
   final List<dynamic> list;
-  final Widget Function(BuildContext, int) itemBuilder;
-  final Widget Function(BuildContext, int) separatorBuilder;
+  final Widget Function(BuildContext context, int index) itemBuilder;
+  final Widget Function(BuildContext context, int index) separatorBuilder;
   final Future<bool> Function() loadMore;
   final bool useStackLoading;
   final Widget circularProgressIndicator;
