@@ -140,14 +140,42 @@ class OwButton extends StatelessWidget { // ! Testar opção de enviar ícone / 
       ),
       child: ElevatedButton(
         autofocus: autoFocus,
-        child: labelText != null && labelText.isNotEmpty
-          ? Text(
-            labelText.toUpperCase(),
-            style: const TextStyle(
-              fontWeight: FontWeight.bold,
-            ),
-          )
-          : _getChild(),
+        child: Container(
+          width: MediaQuery.of(context).size.width,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              leading != null
+                ? Container(
+                    margin: EdgeInsets.only(
+                      right: 20,
+                    ),
+                    child: Icon(leading),
+                  )
+                : SizedBox(),
+              labelText != null && labelText.isNotEmpty
+                ? Expanded(
+                    child: Text(
+                      labelText.toUpperCase(),
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  )
+                : Expanded(
+                  child: _getChild(),
+                ),
+              trailing != null
+                ? Container(
+                    margin: EdgeInsets.only(
+                      left: 20,
+                    ),
+                    child: Icon(trailing),
+                  )
+                : SizedBox(),
+            ],
+          ),
+        ),
         style: ButtonStyle(
           foregroundColor: mainButton
             ? MaterialStateProperty.all(Colors.white)
