@@ -24,12 +24,13 @@ enum IndicatorDotTouch {
 // ! Deixar passar um filho pro pageIndicator (como por exemplo, exibir as miniaturas das imagens)
 // ! Criar um Builder
 // ! Colocar opção pra desabilitar rolagem (quando dá zoom em uma imagem e arrasta pro lado (no zoom), vai pra próxima imagem)
-// ! Adicionar (tela inicial venver): 
+// ! Adicionar (tela inicial venver):
 
 // Maybe add this too: https://pub.dev/packages/expandable_page_view
 class OwPageView extends StatefulWidget {
   final double height;
-  final bool pageSnapping; // It scrolls automatically to the center of the widget
+  final bool
+      pageSnapping; // It scrolls automatically to the center of the widget
   final PageController controller;
   final List<Widget> children;
   final ScrollPhysics physics;
@@ -194,13 +195,12 @@ class OwPageView extends StatefulWidget {
 }
 
 class _OwPageViewState extends State<OwPageView> {
-
   ValueNotifier<int> _currentPageNotifier;
 
   @override
   Widget build(BuildContext context) {
     _currentPageNotifier = _initializeCurrentPageNotifier();
-    
+
     return Container(
       key: widget.key,
       padding: widget.padding,
@@ -209,13 +209,11 @@ class _OwPageViewState extends State<OwPageView> {
     );
   }
 
-  Widget _containerChild() {  
-    if(widget.pageIndicator == PageIndicator.none) {
+  Widget _containerChild() {
+    if (widget.pageIndicator == PageIndicator.none) {
       return _pageView();
-    } else if(
-      widget.pageIndicator == PageIndicator.stackBottom ||
-      widget.pageIndicator == PageIndicator.stackTop
-    ) {
+    } else if (widget.pageIndicator == PageIndicator.stackBottom ||
+        widget.pageIndicator == PageIndicator.stackTop) {
       return Stack(
         children: [
           _pageView(),
@@ -228,8 +226,8 @@ class _OwPageViewState extends State<OwPageView> {
           ),
           Align(
             alignment: widget.pageIndicator == PageIndicator.stackBottom
-              ? Alignment.bottomCenter
-              : Alignment.topCenter,
+                ? Alignment.bottomCenter
+                : Alignment.topCenter,
             child: Padding(
               padding: EdgeInsets.symmetric(
                 vertical: widget.indicatorWidgetSpacing,
@@ -248,26 +246,25 @@ class _OwPageViewState extends State<OwPageView> {
       // ];
       return Column(
         children: widget.pageIndicator == PageIndicator.top
-          ? [
-            _pageIndicator(),
-            _spaceBetween,
-            Expanded(child: _pageView()),
-          ]
-          : [
-            Expanded(child: _pageView()),
-            _spaceBetween,
-            _pageIndicator(),
-          ],
+            ? [
+                _pageIndicator(),
+                _spaceBetween,
+                Expanded(child: _pageView()),
+              ]
+            : [
+                Expanded(child: _pageView()),
+                _spaceBetween,
+                _pageIndicator(),
+              ],
       );
     }
   }
 
   Widget _pageView() {
-    List<Widget> _children = widget.centeredChildren
-      ? _centeredWidgets()
-      : widget.children;
-    
-    if(widget.loop) {
+    List<Widget> _children =
+        widget.centeredChildren ? _centeredWidgets() : widget.children;
+
+    if (widget.loop) {
       return LoopPageView.builder(
         reverse: widget.reverse,
         controller: widget.loopController,
@@ -283,27 +280,25 @@ class _OwPageViewState extends State<OwPageView> {
           _currentPageNotifier.value = index;
         },
       );
-    } else if(widget.carousel) {
+    } else if (widget.carousel) {
       return CarouselSlider(
-        items: _children,
-        carouselController: widget.carouselController,
-        options: CarouselOptions(
-          height: widget.height,
-          aspectRatio: widget.aspectRatio,
-          initialPage: widget.initialCarouselPage,
-          enableInfiniteScroll: widget.infiniteScroll,
-          reverse: widget.reverse,
-          autoPlay: widget.autoPlay,
-          autoPlayInterval: widget.autoPlayInterval,
-          autoPlayAnimationDuration: widget.autoPlayAnimationDuration,
-          autoPlayCurve: widget.autoPlayCurve,
-          // enlargeCenterPage: true,
-          scrollDirection: Axis.horizontal,
-          onPageChanged: (index, reason) {
-            _currentPageNotifier.value = index;
-          }
-        )
-      );
+          items: _children,
+          carouselController: widget.carouselController,
+          options: CarouselOptions(
+              height: widget.height,
+              aspectRatio: widget.aspectRatio,
+              initialPage: widget.initialCarouselPage,
+              enableInfiniteScroll: widget.infiniteScroll,
+              reverse: widget.reverse,
+              autoPlay: widget.autoPlay,
+              autoPlayInterval: widget.autoPlayInterval,
+              autoPlayAnimationDuration: widget.autoPlayAnimationDuration,
+              autoPlayCurve: widget.autoPlayCurve,
+              // enlargeCenterPage: true,
+              scrollDirection: Axis.horizontal,
+              onPageChanged: (index, reason) {
+                _currentPageNotifier.value = index;
+              }));
     } else {
       return PageView.builder(
         controller: widget.controller,
@@ -317,7 +312,9 @@ class _OwPageViewState extends State<OwPageView> {
           return _children[index];
         },
         onPageChanged: (index) {
+          widget.controller.jumpToPage(index);
           _currentPageNotifier.value = index;
+          setState(() {});
         },
       );
     }
@@ -328,76 +325,75 @@ class _OwPageViewState extends State<OwPageView> {
     Curve _jumpCurve = Curves.easeInOut;
 
     return widget.stepPageIndicator
-      ? StepPageIndicator(
-        itemCount: widget.children.length,
-        currentPageNotifier: _currentPageNotifier,
-        size: widget.dotSize,
-        stepColor: widget.dotColor,
-        previousStep: widget.previousStep,
-        selectedStep: widget.selectedStep,
-        nextStep: widget.nextStep,
-        stepSpacing: widget.dotSpacing,
-        onPageSelected: (index) {
-          if(widget.onDotIndicatorSelected != null) {
-            widget.onDotIndicatorSelected(index);
-          }
-          
-          if(widget.stepPageDotTouch != IndicatorDotTouch.none) {
-            bool _goToPage = false;
-            if(widget.stepPageDotTouch == IndicatorDotTouch.goToPage) {
-              _goToPage = true;
-            } else if(_currentPageNotifier.value > index) {
-              _goToPage = true;
-            }
+        ? StepPageIndicator(
+            itemCount: widget.children.length,
+            currentPageNotifier: _currentPageNotifier,
+            size: widget.dotSize,
+            stepColor: widget.dotColor,
+            previousStep: widget.previousStep,
+            selectedStep: widget.selectedStep,
+            nextStep: widget.nextStep,
+            stepSpacing: widget.dotSpacing,
+            onPageSelected: (index) {
+              if (widget.onDotIndicatorSelected != null) {
+                widget.onDotIndicatorSelected(index);
+              }
 
-            if(_goToPage) {
-              widget.controller?.animateToPage(
-                index,
-                duration: _jumpDuration,
-                curve: _jumpCurve,
-              );
-              widget.loopController?.animateToPage(
-                index,
-                duration: _jumpDuration,
-                curve: _jumpCurve,
-              );
-            }
-          }
-        },
-      )
-      : CirclePageIndicator(
-        itemCount: widget.children.length,
-        currentPageNotifier: _currentPageNotifier,
-        size: widget.dotSize,
-        selectedSize: widget.selectedDotSize,
-        borderColor: widget.dotBorderColor,
-        borderWidth: widget.dotBorderWidth,
-        dotSpacing: widget.dotSpacing,
-        dotColor: widget.dotColor,
-        selectedBorderColor: widget.selectedDotBorderColor,
-        selectedDotColor: widget.selectedDotColor,
-        onPageSelected: (index) {
-          if(widget.onDotIndicatorSelected != null) {
-            widget.onDotIndicatorSelected(index);
-          }
-          
-          if(
-            widget.stepPageDotTouch == IndicatorDotTouch.goToOnlyCheckedPage ||
-            widget.stepPageDotTouch == IndicatorDotTouch.goToPage
-          ) {
-            widget.controller?.animateToPage(
-              index,
-              duration: _jumpDuration,
-              curve: _jumpCurve,
-            );
-            widget.loopController?.animateToPage(
-              index,
-              duration: _jumpDuration,
-              curve: _jumpCurve,
-            );
-          }
-        },
-      );
+              if (widget.stepPageDotTouch != IndicatorDotTouch.none) {
+                bool _goToPage = false;
+                if (widget.stepPageDotTouch == IndicatorDotTouch.goToPage) {
+                  _goToPage = true;
+                } else if (_currentPageNotifier.value > index) {
+                  _goToPage = true;
+                }
+
+                if (_goToPage) {
+                  widget.controller?.animateToPage(
+                    index,
+                    duration: _jumpDuration,
+                    curve: _jumpCurve,
+                  );
+                  widget.loopController?.animateToPage(
+                    index,
+                    duration: _jumpDuration,
+                    curve: _jumpCurve,
+                  );
+                }
+              }
+            },
+          )
+        : CirclePageIndicator(
+            itemCount: widget.children.length,
+            currentPageNotifier: _currentPageNotifier,
+            size: widget.dotSize,
+            selectedSize: widget.selectedDotSize,
+            borderColor: widget.dotBorderColor,
+            borderWidth: widget.dotBorderWidth,
+            dotSpacing: widget.dotSpacing,
+            dotColor: widget.dotColor,
+            selectedBorderColor: widget.selectedDotBorderColor,
+            selectedDotColor: widget.selectedDotColor,
+            onPageSelected: (index) {
+              if (widget.onDotIndicatorSelected != null) {
+                widget.onDotIndicatorSelected(index);
+              }
+
+              if (widget.stepPageDotTouch ==
+                      IndicatorDotTouch.goToOnlyCheckedPage ||
+                  widget.stepPageDotTouch == IndicatorDotTouch.goToPage) {
+                widget.controller?.animateToPage(
+                  index,
+                  duration: _jumpDuration,
+                  curve: _jumpCurve,
+                );
+                widget.loopController?.animateToPage(
+                  index,
+                  duration: _jumpDuration,
+                  curve: _jumpCurve,
+                );
+              }
+            },
+          );
   }
 
   List<Widget> _centeredWidgets() {
@@ -408,10 +404,11 @@ class _OwPageViewState extends State<OwPageView> {
     return _children;
   }
 
-  
   ValueNotifier<int> _initializeCurrentPageNotifier() {
     return ValueNotifier<int>(
-      widget.controller?.initialPage ?? widget.loopController?.initialScrollOffset?.toInt() ?? 0,
+      widget.controller?.initialPage ??
+          widget.loopController?.initialScrollOffset?.toInt() ??
+          0,
     );
   }
 }

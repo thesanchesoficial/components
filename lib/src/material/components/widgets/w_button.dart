@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 class OwButton extends StatelessWidget { // ! Testar opção de enviar ícone / Colocar um bool isStretch retornando o botão em um Column(stretch)
   final String labelText;
   final bool autoFocus;
+  final bool center;
   final bool enable;
   final bool outline;
   final bool secondary;
@@ -33,6 +34,7 @@ class OwButton extends StatelessWidget { // ! Testar opção de enviar ícone / 
     this.autoFocus = false,
     this.enable = true,
     this.enableFeedback = false,
+    this.center = true,
     this.onPressed,
     this.onLongPressed,
     this.margin,
@@ -62,6 +64,7 @@ class OwButton extends StatelessWidget { // ! Testar opção de enviar ícone / 
     this.autoFocus = false,
     this.enable = true,
     this.enableFeedback = false,
+    this.center = true,
     this.onPressed,
     this.onLongPressed,
     this.margin,
@@ -91,6 +94,7 @@ class OwButton extends StatelessWidget { // ! Testar opção de enviar ícone / 
     this.autoFocus = false,
     this.enable = true,
     this.enableFeedback = false,
+    this.center = true,
     this.onPressed,
     this.onLongPressed,
     this.margin,
@@ -155,15 +159,18 @@ class OwButton extends StatelessWidget { // ! Testar opção de enviar ícone / 
                 : SizedBox(),
               labelText != null && labelText.isNotEmpty
                 ? Expanded(
-                    child: Text(
-                      labelText.toUpperCase(),
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
+                    child: center 
+                      ? Center(
+                          child: _text()
+                        )
+                      : _text(),
                   )
                 : Expanded(
-                  child: _getChild(),
+                  child: center 
+                    ? Center(
+                        child: _getChild(),
+                      )
+                    : _getChild(),
                 ),
               trailing != null
                 ? Container(
@@ -204,6 +211,15 @@ class OwButton extends StatelessWidget { // ! Testar opção de enviar ícone / 
         onPressed: enable ? onPressed : null,
         onLongPress: enable ? onLongPressed : null,
         focusNode: focusNode,
+      ),
+    );
+  }
+
+  Widget _text() {
+    return Text(
+      labelText.toUpperCase(),
+      style: const TextStyle(
+        fontWeight: FontWeight.bold,
       ),
     );
   }
