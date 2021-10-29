@@ -239,7 +239,7 @@ class OwTextField extends StatelessWidget {
     this.suggestionListTileTrailing = const Icon(Icons.touch_app_outlined),
     this.radius = 10,
     this.decoration,
-  }): this.fieldType = null,
+  }) : this.fieldType = null,
       this.onSaved = null,
       this.validator = null,
       this.updateMask = false,
@@ -296,7 +296,6 @@ class OwTextField extends StatelessWidget {
         decoration: _defineTextFieldStyle(context),
         onTap: onTap,
         onSaved: onSaved,
-        // onChanged: onChanged,
         onChanged: (value) {
           onChanged?.call(value);
           _changeMask?.call(value);
@@ -306,7 +305,6 @@ class OwTextField extends StatelessWidget {
         validator: validator,
         controller: controller,
         textInputAction: textInputAction ?? _textInputAction,
-        // onFieldSubmitted: onFieldSubmitted,
         onFieldSubmitted: (_) {
           onFieldSubmitted?.call(_);
           _goToNextFocusNode?.call();
@@ -657,62 +655,12 @@ class OwTextField extends StatelessWidget {
             }
           };
           _changeMask(controller.text);
-          // if(!(controller is MaskedTextController)) {
-          //   throw ArgumentError.value(
-          //     controller,
-          //     "controller is not MaskedTextController", // Name
-          //     "Invalid controller: The controller needs to be instantiated as MaskedTextController class", // Message
-          //   );
-          // } 
-          // var maskFormatter = OwMaskedFormatter.phones(11, initialText: controller?.text);
-          // // _inputFormatters = [maskFormatter];
-          // _changeMask = () {
-          //   int position = controller?.selection?.baseOffset;
-          //   String text = maskFormatter.getUnmaskedText();
-          //   String mask = maskFormatter.getMask();
-          //   if(text.length >= 11 && mask != '(00) 00000-0000') {
-          //     maskFormatter.updateMask(mask: '(00) 00000-0000', filter: { "0": RegExp(r'[0-9]') });
-          //     controller.updateMask('(00) 00000-0000');
-          //     controller.selection = TextSelection.fromPosition(TextPosition(offset: position));
-          //   } else if(text.length <= 10 && mask != '(00) 0000-00000') {
-          //     maskFormatter.updateMask(mask: '(00) 0000-00000', filter: { "0": RegExp(r'[0-9]') });
-          //     controller.updateMask('(00) 0000-00000');
-          //     controller.selection = TextSelection.fromPosition(TextPosition(offset: position));
-          //   }
-          // };
-          // // MaskTextInputFormatter _maskFormatter;
-          // // if(controller?.text?.length == MaskType.phones(10).length) { // ! E se controller?.text for null ?????
-          // //   _maskFormatter = OwMaskedFormatter.phones(10, initialText: controller?.text); // initialText: controller?.text ?? ""
-          // // } else {
-          // //   _maskFormatter = OwMaskedFormatter.phones(11, initialText: controller?.text); // initialText: controller?.text ?? ""
-          // // }
-          // // _inputFormatters = [_maskFormatter];
-          // // _changeMask = () {
-          // //   int _position = controller?.selection?.baseOffset;
-          // //   String _text = _maskFormatter.getUnmaskedText();
-          // //   String _mask = _maskFormatter.getMask();
-          // //   if(_text.length > 10 && _mask != MaskType.phones(10)) {
-          // //     _maskFormatter.updateMask(mask: MaskType.phones(10), filter: FilterMask.number);
-          // //     controller.updateMask(MaskType.cpf); // ! Descomentar
-          // //     controller.selection = TextSelection.fromPosition(TextPosition(offset: _position));
-          // //   } else if(_text.length <= 10 && _mask != MaskType.phones(11)) {
-          // //     _maskFormatter.updateMask(mask: MaskType.phones(11), filter: FilterMask.number);
-          // //     controller.updateMask(MaskType.cnpj); // ! Descomentar
-          // //     controller.selection = TextSelection.fromPosition(TextPosition(offset: _position));
-          // //   }
-          // };
           break;
-          
         case _TextFieldMaskType.phones:
           assert(controller is MaskedTextController, assertMsgMaskedTextController);
           _keyboardType = TextInputType.phone;
           if(fieldType?.quantity != null) {
             (controller as MaskedTextController).updateMask(MaskType.phones(fieldType.quantity));
-            // final _mask = OwMaskedFormatter.phones(
-            //   fieldType.numbersQuantity,
-            //   initialText: controller?.text, // initialText: controller?.text ?? ""
-            // );
-            // _inputFormatters = [_mask];
           } else {
             // ! Terminar
           }
@@ -778,8 +726,8 @@ class OwTextField extends StatelessWidget {
   }
 
   void defineFocusNode(BuildContext context) {
-    _focusNode = focusNode ?? FN.getFnByList(focusNodeList, focusNodeIndex);
-    _nextFocusNode = nextFocusNode ?? FN.getNextFnByList(focusNodeList, focusNodeIndex);
+    _focusNode = focusNode ?? FN.getFnByList(focusNodeList ?? [], focusNodeIndex ?? 0);
+    _nextFocusNode = nextFocusNode ?? FN.getNextFnByList(focusNodeList ?? [], focusNodeIndex ?? 0);
 
     if(_nextFocusNode != null) {
       _textInputAction = TextInputAction.next;
