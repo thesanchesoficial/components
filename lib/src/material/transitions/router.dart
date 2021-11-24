@@ -88,18 +88,20 @@ class ModalWeb extends StatelessWidget {
     return AlertDialog(
       elevation: 0,
       backgroundColor: Colors.transparent,
-      content: Container(
-        padding: const EdgeInsets.all(0),
-        width: 450,
-        decoration: BoxDecoration(
-          color: Theme.of(context).scaffoldBackgroundColor,
-          borderRadius: const BorderRadius.all(Radius.circular(10)),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            child,
-          ],
+      content: ClipRRect(
+        borderRadius: const BorderRadius.all(Radius.circular(10,),),
+        child: Container(
+          padding: const EdgeInsets.all(0),
+          width: 450,
+          decoration: BoxDecoration(
+            color: Theme.of(context).scaffoldBackgroundColor,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              child,
+            ],
+          ),
         ),
       ),
     );
