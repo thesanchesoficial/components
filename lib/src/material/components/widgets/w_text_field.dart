@@ -322,7 +322,6 @@ class OwTextField extends StatelessWidget {
           textCapitalization: textCapitalization,
           obscureText: obscureText,
           enabled: enabled,
-          maxLengthEnforced: maxLengthEnforced,
           enableInteractiveSelection: enableInteractiveSelection,
           decoration: _defineTypeAheadFieldStyle(context),
           onSubmitted: (_) {
