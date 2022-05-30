@@ -1,5 +1,4 @@
 import 'package:components_venver/functions.dart';
-import 'package:components_venver/src/settings/init.dart';
 // import 'package:components_venver/src/settings/filter_mask.dart';
 import 'package:components_venver/src/settings/mask_type.dart';
 import 'package:flutter/material.dart';
@@ -9,8 +8,6 @@ import 'package:flutter_typeahead/flutter_typeahead.dart';
 // import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 
 export 'package:components_venver/src/utils/helpers/text_field_type.dart';
-
-// ! TODO: ALTERAR E TESTAR PARTES DO COMPONENTE
 
 // ! https://pub.dev/packages/easy_mask
 
@@ -290,7 +287,6 @@ class OwTextField extends StatelessWidget {
         textCapitalization: textCapitalization ?? _textCapitalization ?? TextCapitalization.sentences,
         minLines: minLines ?? _minLines,
         maxLines: maxLines ?? _maxLines,
-        maxLengthEnforced: maxLengthEnforced,
         enabled: enabled,
         enableInteractiveSelection: enableInteractiveSelection,
         decoration: _defineTextFieldStyle(context),
