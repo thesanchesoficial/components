@@ -106,7 +106,6 @@ class OwTextField extends StatelessWidget {
   final bool enableInteractiveSelection;
   final bool autofocus;
   final bool obscureText;
-  final bool maxLengthEnforced;
   final bool readOnly;
   /// If null, it will be [TextCapitalization.sentences]
   final TextCapitalization textCapitalization;
@@ -149,7 +148,6 @@ class OwTextField extends StatelessWidget {
     this.readOnly = false,
     this.autofocus = false,
     this.enabled = true,
-    this.maxLengthEnforced = true,
     this.onFieldSubmitted,
     this.focusNode,
     this.onChanged,
@@ -205,7 +203,6 @@ class OwTextField extends StatelessWidget {
     this.textCapitalization,
     this.obscureText = false,
     this.enabled = true,
-    this.maxLengthEnforced = true,
     this.onFieldSubmitted,
     this.focusNode,
     this.onChanged,

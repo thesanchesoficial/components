@@ -125,8 +125,4 @@ class _OwPageListViewState extends State<OwPageListView> {
       })
       : const SizedBox();
   }
-
-  Widget _tryAgain() {
-    return const SizedBox();
-  }
 }
