@@ -147,6 +147,7 @@ class OwButton extends StatelessWidget { // ! Testar opção de enviar ícone / 
         child: Container(
           width: MediaQuery.of(context).size.width,
           child: Row(
+            mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               leading != null
@@ -187,15 +188,15 @@ class OwButton extends StatelessWidget { // ! Testar opção de enviar ícone / 
           foregroundColor: mainButton
             ? MaterialStateProperty.all(Colors.white)
             : MaterialStateProperty.all(
-              foregroundColor ?? color ?? Theme.of(context).accentColor,
+              foregroundColor ?? color ?? Theme.of(context).floatingActionButtonTheme.backgroundColor,
             ),
           padding: MaterialStateProperty.all(padding),
           backgroundColor: MaterialStateProperty.all(
             outline 
               ? Colors.transparent 
               : secondary
-                ? Theme.of(context).cardColor.withOpacity(.6)
-                : color ?? Theme.of(context).accentColor,
+                ? color ?? Theme.of(context).cardColor.withOpacity(.6)
+                : Theme.of(context).floatingActionButtonTheme.backgroundColor,
           ),
           elevation: MaterialStateProperty.all(elevation),
           minimumSize: MaterialStateProperty.all(minimumSize),
@@ -203,7 +204,7 @@ class OwButton extends StatelessWidget { // ! Testar opção de enviar ícone / 
           shape: MaterialStateProperty.all(
             RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(radius),
-              side: BorderSide(color: color ?? Theme.of(context).accentColor),
+              side: BorderSide(color: color ?? Theme.of(context).floatingActionButtonTheme.backgroundColor,),
             ),
           ),
           enableFeedback: enableFeedback,
